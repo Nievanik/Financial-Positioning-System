@@ -41,8 +41,19 @@ function transactions(slug, params) {
   const category = params.get('category')
   const from = params.get('from')
   const to = params.get('to')
+  // Same accountId rules as the server (engineering.md 5.1): malformed -> 400, not this profile's -> 404.
+  // The fixture holds each profile's full history (< 100 rows), so the filter is complete, not newest-100.
+  const accountId = params.has('accountId') ? params.get('accountId').toLowerCase() : null
+  if (accountId !== null) {
+    if (!/^[0-9a-f]{24}$/.test(accountId)) throw new ApiError(400, 'VALIDATION_FAILED', 'accountId must be a 24-character account id')
+    if (!overview(slug).accounts.some((a) => String(a.id) === accountId)) throw new ApiError(404, 'ACCOUNT_NOT_FOUND', 'That account does not belong to this demo profile')
+  }
   const items = fixture(slug, 'transactions').items.filter(
-    (t) => (!category || t.category === category) && (!from || t.occurredAt.slice(0, 10) >= from) && (!to || t.occurredAt.slice(0, 10) <= to),
+    (t) =>
+      (!category || t.category === category) &&
+      (!accountId || String(t.accountId) === accountId) &&
+      (!from || t.occurredAt.slice(0, 10) >= from) &&
+      (!to || t.occurredAt.slice(0, 10) <= to),
   )
   return { items: items.slice(0, limit) }
 }

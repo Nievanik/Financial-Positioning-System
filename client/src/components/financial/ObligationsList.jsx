@@ -1,4 +1,6 @@
 import { CalendarClock } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { profilePath } from '@/lib/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDay } from '@/lib/dates'
@@ -7,8 +9,11 @@ import { formatCents } from '@/lib/money'
 import { SourceBadge } from './SourceBadge'
 import { EmptyState } from './StateViews'
 
-/** Scheduled recurring cash flows (bills, loan/card payments, contributions, income) from GET /overview. */
-export function ObligationsList({ obligations = [], income = [], limit = 8 }) {
+/**
+ * Scheduled recurring cash flows (bills, loan/card payments, contributions, income) from GET /overview.
+ * With `slug`, loan-payment rows link to the Loans page.
+ */
+export function ObligationsList({ obligations = [], income = [], limit = 8, slug }) {
   const items = [...income, ...obligations]
     .filter((o) => o.active !== false)
     .sort((a, b) => String(a.nextDate).localeCompare(String(b.nextDate)))
@@ -36,7 +41,13 @@ export function ObligationsList({ obligations = [], income = [], limit = 8 }) {
                     <p className="text-sm font-semibold leading-none">{Number(String(o.nextDate).slice(8, 10))}</p>
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{o.name}</p>
+                    {slug && o.kind === 'loan_payment' ? (
+                      <Link to={profilePath(slug, 'loans')} className="block truncate text-sm font-medium text-primary hover:underline">
+                        {o.name} <span className="sr-only">(view loans)</span>
+                      </Link>
+                    ) : (
+                      <p className="truncate text-sm font-medium">{o.name}</p>
+                    )}
                     <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                       {label(OBLIGATION_KIND_LABELS, o.kind)} · {label(FREQUENCY_LABELS, o.frequency)} <SourceBadge source={o.source} />
                     </p>

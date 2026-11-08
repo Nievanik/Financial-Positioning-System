@@ -12,7 +12,7 @@ Build a financial navigator that **understands a user's finances, forecasts futu
 
 ## Must-have features
 
-1. **Unified financial overview:** Show available checking/savings cash, credit-card balances and limits, loans, monthly obligations, income, savings, and retirement accounts/contributions. Pull available mock data from Nessie; supplement missing fields with clearly labeled synthetic data.
+1. **Unified financial overview:** Show available checking/savings cash, credit-card balances and limits, loans, monthly obligations, income, savings, and retirement accounts/contributions. Pull available mock data from Nessie; supplement missing fields with clearly labeled synthetic data. Banking-style navigation (added 2026-11-08): dashboard figures link to an **Accounts** page (each checking, savings, card and long-term account with its details and its own transactions) and a **Loans** page (balance, APR, monthly payment, due dates). Display only: no loan interest/payoff calculations, payments, or transfers.
 2. **Expense analysis:** Categorize historical transactions (groceries, entertainment, housing, etc.) and estimate recurring versus variable spending.
 3. **Financial forecasting:** Estimate cash balances at **1, 2, 3, and 6 months**, accounting for expected income, spending, bills, loan payments, and savings contributions. Flag potential shortfalls between month-end dates.
 4. **What-if simulator:** Add a **one-time purchase** (e.g., $2,000 laptop) or a **down payment plus recurring expense** (e.g., $10,000 down and $3,000/month for a house). Compare forecasts before and after the decision.
