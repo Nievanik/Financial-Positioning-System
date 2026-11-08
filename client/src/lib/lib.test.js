@@ -4,7 +4,16 @@ import { test } from 'node:test'
 import { adaptHealthMetrics, adaptOverview } from './apiAdapters.js'
 import { addDays, addMonths, daysBetween, formatDay } from './dates.js'
 import { indicatorStatus } from './indicatorLabels.js'
-import { centsToInput, dollarsToCents, formatCents } from './money.js'
+import { centsToInput, dollarsToCents, formatApr, formatCents } from './money.js'
+
+test('loan APR display (Loans page): 0 is a valid 0% rate; only null/undefined is "Not provided"', () => {
+  assert.equal(formatApr(0), '0.00%') // regression: a truthiness check used to show 0% APR as "Not provided"
+  assert.equal(formatApr(null), 'Not provided')
+  assert.equal(formatApr(undefined), 'Not provided')
+  assert.equal(formatApr(560), '5.60%')
+  assert.equal(formatApr(910), '9.10%')
+  assert.equal(formatApr(1), '0.01%')
+})
 
 test('money: dollar text <-> integer cents without float drift; display formatting', () => {
   assert.equal(dollarsToCents('2,000'), 200000)

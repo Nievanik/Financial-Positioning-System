@@ -18,13 +18,22 @@ import { SpendingSection } from '@/features/spending/SpendingSection'
 import { TransactionsTable } from '@/features/spending/TransactionsTable'
 import { formatDay, formatTimestamp } from '@/lib/dates'
 import { formatCents } from '@/lib/money'
+import { creditCardTarget, profilePath } from '@/lib/navigation'
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 
-export function PageHeader({ overview, title, children }) {
+/** Where each health indicator links (docs/design.md section 4). */
+const INDICATOR_LINKS = {
+  emergency_coverage: { section: 'accounts', label: 'View accounts' },
+  debt_payment_burden: { section: 'loans', label: 'View loans' },
+  cash_flow_safety: { section: 'simulate', label: 'Run a what-if' },
+}
+
+export function PageHeader({ overview, title, breadcrumbs, children }) {
   const p = overview.profile || {}
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p className="text-sm text-muted-foreground">{title}</p>
+      <div className="min-w-0">
+        {breadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : <p className="text-sm text-muted-foreground">{title}</p>}
         <h1 className="text-2xl font-semibold tracking-tight">{p.displayName}</h1>
         <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {p.tagline && <span>{p.tagline}</span>}
@@ -70,10 +79,20 @@ export default function Dashboard() {
       )}
 
       <section aria-label="Financial overview" className="space-y-2">
-        <OverviewCards cash={overview.cash} />
+        <OverviewCards
+          cash={overview.cash}
+          links={{
+            cash: profilePath(slug, 'accounts'),
+            card: creditCardTarget(slug, overview.accounts),
+            loans: profilePath(slug, 'loans'),
+            longTerm: profilePath(slug, 'investments'),
+          }}
+        />
         {typeof overview.cash?.netWorthCents === 'number' && (
           <p className="text-right text-xs text-muted-foreground">
-            Net worth (assets − card and loan balances): <span className="font-medium text-foreground">{formatCents(overview.cash.netWorthCents)}</span>
+            <Link to={profilePath(slug, 'accounts')} className="rounded-sm hover:text-foreground hover:underline">
+              Net worth (assets − card and loan balances): <span className="font-medium text-foreground">{formatCents(overview.cash.netWorthCents)}</span>
+            </Link>
           </p>
         )}
       </section>
@@ -84,7 +103,10 @@ export default function Dashboard() {
           {(h) =>
             h.indicators?.length ? (
               <div className="grid gap-4 md:grid-cols-3">
-                {h.indicators.map((ind) => <IndicatorCard key={ind.id} indicator={ind} />)}
+                {h.indicators.map((ind) => {
+                  const link = INDICATOR_LINKS[ind.id]
+                  return <IndicatorCard key={ind.id} indicator={ind} to={link ? profilePath(slug, link.section) : undefined} linkLabel={link?.label} />
+                })}
               </div>
             ) : (
               <EmptyState title="No health indicators available" />
@@ -98,7 +120,7 @@ export default function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3"><SpendingSection query={spending} /></div>
         <div className="lg:col-span-2">
-          <ObligationsList obligations={overview.obligations} income={overview.income} />
+          <ObligationsList obligations={overview.obligations} income={overview.income} slug={slug} />
         </div>
       </div>
 
@@ -117,7 +139,7 @@ export default function Dashboard() {
           </Card>
         </div>
         <div className="lg:col-span-2">
-          <AccountsList accounts={overview.accounts} loans={overview.loans} />
+          <AccountsList accounts={overview.accounts} loans={overview.loans} slug={slug} />
         </div>
       </div>
 

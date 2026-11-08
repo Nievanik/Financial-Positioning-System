@@ -8,11 +8,11 @@ import { forecast } from '../engine/forecast.js';
 import { emergencyCoverage, debtPaymentBurden, cashFlowSafety } from '../engine/indicators.js';
 import { evaluateScenario, baselineRecommendations } from '../engine/scenarios.js';
 import { explain } from '../services/explanationService.js';
+import { parseTransactionQuery } from '../validators/transactions.js';
 import { buildOverview, fixedMonthlyCents, incomeMonthlyCents, loadEngine, loadHistory, loadSnapshot, spendByCategory, windowStart } from '../services/snapshot.js';
 
 const router = Router();
 const CATEGORIES = Transaction.schema.path('category').enumValues;
-const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const bad = (message, details) => httpError(400, 'VALIDATION_FAILED', message, details);
 
 router.get('/profiles', async (_req, res) => {
@@ -23,16 +23,10 @@ router.get('/profiles', async (_req, res) => {
 router.get('/profiles/:slug/overview', async (req, res) => res.json(buildOverview(await loadSnapshot(req.params.slug))));
 
 router.get('/profiles/:slug/transactions', async (req, res) => {
-  const { from, to, category } = req.query;
-  const limit = req.query.limit === undefined ? 50 : Number(req.query.limit);
-  if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw bad('limit must be an integer 1-100');
-  for (const [k, v] of Object.entries({ from, to })) if (v !== undefined && !DAY.test(v)) throw bad(`${k} must be YYYY-MM-DD`);
-  if (category !== undefined && !CATEGORIES.includes(category)) throw bad('Unknown category', { allowed: CATEGORIES });
-  const { profile } = await loadSnapshot(req.params.slug);
-  const q = { profileId: profile._id };
-  if (from || to) q.occurredAt = { ...(from && { $gte: new Date(`${from}T00:00:00Z`) }), ...(to && { $lte: new Date(`${to}T23:59:59Z`) }) };
-  if (category) q.category = category;
-  const items = await Transaction.find(q).sort({ occurredAt: -1 }).limit(limit).lean();
+  // Validation + filter building is pure (validators/transactions.js); accountId must belong to this profile.
+  const { profile, accounts } = await loadSnapshot(req.params.slug);
+  const { filter, limit } = parseTransactionQuery(req.query, { profileId: profile._id, accountIds: accounts.map((a) => String(a._id)), categories: CATEGORIES });
+  const items = await Transaction.find(filter).sort({ occurredAt: -1 }).limit(limit).lean();
   res.json({ items: items.map((t) => ({ id: t._id, accountId: t.accountId, occurredAt: t.occurredAt, description: t.description, merchantName: t.merchantName, amountCents: t.amountCents, cashflowKind: t.cashflowKind, cashImpactCents: t.cashImpactCents, category: t.category, source: t.source })) });
 });
 

@@ -61,17 +61,29 @@ Use `Inter` if already available, otherwise a system sans stack (`-apple-system`
 
 Left: product mark (simple original geometric icon) and `Financial Positioning System` or approved team product name. Right: **Demo profile selector**, snapshot `asOf` date, optional help/info icon. Do not add login/authentication, real bank branding, or functional money-transfer buttons.
 
-### Sidebar navigation
+### Sidebar navigation (banking navigation, 2026-11-08)
 
-1. **Dashboard** — `/p/:slug`
-2. **Cash-Flow Simulator** — `/p/:slug/simulate`
-3. **Investment Planner** — `/p/:slug/investments` (team-approved extension)
+Two labelled groups, banking-app style:
 
-Use Lucide icons (e.g., `layout-dashboard`, `chart-no-axes-combined`, `chart-pie`). Active page has a subtle blue background and strong text. Footer of sidebar: `Demo environment • Synthetic data`.
+- **Banking**
+  1. **Overview** — `/p/:slug` (the Dashboard page; the nav label is "Overview")
+  2. **Accounts** — `/p/:slug/accounts` and `/p/:slug/accounts/:accountId` (section 6a)
+  3. **Loans** — `/p/:slug/loans` (section 6b)
+- **Planning**
+  4. **Cash-Flow Simulator** — `/p/:slug/simulate`
+  5. **Investment Planner** — `/p/:slug/investments` (team-approved extension)
 
-### Profile switching
+Lucide icons: `layout-dashboard`, `wallet`, `landmark`, `calculator`, `chart-pie`. Active page has a subtle blue background and strong text (`aria-current="page"`); `Accounts` stays active on an account's detail route.
 
-Select one of the three seeded profiles. Switching profiles updates the URL slug and resets scenario inputs, selected chart segments, open explanations, and unsaved proposed plans. Show skeletons while fetching. Unknown slugs display a clear not-found state with a route back to a valid profile.
+- **Desktop (`lg` ≥ 1024 px):** fixed-width (~15rem) sticky left sidebar beside the page content. Sidebar footer: `Demo environment • Synthetic data`.
+- **Mobile/tablet (< 1024 px):** the sidebar is hidden; a horizontally scrollable tab row with the same five items (short labels: Overview, Accounts, Loans, Simulator, Investments) sits under the header. Touch targets ≥ 44 px tall; no page-level horizontal scroll.
+- The header keeps the product mark, data-source badge, **Edit data**, the demo customer switcher and the theme toggle. No login, account security, or money-movement controls anywhere in the navigation.
+
+### Demo customer switching
+
+The switcher is labelled **"Demo customer"** (visible label on ≥ sm, `aria-label` always) and lists the three fictional customers by name. It is a demo selector, not a login: no passwords, lock icons, "Sign in", "secure" or session wording, and the profile picker states "No login".
+
+Switching keeps you on the same kind of page: Overview → Overview, Accounts → Accounts, Loans → Loans, Simulator → Simulator, Investments → Investments, and the `?mock=` query is kept. On an **account detail** route the switch lands on the new customer's **Accounts list**, because account ids belong to one customer. Switching also resets scenario inputs, selected chart segments, open explanations, and unsaved proposed plans (the page remounts per slug). Show skeletons while fetching. Unknown slugs display a clear not-found state with a route back to a valid profile; an unknown `accountId` shows "Account not found" with a link back to Accounts.
 
 ### Global disclaimer
 
@@ -107,6 +119,23 @@ Each card has a plain-language description, a small assumptions disclosure, and 
 **Recent activity:** responsive transaction table with date, merchant/description, category, account, and amount. Support loading, empty, and error states.
 
 **Recommendations:** concise action cards with numerical impact provided by the server; show source/assumption and a clear `Explain` affordance. Label explanation origin `AI-generated` or `Template-based` according to response data.
+
+**Clickable cards (banking navigation).** Summary cards and indicators are links (whole card is the target, visible focus ring, a small chevron/"View …" hint, keyboard reachable). They only navigate; they never change data.
+
+| Element | Goes to |
+| --- | --- |
+| Available cash | Accounts (`/accounts`) |
+| Credit card balances | the card's account page (`/accounts/:id`); Accounts list if there is no or more than one card |
+| Loans outstanding | Loans (`/loans`) |
+| Retirement, investments & CDs | Investment Planner |
+| Net worth line | Accounts |
+| Emergency coverage indicator | Accounts |
+| Debt-payment burden indicator | Loans |
+| Cash-flow safety indicator | Cash-Flow Simulator |
+| Accounts & debts panel rows | that account's page; loan rows → Loans |
+| Upcoming cash flows: loan-payment rows | Loans |
+
+The indicator's "How this is calculated" disclosure stays a separate control inside the card (it must not trigger navigation).
 
 ### Dashboard wireframe
 
@@ -185,6 +214,27 @@ This is a **team-approved extension**. Do not confuse it with the existing backe
 [Explicit approval/rejection demo dialog]
 ```
 
+## 6a. Accounts page (`Accounts.jsx`)
+
+Routes `/p/:slug/accounts` (first spendable account selected) and `/p/:slug/accounts/:accountId`. Data: `GET /overview` (shared with every page) and `GET /transactions?accountId=` (engineering.md 5.1; filtered on the server, never the client-side newest-100).
+
+- **Header:** breadcrumb `Overview / Accounts / [account]`, the same page header as the Dashboard (snapshot date, sync, Fictional customer badges).
+- **Summary strip:** Available cash (checking + savings), Credit card balances (owed, with limit and "unused credit is not cash"), Long-term holdings (link to Investment Planner).
+- **Account list (left, 4 cols on lg):** groups **Spendable cash** (checking, savings), **Credit cards**, **Long-term (not spendable)**. Each row is a link: name, type, balance (card balances shown as owed, `−`), source badge; chevron and a visible selected state (`aria-current`).
+- **Account details (right, 8 cols on lg):** name, type, balance, source badge, and the fields the API provides: credit limit and unused credit (card; both server values), APY, maturity date, risk level, holdings note. A plain-language "how this counts" line: checking/savings count as available cash; card balances are owed and the limit is never cash; long-term holdings are not spendable (with a link to the Investment Planner).
+- **Transactions for the account (full-width row below the list and details,** so every column fits beside the sidebar at 1440 px without an inner scroll): the existing transactions table filtered by `accountId` (Account column hidden), with the category and row-count controls. Savings accounts: an empty state explaining transfers to savings are recorded on checking in this demo data. Long-term accounts: "No transactions are recorded for long-term holdings in this demo."
+- **No** transfer, payment, deposit or "move money" buttons. Read-only; balances are edited only through the header **Edit data** dialog.
+
+## 6b. Loans page (`Loans.jsx`)
+
+Route `/p/:slug/loans`. Data: `GET /overview` only (`loans[]`, plus `obligations[]` matched by `loanId` for the next due date; older mock fixtures without `loanId` fall back to the loan-payment flow with the same name).
+
+- **Summary strip:** Loans outstanding (server `loanDebtCents`), Loans on file (count), Next loan payment (earliest due date + that loan's server `amountCents`). No client-side money arithmetic.
+- **One card per loan:** name, type, source badge, outstanding balance, APR (or "Not provided"), monthly payment, due day ("day 18 of each month"), next due date.
+- **Notes:** "Each loan payment is scheduled once in the cash-flow forecast." Link to the Cash-Flow Simulator to test spending changes, and a pointer to **Edit data** for changing loan details.
+- **Out of scope (do not add):** interest-cost or payoff calculations, amortisation, payment buttons, refinancing offers or approvals.
+- Empty state: "No loans on file for this customer."
+
 ## 7. Components and code ownership
 
 Use the documented monorepo paths. Suggested component structure:
@@ -193,8 +243,12 @@ Use the documented monorepo paths. Suggested component structure:
 client/src/
   pages/Dashboard.jsx
   pages/Simulator.jsx
-  pages/InvestmentPlanner.jsx
-  components/layout/AppShell.jsx
+  pages/InvestmentPlanner.jsx           # implemented as pages/Investments.jsx
+  pages/Accounts.jsx                    # 6a (banking navigation)
+  pages/Loans.jsx                       # 6b (banking navigation)
+  components/layout/AppShell.jsx        # header + banking sidebar (section 3)
+  components/layout/navItems.js         # the five nav items, shared by sidebar, mobile tabs and switcher
+  components/layout/Breadcrumbs.jsx
   components/layout/ProfileSwitcher.jsx
   components/layout/DisclaimerBanner.jsx
   components/financial/AccountCard.jsx
@@ -251,7 +305,8 @@ No page should show the stock Vite starter template. Test desktop at 1440 px and
 ## 11. Acceptance checklist
 
 - [ ] Professional, original bank-inspired interface; no Chase logos or proprietary assets.
-- [ ] Header, sidebar, profile selector, and routes work on all pages.
+- [ ] Header, sidebar, profile selector, and routes work on all pages (Overview, Accounts, Loans, Simulator, Investments).
+- [ ] Dashboard cards and indicators link to the pages in section 4's table; Accounts shows server-filtered per-account transactions; Loans shows balance, APR, payment and due dates with no interest/payoff math.
 - [ ] Cash, investments, debts, and obligations are financially distinct.
 - [ ] Three indicators explain their values and assumptions, including null states.
 - [ ] Forecast shows actual month-end dates and intramonth shortfalls.

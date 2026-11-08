@@ -13,18 +13,23 @@ import { formatCents } from '@/lib/money'
 
 const CATEGORIES = ['', 'income', 'groceries', 'housing', 'transport', 'utilities', 'entertainment', 'subscriptions', 'health', 'debt', 'savings', 'other']
 
-export function TransactionsTable({ slug, accounts = [] }) {
+/**
+ * Transaction history from GET /transactions. With `accountId`, the server returns only that account's
+ * transactions (engineering.md 5.1), so the row limit applies to the account's own history.
+ */
+export function TransactionsTable({ slug, accounts = [], accountId, title = 'Recent transactions', emptyTitle, emptyText }) {
   const accountName = Object.fromEntries(accounts.map((a) => [String(a.id), a.name]))
   const [category, setCategory] = useState('')
   const [limit, setLimit] = useState(25)
-  const query = useTransactions(slug, { category, limit })
+  const query = useTransactions(slug, accountId ? { category, limit, accountId } : { category, limit })
   const items = query.data?.items || []
+  const showAccount = !accountId
 
   return (
     <Card>
       <CardHeader className="flex-row flex-wrap items-end justify-between gap-3">
         <div>
-          <CardTitle>Recent transactions</CardTitle>
+          <CardTitle>{title}</CardTitle>
           <CardDescription>
             Newest first. “Cash impact” is the effect on checking + savings — card purchases and internal transfers move $0 of cash.
           </CardDescription>
@@ -48,7 +53,11 @@ export function TransactionsTable({ slug, accounts = [] }) {
         ) : query.loading && !query.data ? (
           <div className="space-y-2">{Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div>
         ) : !items.length ? (
-          <EmptyState title="No transactions match this filter" />
+          category || !emptyTitle ? (
+            <EmptyState title="No transactions match this filter" />
+          ) : (
+            <EmptyState title={emptyTitle}>{emptyText}</EmptyState>
+          )
         ) : (
           <div className={query.loading ? 'opacity-60 transition-opacity' : ''}>
             <Table>
@@ -56,7 +65,7 @@ export function TransactionsTable({ slug, accounts = [] }) {
                 <TR className="hover:bg-transparent">
                   <TH>Date</TH>
                   <TH>Description</TH>
-                  <TH className="hidden md:table-cell">Account</TH>
+                  {showAccount && <TH className="hidden md:table-cell">Account</TH>}
                   <TH className="hidden sm:table-cell">Type</TH>
                   <TH className="hidden lg:table-cell">Category</TH>
                   <TH className="text-right">Amount</TH>
@@ -72,7 +81,7 @@ export function TransactionsTable({ slug, accounts = [] }) {
                         {t.merchantName || t.description} <SourceBadge source={t.source} />
                       </span>
                     </TD>
-                    <TD className="hidden text-muted-foreground md:table-cell">{t.accountName || accountName[String(t.accountId)] || '—'}</TD>
+                    {showAccount && <TD className="hidden text-muted-foreground md:table-cell">{t.accountName || accountName[String(t.accountId)] || '—'}</TD>}
                     <TD className="hidden sm:table-cell">
                       <Badge variant="outline">{label(CASHFLOW_KIND_LABELS, t.cashflowKind)}</Badge>
                     </TD>

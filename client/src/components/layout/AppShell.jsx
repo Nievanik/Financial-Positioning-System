@@ -1,37 +1,71 @@
-import { Calculator, LayoutDashboard, PieChart } from 'lucide-react'
-import { Link, NavLink, Outlet, useParams } from 'react-router-dom'
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import { EditDataButton } from '@/components/edit/EditDataButton'
+import { activeSection, profilePath } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import { DataSourceBadge } from './DataSourceBadge'
+import { NAV_GROUPS, NAV_ITEMS } from './navItems'
 import { ProfileSwitcher } from './ProfileSwitcher'
 import { ThemeToggle } from './ThemeToggle'
 
-const NAV = [
-  { to: '', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: 'simulate', label: 'Cash-Flow Simulator', short: 'Simulator', icon: Calculator },
-  { to: 'investments', label: 'Investment Planner', short: 'Investments', icon: PieChart },
-]
+/**
+ * Active state comes from the section (lib/navigation.js), so "Accounts" stays active on /accounts/:id and
+ * "Overview" is active only on the dashboard. Plain Link (not NavLink) so aria-current is set exactly once.
+ */
+function useActive(slug) {
+  const { pathname } = useLocation()
+  return slug ? activeSection(pathname, slug) : null
+}
 
-function Nav({ slug, className }) {
+const itemClass = (active) =>
+  cn(
+    'inline-flex min-h-11 shrink-0 items-center gap-2.5 rounded-md px-3 text-sm font-medium transition-colors',
+    active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+  )
+
+/** Desktop (lg+): grouped sticky sidebar (docs/design.md section 3). */
+function Sidebar({ slug }) {
+  const active = useActive(slug)
   return (
-    <nav aria-label="Main" className={cn('flex gap-1', className)}>
-      {NAV.map(({ to, label, short, icon: Icon, end }) => (
-        <NavLink
-          key={label}
-          to={`/p/${slug}${to ? `/${to}` : ''}`}
-          end={end}
-          className={({ isActive }) =>
-            cn(
-              'inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-            )
-          }
-        >
-          <Icon className="size-4" aria-hidden />
-          <span className="hidden xl:inline">{label}</span>
-          <span className="xl:hidden">{short || label}</span>
-        </NavLink>
-      ))}
+    <aside className="hidden w-60 shrink-0 lg:block">
+      <div className="sticky top-16 flex max-h-[calc(100vh-4rem)] flex-col gap-5 overflow-y-auto py-6 pr-2">
+        <nav aria-label="Main" className="flex flex-col gap-5">
+          {NAV_GROUPS.map((group) => (
+            <div key={group}>
+              <p className="px-3 pb-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">{group}</p>
+              <ul className="flex flex-col gap-0.5">
+                {NAV_ITEMS.filter((i) => i.group === group).map(({ id, path, label, icon: Icon }) => (
+                  <li key={id}>
+                    <Link to={profilePath(slug, path)} aria-current={active === id ? 'page' : undefined} className={cn(itemClass(active === id), 'w-full')}>
+                      <Icon className="size-4" aria-hidden />
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+        <p className="border-t px-3 pt-4 text-xs text-muted-foreground">Demo environment • Synthetic data</p>
+      </div>
+    </aside>
+  )
+}
+
+/** Mobile/tablet (< lg): scrollable tab row under the header. */
+function MobileNav({ slug }) {
+  const active = useActive(slug)
+  return (
+    <nav aria-label="Main" className="border-t lg:hidden">
+      <ul className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-1.5">
+        {NAV_ITEMS.map(({ id, path, label, short, icon: Icon }) => (
+          <li key={id} className="shrink-0">
+            <Link to={profilePath(slug, path)} aria-current={active === id ? 'page' : undefined} className={itemClass(active === id)}>
+              <Icon className="size-4" aria-hidden />
+              {short || label}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </nav>
   )
 }
@@ -51,19 +85,21 @@ export default function AppShell() {
               FPS<span className="hidden text-muted-foreground sm:inline"> · Financial Positioning System</span>
             </span>
           </Link>
-          {slug && <Nav slug={slug} className="hidden lg:flex" />}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
             <DataSourceBadge />
             {slug && <EditDataButton slug={slug} />}
             <ProfileSwitcher />
             <ThemeToggle />
           </div>
-          {slug && <Nav slug={slug} className="-mx-1 w-full overflow-x-auto px-1 lg:hidden" />}
         </div>
+        {slug && <MobileNav slug={slug} />}
       </header>
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
-        <Outlet />
-      </main>
+      <div className="mx-auto flex w-full max-w-7xl flex-1 gap-6 px-4">
+        {slug && <Sidebar slug={slug} />}
+        <main className="min-w-0 flex-1 py-6">
+          <Outlet />
+        </main>
+      </div>
       <footer className="border-t py-6">
         <p className="mx-auto max-w-7xl px-4 text-xs text-muted-foreground">
           FPS is a HackUTD 2026 prototype. All customers, accounts and transactions are synthetic. Projections are deterministic estimates from
