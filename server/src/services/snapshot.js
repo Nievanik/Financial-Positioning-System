@@ -73,8 +73,12 @@ export function buildOverview({ profile, asOf, accounts, loans, flows }) {
     totals: { retirementAndInvestmentsCents: sum(['retirement', 'cd', 'investment']), creditCardDebtCents, loanDebtCents, creditLimitCents, unusedCreditCents: creditLimitCents - creditCardDebtCents, netWorthCents: assets - creditCardDebtCents - loanDebtCents },
     accounts: accounts.map((a) => ({ id: a._id, name: a.name, type: a.type, balanceCents: a.balanceCents, creditLimitCents: a.creditLimitCents, source: a.source })),
     loans: loans.map((l) => ({ id: l._id, name: l.name, loanType: l.loanType, outstandingCents: l.outstandingCents, monthlyPaymentCents: l.monthlyPaymentCents, dueDay: l.dueDay, annualRateBps: l.annualRateBps, source: l.source })),
+    income: flows.filter((f) => f.kind === 'income').map((f) => ({ name: f.name, amountCents: f.signedAmountCents, grossAmountCents: f.grossAmountCents ?? null, frequency: f.frequency, nextDate: f.nextDate })).sort((a, b) => a.nextDate.localeCompare(b.nextDate)),
     obligations: flows.filter((f) => f.signedAmountCents < 0).map((f) => ({ name: f.name, kind: f.kind, amountCents: -f.signedAmountCents, frequency: f.frequency, nextDate: f.nextDate, category: f.category })).sort((a, b) => a.nextDate.localeCompare(b.nextDate)),
   };
 }
 
 export const fixedMonthlyCents = (flows) => flows.filter((f) => FIXED_KINDS.includes(f.kind)).reduce((s, f) => s + monthly(f, -f.signedAmountCents), 0);
+
+// Net take-home income per month from active income flows (same normalisation as the indicators).
+export const incomeMonthlyCents = (flows) => flows.filter((f) => f.kind === 'income').reduce((s, f) => s + monthly(f, f.signedAmountCents), 0);

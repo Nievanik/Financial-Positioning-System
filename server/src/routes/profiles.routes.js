@@ -8,7 +8,7 @@ import { forecast } from '../engine/forecast.js';
 import { emergencyCoverage, debtPaymentBurden, cashFlowSafety } from '../engine/indicators.js';
 import { evaluateScenario, baselineRecommendations } from '../engine/scenarios.js';
 import { explain } from '../services/explanationService.js';
-import { buildOverview, fixedMonthlyCents, loadEngine, loadHistory, loadSnapshot, spendByCategory, windowStart } from '../services/snapshot.js';
+import { buildOverview, fixedMonthlyCents, incomeMonthlyCents, loadEngine, loadHistory, loadSnapshot, spendByCategory, windowStart } from '../services/snapshot.js';
 
 const router = Router();
 const CATEGORIES = Transaction.schema.path('category').enumValues;
@@ -42,12 +42,17 @@ router.get('/profiles/:slug/spending', async (req, res) => {
   const { profile, asOf, flows } = await loadSnapshot(req.params.slug);
   const { variable } = await loadEngine(req.params.slug);
   const byCategory = spendByCategory(await loadHistory(profile, asOf, months));
+  const fixed = fixedMonthlyCents(flows);
+  const income = incomeMonthlyCents(flows);
   res.json({
     period: { from: windowStart(asOf, months), to: asOf, months },
     totalCents: Object.values(byCategory).reduce((a, b) => a + b, 0),
     byCategory: Object.entries(byCategory).map(([category, totalCents]) => ({ category, totalCents })).sort((a, b) => b.totalCents - a.totalCents),
-    fixedMonthlyCents: fixedMonthlyCents(flows),
+    fixedMonthlyCents: fixed,
     variableMonthlyCents: variable.totalCents,
+    incomeMonthlyCents: income,
+    expensesMonthlyCents: fixed + variable.totalCents,
+    netCashFlowMonthlyCents: income - fixed - variable.totalCents,
   });
 });
 

@@ -76,6 +76,15 @@
       "source": "nessie"
     }
   ],
+  "income": [
+    {
+      "name": "Salary",
+      "amountCents": 130000,
+      "grossAmountCents": 165000,
+      "frequency": "biweekly",
+      "nextDate": "2026-11-18"
+    }
+  ],
   "obligations": [
     {
       "name": "Auto loan",

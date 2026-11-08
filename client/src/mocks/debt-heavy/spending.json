@@ -36,5 +36,8 @@
     }
   ],
   "fixedMonthlyCents": 240000,
-  "variableMonthlyCents": 75133
+  "variableMonthlyCents": 75133,
+  "incomeMonthlyCents": 281667,
+  "expensesMonthlyCents": 315133,
+  "netCashFlowMonthlyCents": -33466
 }

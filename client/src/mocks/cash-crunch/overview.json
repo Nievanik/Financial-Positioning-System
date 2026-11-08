@@ -66,6 +66,15 @@
       "source": "nessie"
     }
   ],
+  "income": [
+    {
+      "name": "Salary",
+      "amountCents": 300000,
+      "grossAmountCents": 370000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-28"
+    }
+  ],
   "obligations": [
     {
       "name": "Car insurance",

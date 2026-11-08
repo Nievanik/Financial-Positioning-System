@@ -57,7 +57,7 @@
 ## Phase 2 — Financial Analysis & Forecast Engine
 - [ ] Categorize historical spending (e.g., groceries, housing, transport, entertainment); compute monthly income, expenses, net cash flow, and recurring obligations.
   - [x] Category spending (`GET /spending`), fixed vs. variable monthly spend, recurring obligations (`overview.obligations`)
-  - [ ] Monthly income and net cash flow (open decision: see Notes, "Income vs. expenses numbers")
+  - [x] Monthly income and net cash flow (`GET /spending` income/expenses/net fields; `GET /overview` `income[]`)
 - [x] Implement **three or more explainable indicators**: emergency-fund coverage, debt-payment burden, and cash-flow safety (plus others only if useful).
   - Done in `engine/indicators.js` (raw metrics). Still open: health labels/thresholds (not defined in `engineering.md`).
 - [x] Build a deterministic forecast for **1, 2, 3, and 6 months**, using opening spendable cash, expected income, recurring spending, debt payments, and planned savings contributions.
@@ -71,7 +71,7 @@
 
 ## Phase 3 — Unified Dashboard & Forecast Experience
 - [ ] Build the main dashboard layout and **demo-profile selector** (no login or authentication required).
-- [ ] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values.
+- [x] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values. *(Stat cards + Balances & net worth panel.)*
 - [ ] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments.
 - [ ] Visualize the three or more financial health indicators with plain-language descriptions and calculation details.
 - [ ] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings.
@@ -134,5 +134,5 @@
 - **Truthfulness of financial outputs:** This is a prototype using mock/synthetic finances. Forecasts are estimates; recommendations are educational and are not bank decisions, loan offers, or guaranteed results.
 - **Unresolved technical decisions:** Choose the application AI provider and the forecast implementation details during the relevant phase; do not delay the deterministic core while evaluating them.
   - **Health indicator labels/thresholds (open):** the three indicators return raw numbers only. Need rules that map them to plain-language labels (e.g. healthy / caution / at risk) for emergency coverage (months), debt-payment burden (ratio) and cash-flow safety (days below floor). Candidate defaults, *not decided*: coverage <1 mo at risk, 1-3 caution, >3 healthy; burden >36% at risk, 20-36% caution, <20% healthy; any day below the floor = at risk. Decide, then record in `engineering.md` section 4 before coding.
-  - **Income vs. expenses numbers (open, small):** no endpoint returns monthly income or net cash flow yet. Proposed: add `incomeMonthlyCents`, `expensesMonthlyCents`, `netCashFlowMonthlyCents` to `GET /spending`. Confirm, then update `engineering.md` section 5 first.
+  - **Income vs. expenses numbers (decided):** `GET /spending` returns `incomeMonthlyCents`, `expensesMonthlyCents`, `netCashFlowMonthlyCents`; `GET /overview` returns `income[]` (next payday). Definitions in `engineering.md` section 5.
 - **If time runs short:** Stop Toyota work first, then optional AI conversation. Preserve the functioning Nessie → dashboard → indicators/forecast → what-if → action demo.
