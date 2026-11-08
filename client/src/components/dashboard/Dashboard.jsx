@@ -1,4 +1,4 @@
-import { Panel, Skeleton } from '@/components/layout/Panel'
+import { Skeleton } from '@/components/layout/Panel'
 import { useApi } from '@/hooks/useApi'
 import { firstName, formatDate, greeting } from '@/lib/format'
 import { StatCards } from './StatCards'
@@ -6,9 +6,8 @@ import { BalancesPanel } from './BalancesPanel'
 import { UpcomingPanel } from './UpcomingPanel'
 import { ForecastPanel } from './ForecastPanel'
 import { HealthPanel } from './HealthPanel'
-
-// Placeholder body; each later step in docs/design.md Part D swaps one of these for the real panel.
-const Todo = ({ step }) => <p className="text-[11px] text-muted-foreground">Built in step {step}.</p>
+import { SpendingPanel } from './SpendingPanel'
+import { TransactionsPanel } from './TransactionsPanel'
 
 export function Dashboard({ profile }) {
   const base = profile && `/profiles/${profile.slug}`
@@ -49,12 +48,8 @@ export function Dashboard({ profile }) {
       </div>
 
       <div className="grid gap-[17px] md:grid-cols-2 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.25fr)_minmax(250px,.85fr)]">
-        <Panel id="spending" title="Spending breakdown" sub="Last 30 days · by category">
-          <Todo step={5} />
-        </Panel>
-        <Panel id="transactions" title="Recent transactions" sub="Latest activity across accounts">
-          <Todo step={5} />
-        </Panel>
+        <SpendingPanel month={month} quarter={quarter} />
+        <TransactionsPanel slug={profile?.slug} overview={overview} />
         <section
           id="scenario"
           aria-labelledby="scenario-title"

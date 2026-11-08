@@ -27,7 +27,7 @@ export function UpcomingPanel({ overview }) {
                 <div className="truncate text-[12px] font-[650] text-strong">{b.name}</div>
                 <div className="text-[10.5px] text-muted-foreground">
                   {KIND[b.kind] ?? b.kind} · {b.frequency}
-                  {soon.has(b) && <span className="ml-1.5 rounded-[20px] bg-amber-pale px-[7px] py-px text-[10px] font-bold text-[#a36a1d]">Within 14 days</span>}
+                  {soon.has(b) && <span className="ml-1.5 rounded-[20px] bg-amber-pale px-[7px] py-px text-[10px] font-bold whitespace-nowrap text-[#a36a1d]" title="Due within 14 days">Due soon</span>}
                 </div>
               </div>
               <b className="text-[12px] text-strong">{money(b.amountCents)}</b>

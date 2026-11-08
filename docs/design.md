@@ -190,7 +190,7 @@ Branch: `feature/frontend` (from `dev`). Each step ends with `npm run build` + `
 - [x] **Step 2 — Overview numbers.** Four stat cards (cash, income [needs B0], spending vs. average, bills in 14 days) + Balances & net worth panel + Upcoming payments list.
 - [x] **Step 3 — Cash flow forecast.** Recharts area chart (gradient fill, teal line, month ticks, $k axis), 1M/2M/3M/6M, floor reference line, shortfall shading + first-shortfall marker, legend, insight box from `/explanations`, accessible checkpoint table.
 - [x] **Step 4 — Financial health.** `lib/health.js` thresholds (D2), ring "N of 3 healthy", 3 metrics with pills/meters/plain-language text, null handling, "How we calculate this" with assumptions.
-- [ ] **Step 5 — Spending & transactions.** Donut (Recharts Pie, top 4 + Other) with center total and comparison line; transactions table with account names, category icons, signed amounts, "View all" + category filter.
+- [x] **Step 5 — Spending & transactions.** Donut (CSS conic-gradient like the design, top 4 + Other) with center total and comparison line; transactions table with account names, category icons, signed amounts, "View all" + category filter.
 - [ ] **Step 6 — What-if planner.** Navy panel with 3 scenario types, sliders, duration, start month; `POST /scenarios/evaluate` on click; result box with 1/2/3/6 chips and deltas; risk pill; recommendation box (baseline recs before any run); scenario overlay on the forecast chart; 422/429 messages; optional "Explain" button.
 - [ ] **Step 7 — Polish & hardening.** Breakpoint pass, keyboard/focus/aria check, profile-switch race check, synthetic-data labels everywhere, remove the old API-status `App.jsx` content, update `phases.md` Phase 3/4 boxes and `CLAUDE.md` status.
 

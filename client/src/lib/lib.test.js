@@ -39,3 +39,22 @@ test('health thresholds (engineering.md section 4 rule 6), including boundaries 
   assert.ok(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).meter > safety({ minCashCents: -9, daysBelowFloor: 100 }, opts).meter)
   assert.equal(safety({ minCashCents: -1, daysBelowFloor: 174 }, opts).meter, 0.05)
 })
+
+test('spending: top 4 named categories, the rest (and the API "other") folded into Other', async () => {
+  const { topCategories } = await import('./finance.js')
+  const rows = [['housing', 420000], ['groceries', 125100], ['transport', 98400], ['other', 60000], ['utilities', 54000], ['entertainment', 23600], ['subscriptions', 15000]]
+    .map(([category, totalCents]) => ({ category, totalCents }))
+  const top = topCategories(rows)
+  assert.deepEqual(top.map((c) => c.category), ['housing', 'groceries', 'transport', 'utilities', 'other'])
+  assert.equal(top.at(-1).totalCents, 60000 + 23600 + 15000)
+  assert.equal(top.reduce((s, c) => s + c.totalCents, 0), rows.reduce((s, c) => s + c.totalCents, 0))
+  assert.deepEqual(topCategories(rows.slice(0, 2)).map((c) => c.category), ['housing', 'groceries'])
+})
+
+test('transactions: seed tags stripped, signs by cashflow kind', async () => {
+  const { txName, txSign } = await import('./finance.js')
+  assert.equal(txName({ merchantName: '', description: 'Transfer to Savings [grp:cash-crunch-2026-10-28]' }), 'Transfer to Savings')
+  assert.equal(txName({ merchantName: '', description: 'Credit card payment [card]' }), 'Credit card payment')
+  assert.equal(txName({ merchantName: 'Kroger', description: 'Kroger' }), 'Kroger')
+  assert.deepEqual(['income', 'internal_transfer', 'credit_purchase', 'loan_payment'].map((k) => txSign({ cashflowKind: k })), ['+', '', '−', '−'])
+})

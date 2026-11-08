@@ -72,7 +72,7 @@
 ## Phase 3 — Unified Dashboard & Forecast Experience
 - [ ] Build the main dashboard layout and **demo-profile selector** (no login or authentication required).
 - [x] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values. *(Stat cards + Balances & net worth panel.)*
-- [ ] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments.
+- [x] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments. *(SpendingPanel donut + income/expenses/net row, TransactionsPanel with category filter, UpcomingPanel.)*
 - [x] Visualize the three or more financial health indicators with plain-language descriptions and calculation details. *(HealthPanel: N/3 ring, pills + meters per threshold, "How we calculate this".)*
 - [x] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings. *(ForecastPanel: 1M/2M/3M/6M, floor line, red below-floor segment + first-shortfall marker, insight text from `POST /explanations`.)*
 - [ ] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.

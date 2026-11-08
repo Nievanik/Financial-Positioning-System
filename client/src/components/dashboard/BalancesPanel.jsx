@@ -60,7 +60,7 @@ export function BalancesPanel({ overview }) {
             </dl>
           </div>
 
-          <div className="grid gap-x-6 gap-y-4 md:grid-cols-2">
+          <div className="grid gap-x-6 gap-y-4 lg:grid-cols-2">
             <Group title="What you have" total={o.cash.availableCents + o.totals.retirementAndInvestmentsCents}>
               {o.accounts.filter((a) => ASSET_TYPES.includes(a.type)).map((a) => (
                 <Row key={a.id} icon={ACCOUNT_ICON[a.type] ?? Wallet} name={a.name} detail={TYPE_LABEL[a.type] ?? titleCase(a.type)} amount={a.balanceCents} />
