@@ -94,6 +94,12 @@
 - [ ] Add AI-generated plain-language explanations or a conversational coach **if the application AI provider is selected and integration is stable**. Feed it computed facts; never let it invent balances, forecasts, approvals, or eligibility. *(Adapter hook exists, no provider registered yet; blocked on choosing a provider.)*
 - [x] Provide a deterministic, non-AI explanation fallback so the demo works without an AI response. *(Done: `explanationService.js` + `POST /explanations`, template used; 3 tests.)*
 
+**Approved extension — Investment Planner (engineering.md section 10):**
+- [x] Backend: `routes/investments.routes.js` + `services/investments/` + pure `engine/investments/` (portfolio grouping, CD timeline, hypothetical allocation simulation), in-memory proposed plans and CD decisions (`executed: false`, reset on restart); route + engine tests run without MongoDB.
+- [x] Data: CD and brokerage holdings added as `supplemental_synthetic` accounts via `demoData.js` → `normalize.js` (401(k) and cash-flow numbers unchanged; seed dry-run identical).
+- [ ] **Run `npm run sync:nessie -- --dry`, then `npm run sync:nessie` against Atlas (needs explicit approval)** so the new holdings exist in MongoDB; then `npm run export:mocks`.
+- [ ] UI wired to the live investment endpoints (client patch on `feature/sabik-dashboard`).
+
 **Stretch — only after the PNC + Nessie core is fully working:**
 - [ ] Add a Toyota scenario type or profile with labeled synthetic vehicle and financing data (this requires updating `engineering.md`, which currently fixes exactly 3 profiles).
 - [ ] Compare realistic vehicle choices (e.g., keep current vehicle, pay down loan, refinance, replace) using the existing forecast/what-if engine and explicit assumptions.
