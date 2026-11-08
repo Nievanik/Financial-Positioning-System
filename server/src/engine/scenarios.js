@@ -43,15 +43,21 @@ const addMonths = (date, n) => {
 };
 
 // Each suggestion is re-simulated; impacts are vs the evaluated scenario and only helpful ones are returned.
+// `scenario` is the exact request body for POST /scenarios/evaluate that tries the suggestion on its own, or
+// null when the suggestion only applies on top of the evaluated scenario (evaluate accepts one scenario).
 function recommend(input, scenario, current) {
   const nextMonth = addMonths(`${input.asOf.slice(0, 8)}01`, 1);
   const options = [];
   if (scenario.type !== 'monthly_spending_reduction') {
+    const delayed = { ...scenario, startDate: addMonths(scenario.startDate, 1) };
     options.push({
       id: 'delay_one_month',
       title: 'Delay by one month',
-      action: `Start on ${addMonths(scenario.startDate, 1)} instead of ${scenario.startDate}`,
-      result: run(input, { ...scenario, startDate: addMonths(scenario.startDate, 1) }),
+      action: `Start on ${delayed.startDate} instead of ${scenario.startDate}`,
+      // Scenario dates must stay inside the forecast horizon (engineering.md 3.2), so only offer it as a
+      // standalone request when the delayed start is on/before the month-6 checkpoint.
+      scenario: delayed.startDate <= current.checkpoints[3].date ? delayed : null,
+      result: run(input, delayed),
     });
   }
   const cut = { type: 'monthly_spending_reduction', name: 'Cut discretionary spending', monthlyAmountCents: 10000, startDate: nextMonth, durationMonths: 6 };
@@ -59,6 +65,7 @@ function recommend(input, scenario, current) {
     id: 'cut_discretionary',
     title: 'Cut discretionary spending by $100/month',
     action: `Spend $100 less per month from ${nextMonth}`,
+    scenario: null, // combined with the evaluated scenario, so not a standalone request
     result: run(input, scenario, cut),
   });
   return quantify(options, current);
@@ -81,12 +88,16 @@ function quantify(options, current) {
 export function baselineRecommendations(input) {
   const current = forecast(input);
   const start = addMonths(`${input.asOf.slice(0, 8)}01`, 1);
-  return quantify([10000, 25000].map((amount) => ({
-    id: `cut_${amount / 100}`,
-    title: `Cut discretionary spending by $${amount / 100}/month`,
-    action: `Spend $${amount / 100} less per month from ${start}`,
-    result: run(input, { type: 'monthly_spending_reduction', name: 'Cut discretionary spending', monthlyAmountCents: amount, startDate: start, durationMonths: 6 }),
-  })), current);
+  return quantify([10000, 25000].map((amount) => {
+    const scenario = { type: 'monthly_spending_reduction', name: 'Cut discretionary spending', monthlyAmountCents: amount, startDate: start, durationMonths: 6 };
+    return {
+      id: `cut_${amount / 100}`,
+      title: `Cut discretionary spending by $${amount / 100}/month`,
+      action: `Spend $${amount / 100} less per month from ${start}`,
+      scenario, // standalone request for POST /scenarios/evaluate (the UI's "Try it")
+      result: run(input, scenario),
+    };
+  }), current);
 }
 
 export function evaluateScenario(input, scenario) {
