@@ -41,7 +41,7 @@ test('classification: transfers net zero, card purchases no cash impact, payroll
 });
 
 test('unknown descriptions and mismatched loan payments stop the sync (issues)', () => {
-  const p = PROFILES[0];
+  const p = PROFILES.find((x) => x.loans.length);
   const n = fakeNessie(buildPlan(p));
   n.withdrawals.push({ _id: 'x', description: 'Mystery', amount: 5, transaction_date: '2026-10-01' });
   n.withdrawals = n.withdrawals.map((w) => (w.description.startsWith('Loan payment') ? { ...w, amount: w.amount + 1 } : w));

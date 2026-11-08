@@ -94,7 +94,7 @@ describe('CDs', () => {
     assert.equal(ok.status, 200)
     assert.equal(ok.body.decision.executed, false)
     const portfolio = await call('GET', '/profiles/cash-crunch/investments/portfolio')
-    assert.equal(portfolio.body.liquidCash.availableCashCents, (900 + 150) * 100) // nothing moved
+    assert.equal(portfolio.body.liquidCash.availableCashCents, (700 + 100) * 100) // nothing moved
     const bad = await call('POST', '/profiles/cash-crunch/investments/cds/cash-crunch-401k/decision', { action: 'renew_12', decision: 'approved' })
     assert.equal(bad.body.error.code, 'CD_NOT_FOUND')
     assert.equal((await call('DELETE', '/profiles/cash-crunch/investments/cds/cash-crunch-cd-9m/decision')).body.removed, true)

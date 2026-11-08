@@ -19,11 +19,14 @@ test('the three profiles keep their contrasting outcomes', () => {
   assert.ok(crunch.forecast.shortfalls.length > 0);
   // the crunch story: cash dips below zero mid-month yet the first month-end is positive
   assert.ok(crunch.forecast.checkpoints[0].cashCents > 0);
+  // the simple story: no loans and no card-payment flow; the loans story has no overdraft
+  assert.ok(!by['steady-saver'].flows.some((f) => ['loan_payment', 'credit_card_payment'].includes(f.kind)));
+  assert.equal(debt.forecast.shortfalls.length, 0);
 });
 
 test('seed data is deterministic and never counts transfers/card/retirement as cash flows', () => {
   assert.deepEqual(buildPlan(PROFILES[0]), buildPlan(PROFILES[0]));
   const plan = by['steady-saver'];
-  assert.equal(plan.openingCashCents, (3500 + 14000) * 100);
+  assert.equal(plan.openingCashCents, (1800 + 3200) * 100);
   assert.ok(!plan.flows.some((f) => /transfer|savings/i.test(f.name + f.kind)));
 });

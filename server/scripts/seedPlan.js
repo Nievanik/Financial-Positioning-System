@@ -54,7 +54,7 @@ export function buildPlan(p) {
     // Loans are posted on the checking account; GET /accounts/{id}/loans has no account id, so sync reads loans from checking only.
     add('checking', 'loans', { type: l.type, status: 'approved', credit_score: l.creditScore, monthly_payment: l.payment, amount: l.outstanding, description: l.name });
   }
-  monthly('Credit card payment', p.cardPayment.day, p.cardPayment.amount, 'credit_card_payment', 'debt', 'Credit card payment [card]');
+  if (p.cardPayment) monthly('Credit card payment', p.cardPayment.day, p.cardPayment.amount, 'credit_card_payment', 'debt', 'Credit card payment [card]');
 
   // checking -> savings transfer: history only. Net cash effect is zero, so it is NOT an engine flow.
   for (const date of past('monthly', startOf('monthly', p.savingsTransfer.day))) {
