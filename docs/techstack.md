@@ -17,6 +17,7 @@
 | Data models | **Mongoose** | Schema definitions and MongoDB access |
 | Banking data | **Capital One Nessie API** | Source of synthetic banking data |
 | Data integration | **Import to MongoDB, refresh as needed** | Normalize and persist Nessie records for application queries |
+| Rate limiting | **express-rate-limit** | Per-IP in-memory limits on calculation and explanation routes |
 | API communication | **Native `fetch` + REST/JSON** | Browser-to-Express communication |
 | Repository | **One GitHub repository: `client/` + `server/`** | Shared codebase for the three developers |
 | Deployment | **Render Static Site + Render Web Service** | Separate hosting for frontend and Express backend |

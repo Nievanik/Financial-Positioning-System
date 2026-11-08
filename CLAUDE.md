@@ -14,6 +14,7 @@ This file is a router, not a spec. Put detail in `docs/`, not here.
 ## Keep Docs in Sync (mid-task, not at the end)
 - Schema, API, or engine rule changes → update `engineering.md` **before** the code.
 - Scope change → `requirements.md`. New library → `techstack.md`. Phase done/reordered → `phases.md`.
+- **After every completed task, update `phases.md` (tick the checklist item, note anything reordered or newly discovered) before reporting done.**
 - A stale doc is a bug.
 
 ## Settled Decisions (don't reopen)
@@ -36,16 +37,17 @@ This file is a router, not a spec. Put detail in `docs/`, not here.
 |---|---|
 | Client dev / build / lint | `cd client && npm run dev` / `npm run build` / `npm run lint` |
 | Server dev / start | `cd server && npm run dev` / `npm start` |
-| Tests | `node --test` in `server/` (engine tests; add script when first test lands) |
+| Tests | `cd server && npm test` |
+| Data (server) | `npm run seed` (dry-run; `-- --post` is permanent, already done, do not re-run) / `npm run sync:nessie` (`-- --dry` to check) / `npm run export:mocks` |
 
 ## Git
 `main` stable <- `dev` integration <- `feature/*` branches via PR. No destructive DB commands without confirmation.
 
 ## Status
-Early scaffold: client (Vite + shadcn) and server skeleton exist; engine/routes per `phases.md`. Check the repo before claiming anything is implemented.
+Backend MVP is built and locally verified (engine, models, Nessie client, seed/sync scripts, API routes, rate limiting; `npm test` in `server/`); frontend is still the scaffold plus mock JSON in `client/src/mocks/`, blocked on `design.md`. Nothing here is deployed. `phases.md` has the exact state; check the repo before claiming anything is implemented.
 
 ## Before Calling Anything Done
-Works end to end within scope, no invariant violated, engine logic has a passing test, build passes, affected docs updated.
+Works end to end within scope, no invariant violated, engine logic has a passing test, build passes, affected docs updated, `phases.md` updated.
 
 ## Learned Rules
 When the user corrects you or you hit a bug from a wrong assumption, append a rule here: `N. [CATEGORY] Never/Always X — because Y.` Never delete; supersede with a newer rule (newer wins).

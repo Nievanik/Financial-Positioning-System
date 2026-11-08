@@ -26,7 +26,7 @@
 
 **Project setup:**
 - [x] Create/confirm the GitHub monorepo structure according to `engineering.md` (`client/`, `server/`, `docs/`, `dev` branch); use feature branches and pull requests through a shared integration branch before merging to `main`.
-- [ ] Set up `.agent/skills/` and `.agent/workflows/` only if the chosen coding agents need them.
+- [x] Set up agent skills — project-local `.claude/skills/` (`tailwind-v4-shadcn`, `react-vite-best-practices`, `recharts`); `.agent/workflows/` not needed.
 - [x] Scaffold `client/` with React + Vite + **JavaScript**, Tailwind CSS, shadcn/ui, and Recharts.
   - [x] React + Vite + JavaScript, Recharts (plus React Router, lucide-react), moved into `client/`
   - [x] Tailwind CSS v4 and shadcn/ui (Button, Card)
@@ -36,32 +36,36 @@
   - [x] `server/.env.example`, `.env` gitignored, CORS, `dev`/`start` scripts, `GET /api/v1/health`
   - [x] `client/.env.example` (`VITE_API_BASE_URL`), client `fetch` call to `/api/v1/health`, client lint
   - [ ] Server lint script (optional)
-- [ ] Create frontend mock JSON matching the API responses specified in `engineering.md` so UI work can begin in parallel.
+- [x] Create frontend mock JSON matching the API responses specified in `engineering.md` so UI work can begin in parallel. *(Done: `client/src/mocks/` holds real API responses for the 3 profiles; regenerate with `npm run export:mocks` in `server/`.)*
 
 **Exit gate:** `engineering.md` and `design.md` are agreed; repository structure matches the engineering design; the app runs locally and frontend can reach `/api/v1/health`.
 
 ## Phase 1 — Core Data Layer & Nessie Integration
-- [ ] Configure Capital One Nessie access **server-side**; never expose credentials in the React/Vite bundle.
+- [x] Configure Capital One Nessie access **server-side**; never expose credentials in the React/Vite bundle.
   - [x] API key obtained and verified with live read/write calls (findings recorded in `engineering.md` section 6)
-  - [ ] Server-side Nessie client (`services/nessie/`) that always sends `status`, validates payloads before POST, and never logs `?key=` URLs
-- [ ] Define MongoDB/Mongoose models for demo profiles, accounts, transactions, obligations, and supplemental financial data.
-- [ ] Seed the 3 fictional customers, accounts, transactions, bills and loans **into Nessie** (balances must be set explicitly because Nessie does not derive them; encode transfer counterparties in `description`).
-- [ ] Import and normalize available Nessie data (accounts, purchases/transactions, bills, transfers, and applicable loan/payment data) into the app's common schema.
-- [ ] Add clearly labeled synthetic records for finances Nessie does not provide reliably (e.g., income details, retirement/IRA, CDs, mortgage or vehicle terms, savings contributions).
-- [ ] Keep **spendable cash**, savings/investments/retirement, debts, and unused credit **separate**; identify transfers and card payments to prevent double-counting.
-- [ ] Seed **exactly three** selectable, read-only demo profiles with contrasting outcomes (healthy, debt pressure, cash-shortfall) using a frozen `asOf` date, plus a reproducible seed/refresh script. Document which fields come from Nessie vs. supplemental synthetic data.
-- [ ] Build REST endpoints for profiles, financial summary, transactions/spending, and bills/debts; handle empty and failed data loads.
+  - [x] Server-side Nessie client (`services/nessie/client.js`, 3 tests with injected `fetch`): requires `status`, whitelists transfer keys, never exposes `?key=` URLs. Payloads for customer/account/deposit/withdrawal/bill/loan verified live on 2026-11-08 (see `engineering.md` section 6 gotchas); purchases/transfers rely on the earlier write test
+- [x] Define MongoDB/Mongoose models for demo profiles, accounts, transactions, obligations, and supplemental financial data. *(`server/src/models/`: DemoProfile, Account, Transaction, Loan, RecurringCashFlow; integer-cents validation and indexes per `engineering.md` 3.4. No DB-level tests yet; the seed will exercise them.)*
+- [x] *(Done 2026-11-08: `server/scripts/`, `npm run seed`, 3 tests; posted to Nessie and read back, balances and record counts match; customer ids saved in MongoDB `demoProfiles`. Do NOT re-run `--post`.)* Seed the 3 fictional customers, accounts, transactions, bills and loans **into Nessie** (balances must be set explicitly because Nessie does not derive them; encode transfer counterparties in `description`).
+- [x] Import and normalize available Nessie data (accounts, purchases/transactions, bills, transfers, and applicable loan/payment data) into the app's common schema. *(Done: `npm run sync:nessie`, `normalize.js`, 3 tests; synced and idempotent.)*
+- [x] Add clearly labeled synthetic records for finances Nessie does not provide reliably (e.g., income details, retirement/IRA, CDs, mortgage or vehicle terms, savings contributions). *(Done for credit limit, 401(k), gross pay, loan due day/rate; no CD/mortgage in the 3 profiles.)*
+- [x] Keep **spendable cash**, savings/investments/retirement, debts, and unused credit **separate**; identify transfers and card payments to prevent double-counting. *(Done: `overview.cash` vs `totals`; transfers net zero, card purchases `cashImpactCents = 0`; covered by `snapshot.test.js` and `syncNormalize.test.js`.)*
+- [x] Seed **exactly three** selectable, read-only demo profiles with contrasting outcomes (healthy, debt pressure, cash-shortfall) using a frozen `asOf` date, plus a reproducible seed/refresh script. Document which fields come from Nessie vs. supplemental synthetic data. *(Done; Nessie side is not re-seedable because there is no DELETE; Nessie-vs-supplemental fields documented in `engineering.md` section 6.)*
+- [x] Build REST endpoints for profiles, financial summary, transactions/spending, and bills/debts; handle empty and failed data loads. *(Done: profiles, overview, transactions, spending, health-metrics, forecast, scenarios/evaluate, recommendations in `routes/profiles.routes.js`; smoke-tested live. Failed-DB returns 503. Explanations route and rate limiting added later; caching still open.)*
 
 **Exit gate:** Selecting any demo profile returns consistent, labeled financial data through working Express endpoints, even when Nessie is temporarily unavailable (using previously seeded demo data).
 
 ## Phase 2 — Financial Analysis & Forecast Engine
 - [ ] Categorize historical spending (e.g., groceries, housing, transport, entertainment); compute monthly income, expenses, net cash flow, and recurring obligations.
-- [ ] Implement **three or more explainable indicators**: emergency-fund coverage, debt-payment burden, and cash-flow safety (plus others only if useful).
-- [ ] Build a deterministic forecast for **1, 2, 3, and 6 months**, using opening spendable cash, expected income, recurring spending, debt payments, and planned savings contributions.
-- [ ] Model payment due dates and important cash-flow events to flag **intra-month shortfalls**, not only negative month-end balances.
+  - [x] Category spending (`GET /spending`), fixed vs. variable monthly spend, recurring obligations (`overview.obligations`)
+  - [ ] Monthly income and net cash flow (open decision: see Notes, "Income vs. expenses numbers")
+- [x] Implement **three or more explainable indicators**: emergency-fund coverage, debt-payment burden, and cash-flow safety (plus others only if useful).
+  - Done in `engine/indicators.js` (raw metrics). Still open: health labels/thresholds (not defined in `engineering.md`).
+- [x] Build a deterministic forecast for **1, 2, 3, and 6 months**, using opening spendable cash, expected income, recurring spending, debt payments, and planned savings contributions.
+  - Done in `server/src/engine/forecast.js`; run tests with `npm test` in `server/`.
+- [x] Model payment due dates and important cash-flow events to flag **intra-month shortfalls**, not only negative month-end balances.
 - [ ] Document assumptions and distinguish liquid cash from retirement balances and available credit in all calculations.
-- [ ] Return structured results and drivers from the API: projected balances, upcoming obligations, risk flags, health scores/labels, and assumption summaries.
-- [ ] Unit-test calculation cases: zero income, heavy debt, one-time purchases, recurring payments, transfers/card-payment deduplication, and negative cash balances.
+- [x] Return structured results and drivers from the API: projected balances, upcoming obligations, risk flags, health scores/labels, and assumption summaries. *(Done via forecast, health-metrics, spending, overview endpoints; health labels still undefined.)*
+- [ ] Unit-test calculation cases *(covered so far: shortfall/negative cash, one-time and recurring flows, loan counted once, month-end clipping, indicators, scenarios; still missing: zero income, heavy debt, transfer/card dedup at input-build time)*: zero income, heavy debt, one-time purchases, recurring payments, transfers/card-payment deduplication, and negative cash balances.
 
 **Exit gate:** For a seeded profile, tests and API responses reproduce explainable 1/2/3/6-month projections and correctly identify a known cash-shortfall scenario.
 
@@ -80,9 +84,15 @@
 **Core — complete before stretch work:**
 - [ ] Create a what-if interface for **one-time expenses**, **down-payment + recurring-payment** scenarios, and **monthly spending reductions** (`monthly_spending_reduction`, used by recommendations).
 - [ ] Recalculate through the **same Phase 2 engine**; compare baseline vs. scenario at 1/2/3/6 months, including shortfall dates and changed indicators.
+  - [x] Engine: `engine/scenarios.js` (`evaluateScenario`) + tests; baseline vs. scenario checkpoints, deltas, first shortfall date
+  - [x] `POST /scenarios/evaluate` route (422 on invalid scenarios, rate limited)
+  - [ ] Changed indicators in the comparison, UI
 - [ ] Generate at least one **calculation-backed next-best action** per relevant financial situation, including its rationale and trade-offs.
-- [ ] Add AI-generated plain-language explanations or a conversational coach **if the application AI provider is selected and integration is stable**. Feed it computed facts; never let it invent balances, forecasts, approvals, or eligibility.
-- [ ] Provide a deterministic, non-AI explanation fallback so the demo works without an AI response.
+  - [x] Engine: delay-one-month and cut-$100/month, re-simulated with numeric impacts (fixed amounts, not scaled to the shortfall)
+  - [x] Routes: `GET /recommendations` (baseline) and `recommendations` inside `scenarios/evaluate`
+  - [ ] UI
+- [ ] Add AI-generated plain-language explanations or a conversational coach **if the application AI provider is selected and integration is stable**. Feed it computed facts; never let it invent balances, forecasts, approvals, or eligibility. *(Adapter hook exists, no provider registered yet; blocked on choosing a provider.)*
+- [x] Provide a deterministic, non-AI explanation fallback so the demo works without an AI response. *(Done: `explanationService.js` + `POST /explanations`, template used; 3 tests.)*
 
 **Stretch — only after the PNC + Nessie core is fully working:**
 - [ ] Add a Toyota scenario type or profile with labeled synthetic vehicle and financing data (this requires updating `engineering.md`, which currently fixes exactly 3 profiles).
@@ -94,7 +104,8 @@
 ## Phase 5 — Integration & Hardening
 - [ ] Run end-to-end flows: select profile → inspect dashboard → view health/forecast → run scenario → read recommendation.
 - [ ] Verify data consistency across Nessie import, MongoDB, financial engine, APIs, charts, simulator, and guidance.
-- [ ] Audit system-boundary errors: missing data, failed Nessie/API requests, MongoDB disconnection, invalid scenario inputs, and AI timeout/failure.
+- [x] Rate limiting on calculation and explanation routes (`express-rate-limit`; 60/min, 10/min for explanations), live-tested.
+- [ ] Audit system-boundary errors: missing data, failed Nessie/API requests, MongoDB disconnection, invalid scenario inputs, and AI timeout/failure. *(Partly: DB errors map to 503 and AI failure falls back to the template, but DB-down behavior has not been exercised; no route-level tests yet.)*
 - [ ] Confirm synthetic/estimated values are labeled; no secrets appear in frontend builds, logs, or Git.
 - [ ] Validate no double-counting; confirm negative balances, due dates, and transfer/card-payment handling.
 - [ ] Deploy frontend and backend to **Render**; set Atlas/network configuration, environment variables, and production API/CORS settings.
@@ -122,4 +133,6 @@
 - **Scope control:** Do **not** add login, extra cloud providers, a second database, or unrelated sponsor integrations. Keep one React/Vite client, one Express server, and MongoDB Atlas.
 - **Truthfulness of financial outputs:** This is a prototype using mock/synthetic finances. Forecasts are estimates; recommendations are educational and are not bank decisions, loan offers, or guaranteed results.
 - **Unresolved technical decisions:** Choose the application AI provider and the forecast implementation details during the relevant phase; do not delay the deterministic core while evaluating them.
+  - **Health indicator labels/thresholds (open):** the three indicators return raw numbers only. Need rules that map them to plain-language labels (e.g. healthy / caution / at risk) for emergency coverage (months), debt-payment burden (ratio) and cash-flow safety (days below floor). Candidate defaults, *not decided*: coverage <1 mo at risk, 1-3 caution, >3 healthy; burden >36% at risk, 20-36% caution, <20% healthy; any day below the floor = at risk. Decide, then record in `engineering.md` section 4 before coding.
+  - **Income vs. expenses numbers (open, small):** no endpoint returns monthly income or net cash flow yet. Proposed: add `incomeMonthlyCents`, `expensesMonthlyCents`, `netCashFlowMonthlyCents` to `GET /spending`. Confirm, then update `engineering.md` section 5 first.
 - **If time runs short:** Stop Toyota work first, then optional AI conversation. Preserve the functioning Nessie → dashboard → indicators/forecast → what-if → action demo.
