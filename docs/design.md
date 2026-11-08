@@ -189,7 +189,7 @@ Branch: `feature/frontend` (from `dev`). Each step ends with `npm run build` + `
 - [x] **Step 1 — Foundation & shell.** Tokens + Inter in `index.css` (Tailwind breakpoints remapped to the design: `sm` 431, `md` 761, `lg` 1101); `format.js`, `useApi`, Panel/Skeleton/ErrorNote primitives (Pill/Meter come with step 4); Sidebar, Topbar, heading; profile selector from `GET /profiles` with `?profile=`; responsive grid skeleton with empty panels; footnote; mobile ☰ opens the sidebar as a drawer; optional mock mode.
 - [x] **Step 2 — Overview numbers.** Four stat cards (cash, income [needs B0], spending vs. average, bills in 14 days) + Balances & net worth panel + Upcoming payments list.
 - [x] **Step 3 — Cash flow forecast.** Recharts area chart (gradient fill, teal line, month ticks, $k axis), 1M/2M/3M/6M, floor reference line, shortfall shading + first-shortfall marker, legend, insight box from `/explanations`, accessible checkpoint table.
-- [ ] **Step 4 — Financial health.** `lib/health.js` thresholds (D2), ring "N of 3 healthy", 3 metrics with pills/meters/plain-language text, null handling, "How we calculate this" with assumptions.
+- [x] **Step 4 — Financial health.** `lib/health.js` thresholds (D2), ring "N of 3 healthy", 3 metrics with pills/meters/plain-language text, null handling, "How we calculate this" with assumptions.
 - [ ] **Step 5 — Spending & transactions.** Donut (Recharts Pie, top 4 + Other) with center total and comparison line; transactions table with account names, category icons, signed amounts, "View all" + category filter.
 - [ ] **Step 6 — What-if planner.** Navy panel with 3 scenario types, sliders, duration, start month; `POST /scenarios/evaluate` on click; result box with 1/2/3/6 chips and deltas; risk pill; recommendation box (baseline recs before any run); scenario overlay on the forecast chart; 422/429 messages; optional "Explain" button.
 - [ ] **Step 7 — Polish & hardening.** Breakpoint pass, keyboard/focus/aria check, profile-switch race check, synthetic-data labels everywhere, remove the old API-status `App.jsx` content, update `phases.md` Phase 3/4 boxes and `CLAUDE.md` status.
@@ -197,6 +197,6 @@ Branch: `feature/frontend` (from `dev`). Each step ends with `npm run build` + `
 ### Decisions needed (defaults used unless changed)
 
 - **D1 Product name — decided:** "FPS" (brand mark "F", page title "FPS — Financial overview"), not the design's "Northstar".
-- **D2 Health thresholds** (phases.md open item). *Default:* coverage <1 mo at risk / 1–3 watch / ≥3 on track; burden >36% at risk / 20–36% watch / <20% on track; any day below floor = at risk, else on track. Record in `engineering.md` §4.
+- **D2 Health thresholds — decided:** the defaults below, recorded in `engineering.md` §4 rule 6: coverage <1 mo at risk / 1–3 watch / ≥3 on track; burden >36% at risk / 20–36% watch / <20% on track; any day below floor = at risk.
 - **D3 Income figures — done (B0):** `overview.income[]` + `spending.incomeMonthlyCents/expensesMonthlyCents/netCashFlowMonthlyCents`; definitions in `engineering.md` §5.
-- **D4 Health ring:** *Default:* "N of 3 healthy" instead of a numeric score.
+- **D4 Health ring — done:** "N/3" indicators on track (no invented score).

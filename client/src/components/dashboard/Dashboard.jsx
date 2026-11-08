@@ -5,6 +5,7 @@ import { StatCards } from './StatCards'
 import { BalancesPanel } from './BalancesPanel'
 import { UpcomingPanel } from './UpcomingPanel'
 import { ForecastPanel } from './ForecastPanel'
+import { HealthPanel } from './HealthPanel'
 
 // Placeholder body; each later step in docs/design.md Part D swaps one of these for the real panel.
 const Todo = ({ step }) => <p className="text-[11px] text-muted-foreground">Built in step {step}.</p>
@@ -15,6 +16,7 @@ export function Dashboard({ profile }) {
   const month = useApi(base && `${base}/spending?months=1`)
   const quarter = useApi(base && `${base}/spending?months=3`)
   const forecast = useApi(base && `${base}/forecast`)
+  const health = useApi(base && `${base}/health-metrics`)
   const explanation = useApi(base && `${base}/explanations`, { subject: 'forecast' })
 
   return (
@@ -38,9 +40,7 @@ export function Dashboard({ profile }) {
 
       <div className="mb-[17px] grid gap-[17px] md:grid-cols-[minmax(0,1.4fr)_minmax(260px,.9fr)] lg:grid-cols-[minmax(0,1.72fr)_minmax(280px,.9fr)]">
         <ForecastPanel forecast={forecast} explanation={explanation} />
-        <Panel id="health" title="Financial health" sub="A few signals to keep you on track">
-          <Todo step={4} />
-        </Panel>
+        <HealthPanel health={health} forecast={forecast} />
       </div>
 
       <div className="mb-[17px] grid gap-[17px] md:grid-cols-[minmax(0,1.4fr)_minmax(260px,.9fr)] lg:grid-cols-[minmax(0,1.72fr)_minmax(280px,.9fr)]">

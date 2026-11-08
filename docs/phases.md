@@ -73,7 +73,7 @@
 - [ ] Build the main dashboard layout and **demo-profile selector** (no login or authentication required).
 - [x] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values. *(Stat cards + Balances & net worth panel.)*
 - [ ] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments.
-- [ ] Visualize the three or more financial health indicators with plain-language descriptions and calculation details.
+- [x] Visualize the three or more financial health indicators with plain-language descriptions and calculation details. *(HealthPanel: N/3 ring, pills + meters per threshold, "How we calculate this".)*
 - [x] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings. *(ForecastPanel: 1M/2M/3M/6M, floor line, red below-floor segment + first-shortfall marker, insight text from `POST /explanations`.)*
 - [ ] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
 - [ ] Handle loading, empty, error, and profile-switch states clearly.
@@ -133,6 +133,6 @@
 - **Scope control:** Do **not** add login, extra cloud providers, a second database, or unrelated sponsor integrations. Keep one React/Vite client, one Express server, and MongoDB Atlas.
 - **Truthfulness of financial outputs:** This is a prototype using mock/synthetic finances. Forecasts are estimates; recommendations are educational and are not bank decisions, loan offers, or guaranteed results.
 - **Unresolved technical decisions:** Choose the application AI provider and the forecast implementation details during the relevant phase; do not delay the deterministic core while evaluating them.
-  - **Health indicator labels/thresholds (open):** the three indicators return raw numbers only. Need rules that map them to plain-language labels (e.g. healthy / caution / at risk) for emergency coverage (months), debt-payment burden (ratio) and cash-flow safety (days below floor). Candidate defaults, *not decided*: coverage <1 mo at risk, 1-3 caution, >3 healthy; burden >36% at risk, 20-36% caution, <20% healthy; any day below the floor = at risk. Decide, then record in `engineering.md` section 4 before coding.
+  - **Health indicator labels/thresholds (decided):** coverage <1 mo at risk / 1–3 watch / ≥3 on track; burden >36% at risk / 20–36% watch / <20% on track; any day below the floor = at risk. Recorded in `engineering.md` section 4 (rule 6); applied client-side.
   - **Income vs. expenses numbers (decided):** `GET /spending` returns `incomeMonthlyCents`, `expensesMonthlyCents`, `netCashFlowMonthlyCents`; `GET /overview` returns `income[]` (next payday). Definitions in `engineering.md` section 5.
 - **If time runs short:** Stop Toyota work first, then optional AI conversation. Preserve the functioning Nessie → dashboard → indicators/forecast → what-if → action demo.

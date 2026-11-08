@@ -50,3 +50,10 @@ export function Meter({ value, tone = 'good', label }) {
     </div>
   )
 }
+
+const PILL = { good: 'bg-[#e8f5f0] text-[#23816f]', watch: 'bg-amber-pale text-[#a36a1d]', bad: 'bg-red-pale text-red', none: 'bg-track text-muted-foreground' }
+
+// Design .pill; tone = good | watch | bad | none.
+export function Pill({ tone = 'good', children }) {
+  return <span className={cn('rounded-[20px] px-[7px] py-[3px] text-[10px] font-bold whitespace-nowrap', PILL[tone])}>{children}</span>
+}

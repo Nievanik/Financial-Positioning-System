@@ -25,3 +25,17 @@ test('format: cents to dollars, date math across month/year', () => {
   assert.equal(addDays('2026-12-25', 10), '2027-01-04')
   assert.equal(titleCase('credit_card'), 'Credit card')
 })
+
+test('health thresholds (engineering.md section 4 rule 6), including boundaries and nulls', async () => {
+  const { coverage, burden, safety } = await import('./health.js')
+  assert.deepEqual([0.35, 0.99, 1, 2.99, 3, 7.4].map((m) => coverage(m).tone), ['bad', 'bad', 'watch', 'watch', 'good', 'good'])
+  assert.deepEqual([0.12, 0.199, 0.2, 0.36, 0.361].map((r) => burden(r).tone), ['good', 'good', 'watch', 'watch', 'bad'])
+  assert.equal(coverage(null).tone, 'none')
+  assert.equal(burden(null).tone, 'none')
+  const opts = { floorCents: 0, forecastDays: 174 }
+  assert.equal(safety({ minCashCents: 1683369, daysBelowFloor: 0 }, opts).tone, 'good')
+  assert.equal(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).tone, 'bad')
+  assert.ok(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).meter <= 1 / 3)
+  assert.ok(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).meter > safety({ minCashCents: -9, daysBelowFloor: 100 }, opts).meter)
+  assert.equal(safety({ minCashCents: -1, daysBelowFloor: 174 }, opts).meter, 0.05)
+})
