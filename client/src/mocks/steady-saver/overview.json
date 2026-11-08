@@ -4,125 +4,145 @@
     "displayName": "Maya Chen",
     "currency": "USD",
     "timeZone": "America/Chicago",
-    "lastSyncedAt": "2026-11-08T04:23:16.576Z"
+    "lastSyncedAt": "2026-11-08T14:39:41.832Z"
   },
   "asOf": "2026-11-08",
   "cash": {
-    "availableCents": 1750000,
-    "checkingCents": 350000,
-    "savingsCents": 1400000
+    "availableCents": 500000,
+    "checkingCents": 180000,
+    "savingsCents": 320000
   },
   "totals": {
-    "retirementAndInvestmentsCents": 2800000,
-    "creditCardDebtCents": 30000,
-    "loanDebtCents": 600000,
-    "creditLimitCents": 600000,
-    "unusedCreditCents": 570000,
-    "netWorthCents": 3920000
+    "retirementAndInvestmentsCents": 1480000,
+    "creditCardDebtCents": 0,
+    "loanDebtCents": 0,
+    "creditLimitCents": 200000,
+    "unusedCreditCents": 200000,
+    "netWorthCents": 1980000
   },
   "accounts": [
     {
-      "id": "6aeff92b88371dec443432b8",
+      "id": "6af089ad88371dec44343ae6",
+      "name": "6-Month CD",
+      "type": "cd",
+      "balanceCents": 150000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic",
+      "riskLevel": "low",
+      "annualRateBps": 410,
+      "maturityDate": "2026-12-12",
+      "holdingsNote": null
+    },
+    {
+      "id": "6af089ad88371dec44343ae7",
+      "name": "12-Month CD",
+      "type": "cd",
+      "balanceCents": 250000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic",
+      "riskLevel": "low",
+      "annualRateBps": 425,
+      "maturityDate": "2027-02-15",
+      "holdingsNote": null
+    },
+    {
+      "id": "6af089ad88371dec44343ae1",
       "name": "Maya's Checking",
       "type": "checking",
-      "balanceCents": 350000,
+      "balanceCents": 180000,
       "creditLimitCents": null,
-      "source": "nessie"
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92b88371dec443432ba",
+      "id": "6af089ad88371dec44343ae3",
       "name": "Maya's Card",
       "type": "credit_card",
-      "balanceCents": 30000,
-      "creditLimitCents": 600000,
-      "source": "nessie"
+      "balanceCents": 0,
+      "creditLimitCents": 200000,
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92b88371dec443432bb",
+      "id": "6af089ad88371dec44343ae5",
+      "name": "Index Brokerage",
+      "type": "investment",
+      "balanceCents": 180000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic",
+      "riskLevel": "high",
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": "S&P 500 index ETF"
+    },
+    {
+      "id": "6af089ad88371dec44343ae4",
       "name": "401(k)",
       "type": "retirement",
-      "balanceCents": 2800000,
+      "balanceCents": 900000,
       "creditLimitCents": null,
-      "source": "supplemental_synthetic"
+      "source": "supplemental_synthetic",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92b88371dec443432b9",
+      "id": "6af089ad88371dec44343ae2",
       "name": "Maya's Savings",
       "type": "savings",
-      "balanceCents": 1400000,
+      "balanceCents": 320000,
       "creditLimitCents": null,
-      "source": "nessie"
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     }
   ],
-  "loans": [
-    {
-      "id": "6aeff92b88371dec443432bc",
-      "name": "Auto loan",
-      "loanType": "auto",
-      "outstandingCents": 600000,
-      "monthlyPaymentCents": 22000,
-      "dueDay": 18,
-      "annualRateBps": 520,
-      "source": "nessie"
-    }
-  ],
+  "loans": [],
   "income": [
     {
       "name": "Salary",
-      "amountCents": 160000,
-      "grossAmountCents": 200000,
+      "amountCents": 120000,
+      "grossAmountCents": 150000,
       "frequency": "biweekly",
       "nextDate": "2026-11-20"
     }
   ],
   "obligations": [
     {
-      "name": "Car insurance",
-      "kind": "bill",
-      "amountCents": 12000,
-      "frequency": "monthly",
-      "nextDate": "2026-11-12",
-      "category": "transport"
-    },
-    {
       "name": "Streaming",
       "kind": "bill",
-      "amountCents": 3500,
+      "amountCents": 1500,
       "frequency": "monthly",
       "nextDate": "2026-11-15",
-      "category": "subscriptions"
-    },
-    {
-      "name": "Auto loan",
-      "kind": "loan_payment",
-      "amountCents": 22000,
-      "frequency": "monthly",
-      "nextDate": "2026-11-18",
-      "category": "debt"
-    },
-    {
-      "name": "Credit card payment",
-      "kind": "credit_card_payment",
-      "amountCents": 30000,
-      "frequency": "monthly",
-      "nextDate": "2026-11-25",
-      "category": "debt"
+      "category": "subscriptions",
+      "loanId": null
     },
     {
       "name": "Rent",
       "kind": "bill",
-      "amountCents": 110000,
+      "amountCents": 105000,
       "frequency": "monthly",
       "nextDate": "2026-12-01",
-      "category": "housing"
+      "category": "housing",
+      "loanId": null
     },
     {
       "name": "Electric",
       "kind": "bill",
-      "amountCents": 14000,
+      "amountCents": 9000,
       "frequency": "monthly",
       "nextDate": "2026-12-05",
-      "category": "utilities"
+      "category": "utilities",
+      "loanId": null
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluateScenario } from './scenarios.js';
+import { baselineRecommendations, evaluateScenario } from './scenarios.js';
 
 const input = { asOf: '2026-11-07', openingCashCents: 1000000, flows: [] };
 const d = (s) => Object.values(evaluateScenario(input, s).deltas);
@@ -36,4 +36,33 @@ test('recommendations are re-simulated, quantified, and omitted when they do not
   const b = evaluateScenario(withIncome, { type: 'one_time', amountCents: 1200000, startDate: '2026-11-20' });
   const delay = b.recommendations.find((r) => r.id === 'delay_one_month');
   assert.equal(delay.impactMinimumCashCents, 500000); // min goes from -200000 to 300000
+});
+
+test('recommendations carry a structured scenario only when it can be evaluated on its own', () => {
+  const withIncome = { ...input, flows: [{ kind: 'income', signedAmountCents: 500000, frequency: 'monthly', nextDate: '2026-12-05' }] };
+  const scenario = { type: 'one_time', name: 'Laptop', amountCents: 1200000, startDate: '2026-11-20' };
+  const recs = evaluateScenario(withIncome, scenario).recommendations;
+  const delay = recs.find((r) => r.id === 'delay_one_month');
+  assert.deepEqual(delay.scenario, { ...scenario, startDate: '2026-12-20' });
+  assert.match(delay.action, /^Start on 2026-12-20 instead of 2026-11-20$/); // text preserved
+  // Re-evaluating the structured scenario reproduces the recommendation's impact.
+  const replay = evaluateScenario(withIncome, delay.scenario);
+  const current = evaluateScenario(withIncome, scenario);
+  assert.equal(Math.min(...replay.scenario.daily.map((d) => d.cashCents)) - Math.min(...current.scenario.daily.map((d) => d.cashCents)), delay.impactMinimumCashCents);
+  assert.equal(recs.find((r) => r.id === 'cut_discretionary').scenario, null); // only meaningful combined with the laptop
+
+  // A delay that would start after the month-6 checkpoint keeps its text but is not offered as a request.
+  const late = evaluateScenario(withIncome, { ...scenario, startDate: '2027-04-10' }).recommendations.find((r) => r.id === 'delay_one_month');
+  assert.equal(late.action, 'Start on 2027-05-10 instead of 2027-04-10');
+  assert.equal(late.scenario, null);
+
+  const base = baselineRecommendations(withIncome);
+  assert.ok(base.length > 0);
+  for (const r of base) {
+    assert.equal(r.scenario.type, 'monthly_spending_reduction');
+    assert.equal(r.scenario.monthlyAmountCents, Number(r.id.split('_')[1]) * 100);
+    assert.match(r.action, /^Spend \$\d+ less per month from \d{4}-\d{2}-01$/);
+    const replayBase = evaluateScenario(withIncome, r.scenario); // valid standalone request
+    assert.equal(replayBase.deltas.month6Cents, r.impactMonth6Cents);
+  }
 });

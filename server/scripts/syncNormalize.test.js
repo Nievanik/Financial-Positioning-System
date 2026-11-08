@@ -41,11 +41,35 @@ test('classification: transfers net zero, card purchases no cash impact, payroll
 });
 
 test('unknown descriptions and mismatched loan payments stop the sync (issues)', () => {
-  const p = PROFILES[0];
+  const p = PROFILES.find((x) => x.loans.length);
   const n = fakeNessie(buildPlan(p));
   n.withdrawals.push({ _id: 'x', description: 'Mystery', amount: 5, transaction_date: '2026-10-01' });
   n.withdrawals = n.withdrawals.map((w) => (w.description.startsWith('Loan payment') ? { ...w, amount: w.amount + 1 } : w));
   const out = normalizeProfile({ asOf: ASOF, slug: p.slug, nessie: n, merchants, supplemental: { bills: p.bills, loans: p.loans, retirement401kCents: 1, creditLimitCents: 1, grossPayCents: 1 } });
   assert.ok(out.issues.some((i) => i.includes('unclassified withdrawal')));
   assert.ok(out.issues.some((i) => i.includes('does not match last payment')));
+});
+
+test('supplemental investment holdings are labeled synthetic accounts; the 401(k) and Nessie accounts are unchanged', () => {
+  for (const p of PROFILES) {
+    const out = normalizeProfile({
+      asOf: ASOF, slug: p.slug, nessie: fakeNessie(buildPlan(p)), merchants,
+      supplemental: { bills: p.bills, loans: p.loans.map((l) => ({ name: l.name, day: l.day, rateBps: l.rateBps })), retirement401kCents: p.supplemental.retirement401kCents, investments: p.supplemental.investments, creditLimitCents: p.card.limit * 100, grossPayCents: p.pay.gross * 100 },
+    });
+    assert.deepEqual(out.issues, [], p.slug);
+    const k401 = out.accounts.find((a) => a.externalId === `${p.slug}:401k`);
+    assert.equal(k401.balanceCents, p.supplemental.retirement401kCents, p.slug);
+    assert.equal(out.accounts.filter((a) => a.source === 'nessie').length, 3, p.slug);
+    const holdings = out.accounts.filter((a) => ['cd', 'investment'].includes(a.type));
+    assert.equal(holdings.length, p.supplemental.investments.length, p.slug);
+    for (const h of holdings) {
+      assert.equal(h.source, 'supplemental_synthetic');
+      assert.match(h.externalId, new RegExp(`^${p.slug}:`));
+      assert.ok(Number.isInteger(h.balanceCents) && h.balanceCents > 0);
+      if (h.type === 'cd') assert.match(h.maturityDate, /^\d{4}-\d{2}-\d{2}$/);
+    }
+  }
+  // Older callers that omit `investments` still work (no extra accounts).
+  const p = PROFILES[0];
+  assert.equal(run(p).accounts.filter((a) => ['cd', 'investment'].includes(a.type)).length, 0);
 });

@@ -13,60 +13,85 @@ export const MERCHANTS = {
 
 export const PROFILES = [
   {
+    // Demo story 1 — "simple": one modest paycheck, rent + 2 bills, no loans, card paid in full. Easy-to-read sawtooth forecast.
     slug: 'steady-saver',
-    expect: 'healthy: no shortfall, positive net cash flow',
+    expect: 'simple: no loans, no carried card balance, no shortfall, cash grows slowly each month',
     first: 'Maya', last: 'Chen',
-    checking: 3500, savings: 14000, card: { balance: 300, limit: 6000 },
-    pay: { frequency: 'biweekly', anchor: '2026-11-06', net: 1600, gross: 2000 },
+    checking: 1800, savings: 3200, card: { balance: 0, limit: 2000 },
+    pay: { frequency: 'biweekly', anchor: '2026-11-06', net: 1200, gross: 1500 },
     bills: [
-      { payee: 'Oakview Apartments', nickname: 'Rent', day: 1, amount: 1100, category: 'housing' },
-      { payee: 'Oncor Electric', nickname: 'Electric', day: 5, amount: 140, category: 'utilities' },
-      { payee: 'State Farm', nickname: 'Car insurance', day: 12, amount: 120, category: 'transport' },
-      { payee: 'StreamFlix', nickname: 'Streaming', day: 15, amount: 35, category: 'subscriptions' },
+      { payee: 'Oakview Apartments', nickname: 'Rent', day: 1, amount: 1050, category: 'housing' },
+      { payee: 'Oncor Electric', nickname: 'Electric', day: 5, amount: 90, category: 'utilities' },
+      { payee: 'StreamFlix', nickname: 'Streaming', day: 15, amount: 15, category: 'subscriptions' },
     ],
-    loans: [{ name: 'Auto loan', type: 'auto', outstanding: 6000, payment: 220, day: 18, rateBps: 520, creditScore: 780 }],
-    cardPayment: { day: 25, amount: 300 },
-    savingsTransfer: { day: 3, amount: 300 },
-    spend: { groceries: 380, dining: 150, transport: 100, entertainment: 80 },
-    supplemental: { retirement401kCents: 2800000 },
+    loans: [],
+    cardPayment: null, // pays the card in full: card purchases are already in variable spend, so no separate payment flow
+    savingsTransfer: { day: 3, amount: 200 },
+    spend: { groceries: 300, dining: 100, transport: 80, entertainment: 50 },
+    supplemental: {
+      retirement401kCents: 900000,
+      // Investment Planner holdings (engineering.md section 10). Synthetic only: Nessie has no CD/brokerage accounts.
+      investments: [
+        { key: 'brokerage', name: 'Index Brokerage', type: 'investment', balanceCents: 180000, riskLevel: 'high', holdingsNote: 'S&P 500 index ETF' },
+        { key: 'cd-6m', name: '6-Month CD', type: 'cd', balanceCents: 150000, riskLevel: 'low', annualRateBps: 410, maturityDate: '2026-12-12' },
+        { key: 'cd-12m', name: '12-Month CD', type: 'cd', balanceCents: 250000, riskLevel: 'low', annualRateBps: 425, maturityDate: '2027-02-15' },
+      ],
+    },
   },
   {
+    // Demo story 2 — "loans + recurring payments": two loans, a carried card balance and many monthly bills.
+    // No overdraft, but about a quarter of gross pay goes to debt and the monthly margin is thin.
     slug: 'debt-heavy',
-    expect: 'debt pressure: debt burden near 30%, thin cash, a brief shortfall late in the horizon',
+    expect: 'loans + recurring: debt burden above 25%, many recurring payments, thin margin, no shortfall',
     first: 'Jordan', last: 'Rivera',
-    checking: 1800, savings: 600, card: { balance: 6500, limit: 8000 },
-    pay: { frequency: 'biweekly', anchor: '2026-11-04', net: 1300, gross: 1650 },
+    checking: 1600, savings: 1200, card: { balance: 3200, limit: 6000 },
+    pay: { frequency: 'biweekly', anchor: '2026-11-04', net: 1500, gross: 1900 },
     bills: [
       { payee: 'Maple Court Rentals', nickname: 'Rent', day: 1, amount: 1000, category: 'housing' },
-      { payee: 'Oncor Electric', nickname: 'Electric', day: 6, amount: 160, category: 'utilities' },
-      { payee: 'State Farm', nickname: 'Car insurance', day: 14, amount: 140, category: 'transport' },
-      { payee: 'StreamFlix', nickname: 'Streaming', day: 16, amount: 60, category: 'subscriptions' },
+      { payee: 'Oncor Electric', nickname: 'Electric', day: 6, amount: 120, category: 'utilities' },
+      { payee: 'T-Mobile', nickname: 'Phone', day: 11, amount: 70, category: 'utilities' },
+      { payee: 'State Farm', nickname: 'Car insurance', day: 14, amount: 130, category: 'transport' },
+      { payee: 'StreamFlix', nickname: 'Streaming', day: 16, amount: 25, category: 'subscriptions' },
+      { payee: 'FitLife Gym', nickname: 'Gym', day: 21, amount: 40, category: 'subscriptions' },
     ],
     loans: [
-      { name: 'Auto loan', type: 'auto', outstanding: 14000, payment: 410, day: 9, rateBps: 910, creditScore: 640 },
-      { name: 'Student loan', type: 'student', outstanding: 22000, payment: 280, day: 20, rateBps: 560, creditScore: 640 },
+      { name: 'Auto loan', type: 'auto', outstanding: 13500, payment: 450, day: 9, rateBps: 690, creditScore: 660 },
+      { name: 'Student loan', type: 'student', outstanding: 21000, payment: 300, day: 20, rateBps: 550, creditScore: 660 },
     ],
-    cardPayment: { day: 22, amount: 350 },
-    savingsTransfer: { day: 3, amount: 25 },
-    spend: { groceries: 420, dining: 170, transport: 110, entertainment: 50 },
-    supplemental: { retirement401kCents: 350000 },
+    cardPayment: { day: 24, amount: 320 },
+    savingsTransfer: { day: 3, amount: 50 },
+    spend: { groceries: 350, dining: 120, transport: 90, entertainment: 40 },
+    supplemental: {
+      retirement401kCents: 350000,
+      investments: [
+        { key: 'cd-6m', name: '6-Month CD', type: 'cd', balanceCents: 150000, riskLevel: 'low', annualRateBps: 390, maturityDate: '2026-12-28' },
+      ],
+    },
   },
   {
+    // Demo story 3 — "cash crunch": paid once a month (28th) while rent, loan and card payments land earlier,
+    // so checking dips below $0 for about a week before each payday even though every month-end is positive.
     slug: 'cash-crunch',
-    expect: 'cash shortfall: a day below $0 appears within the 6-month horizon',
+    expect: 'cash shortfall: a short dip below $0 before each payday; month-ends stay positive',
     first: 'Sam', last: 'Okafor',
-    checking: 900, savings: 150, card: { balance: 2200, limit: 4000 },
-    pay: { frequency: 'monthly', anchor: '2026-10-28', net: 3000, gross: 3700 },
+    checking: 700, savings: 100, card: { balance: 2200, limit: 4000 },
+    pay: { frequency: 'monthly', anchor: '2026-10-28', net: 3200, gross: 4000 },
     bills: [
       { payee: 'Brookline Towers', nickname: 'Rent', day: 1, amount: 1400, category: 'housing' },
-      { payee: 'Oncor Electric', nickname: 'Electric', day: 5, amount: 180, category: 'utilities' },
-      { payee: 'State Farm', nickname: 'Car insurance', day: 10, amount: 200, category: 'transport' },
-      { payee: 'StreamFlix', nickname: 'Streaming', day: 12, amount: 50, category: 'subscriptions' },
+      { payee: 'Oncor Electric', nickname: 'Electric', day: 5, amount: 150, category: 'utilities' },
+      { payee: 'State Farm', nickname: 'Car insurance', day: 10, amount: 180, category: 'transport' },
+      { payee: 'StreamFlix', nickname: 'Streaming', day: 12, amount: 30, category: 'subscriptions' },
     ],
     loans: [{ name: 'Auto loan', type: 'auto', outstanding: 11000, payment: 380, day: 15, rateBps: 780, creditScore: 690 }],
-    cardPayment: { day: 20, amount: 300 },
+    cardPayment: { day: 20, amount: 250 },
     savingsTransfer: { day: 28, amount: 20 },
-    spend: { groceries: 420, dining: 180, transport: 120, entertainment: 80 },
-    supplemental: { retirement401kCents: 120000 },
+    spend: { groceries: 400, dining: 160, transport: 110, entertainment: 60 },
+    supplemental: {
+      retirement401kCents: 120000,
+      investments: [
+        { key: 'micro-invest', name: 'Micro-investing App', type: 'investment', balanceCents: 45000, riskLevel: 'high', holdingsNote: 'Round-up ETF portfolio' },
+        { key: 'cd-9m', name: '9-Month CD', type: 'cd', balanceCents: 200000, riskLevel: 'low', annualRateBps: 410, maturityDate: '2026-12-20' },
+      ],
+    },
   },
 ];

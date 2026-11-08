@@ -13,752 +13,723 @@
         {
           "month": 1,
           "date": "2026-11-30",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "month": 2,
           "date": "2026-12-31",
-          "cashCents": 274634
+          "cashCents": 403595
         },
         {
           "month": 3,
           "date": "2027-01-31",
-          "cashCents": 207944
+          "cashCents": 388520
         },
         {
           "month": 6,
           "date": "2027-04-30",
-          "cashCents": 59888
+          "cashCents": 385040
         }
       ],
       "daily": [
         {
           "date": "2026-11-08",
-          "cashCents": 240000
+          "cashCents": 280000
         },
         {
           "date": "2026-11-09",
-          "cashCents": 199000
+          "cashCents": 235000
         },
         {
           "date": "2026-11-10",
-          "cashCents": 199000
+          "cashCents": 235000
         },
         {
           "date": "2026-11-11",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-12",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-13",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-14",
-          "cashCents": 185000
+          "cashCents": 215000
         },
         {
           "date": "2026-11-15",
-          "cashCents": 167662
+          "cashCents": 201085
         },
         {
           "date": "2026-11-16",
-          "cashCents": 161662
+          "cashCents": 198585
         },
         {
           "date": "2026-11-17",
-          "cashCents": 161662
+          "cashCents": 198585
         },
         {
           "date": "2026-11-18",
-          "cashCents": 291662
+          "cashCents": 348585
         },
         {
           "date": "2026-11-19",
-          "cashCents": 291662
+          "cashCents": 348585
         },
         {
           "date": "2026-11-20",
-          "cashCents": 263662
+          "cashCents": 318585
         },
         {
           "date": "2026-11-21",
-          "cashCents": 263662
+          "cashCents": 314585
         },
         {
           "date": "2026-11-22",
-          "cashCents": 211324
+          "cashCents": 300670
         },
         {
           "date": "2026-11-23",
-          "cashCents": 211324
+          "cashCents": 300670
         },
         {
           "date": "2026-11-24",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-25",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-26",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-27",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-28",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-29",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "date": "2026-11-30",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "date": "2026-12-01",
-          "cashCents": 93986
+          "cashCents": 154755
         },
         {
           "date": "2026-12-02",
-          "cashCents": 223986
+          "cashCents": 304755
         },
         {
           "date": "2026-12-03",
-          "cashCents": 223986
+          "cashCents": 304755
         },
         {
           "date": "2026-12-04",
-          "cashCents": 223986
+          "cashCents": 304755
         },
         {
           "date": "2026-12-05",
-          "cashCents": 223986
+          "cashCents": 304755
         },
         {
           "date": "2026-12-06",
-          "cashCents": 190648
+          "cashCents": 278840
         },
         {
           "date": "2026-12-07",
-          "cashCents": 190648
+          "cashCents": 278840
         },
         {
           "date": "2026-12-08",
-          "cashCents": 190648
+          "cashCents": 278840
         },
         {
           "date": "2026-12-09",
-          "cashCents": 149648
+          "cashCents": 233840
         },
         {
           "date": "2026-12-10",
-          "cashCents": 149648
+          "cashCents": 233840
         },
         {
           "date": "2026-12-11",
-          "cashCents": 149648
+          "cashCents": 226840
         },
         {
           "date": "2026-12-12",
-          "cashCents": 149648
+          "cashCents": 226840
         },
         {
           "date": "2026-12-13",
-          "cashCents": 132310
+          "cashCents": 212925
         },
         {
           "date": "2026-12-14",
-          "cashCents": 118310
+          "cashCents": 199925
         },
         {
           "date": "2026-12-15",
-          "cashCents": 118310
+          "cashCents": 199925
         },
         {
           "date": "2026-12-16",
-          "cashCents": 242310
+          "cashCents": 347425
         },
         {
           "date": "2026-12-17",
-          "cashCents": 242310
+          "cashCents": 347425
         },
         {
           "date": "2026-12-18",
-          "cashCents": 242310
+          "cashCents": 347425
         },
         {
           "date": "2026-12-19",
-          "cashCents": 242310
+          "cashCents": 347425
         },
         {
           "date": "2026-12-20",
-          "cashCents": 196972
+          "cashCents": 303510
         },
         {
           "date": "2026-12-21",
-          "cashCents": 196972
+          "cashCents": 299510
         },
         {
           "date": "2026-12-22",
-          "cashCents": 161972
+          "cashCents": 299510
         },
         {
           "date": "2026-12-23",
-          "cashCents": 161972
+          "cashCents": 299510
         },
         {
           "date": "2026-12-24",
-          "cashCents": 161972
+          "cashCents": 267510
         },
         {
           "date": "2026-12-25",
-          "cashCents": 161972
+          "cashCents": 267510
         },
         {
           "date": "2026-12-26",
-          "cashCents": 161972
+          "cashCents": 267510
         },
         {
           "date": "2026-12-27",
-          "cashCents": 144634
+          "cashCents": 253595
         },
         {
           "date": "2026-12-28",
-          "cashCents": 144634
+          "cashCents": 253595
         },
         {
           "date": "2026-12-29",
-          "cashCents": 144634
+          "cashCents": 253595
         },
         {
           "date": "2026-12-30",
-          "cashCents": 274634
+          "cashCents": 403595
         },
         {
           "date": "2026-12-31",
-          "cashCents": 274634
+          "cashCents": 403595
         },
         {
           "date": "2027-01-01",
-          "cashCents": 174634
+          "cashCents": 303595
         },
         {
           "date": "2027-01-02",
-          "cashCents": 174634
+          "cashCents": 303595
         },
         {
           "date": "2027-01-03",
-          "cashCents": 157296
+          "cashCents": 289680
         },
         {
           "date": "2027-01-04",
-          "cashCents": 157296
+          "cashCents": 289680
         },
         {
           "date": "2027-01-05",
-          "cashCents": 157296
+          "cashCents": 289680
         },
         {
           "date": "2027-01-06",
-          "cashCents": 141296
+          "cashCents": 277680
         },
         {
           "date": "2027-01-07",
-          "cashCents": 141296
+          "cashCents": 277680
         },
         {
           "date": "2027-01-08",
-          "cashCents": 141296
+          "cashCents": 277680
         },
         {
           "date": "2027-01-09",
-          "cashCents": 100296
+          "cashCents": 232680
         },
         {
           "date": "2027-01-10",
-          "cashCents": 82958
+          "cashCents": 218765
         },
         {
           "date": "2027-01-11",
-          "cashCents": 82958
+          "cashCents": 211765
         },
         {
           "date": "2027-01-12",
-          "cashCents": 82958
+          "cashCents": 211765
         },
         {
           "date": "2027-01-13",
-          "cashCents": 212958
+          "cashCents": 361765
         },
         {
           "date": "2027-01-14",
-          "cashCents": 198958
+          "cashCents": 348765
         },
         {
           "date": "2027-01-15",
-          "cashCents": 198958
+          "cashCents": 348765
         },
         {
           "date": "2027-01-16",
-          "cashCents": 192958
+          "cashCents": 346265
         },
         {
           "date": "2027-01-17",
-          "cashCents": 175620
+          "cashCents": 332350
         },
         {
           "date": "2027-01-18",
-          "cashCents": 175620
+          "cashCents": 332350
         },
         {
           "date": "2027-01-19",
-          "cashCents": 175620
+          "cashCents": 332350
         },
         {
           "date": "2027-01-20",
-          "cashCents": 147620
+          "cashCents": 302350
         },
         {
           "date": "2027-01-21",
-          "cashCents": 147620
+          "cashCents": 298350
         },
         {
           "date": "2027-01-22",
-          "cashCents": 112620
+          "cashCents": 298350
         },
         {
           "date": "2027-01-23",
-          "cashCents": 112620
+          "cashCents": 298350
         },
         {
           "date": "2027-01-24",
-          "cashCents": 95282
+          "cashCents": 252435
         },
         {
           "date": "2027-01-25",
-          "cashCents": 95282
+          "cashCents": 252435
         },
         {
           "date": "2027-01-26",
-          "cashCents": 95282
+          "cashCents": 252435
         },
         {
           "date": "2027-01-27",
-          "cashCents": 225282
+          "cashCents": 402435
         },
         {
           "date": "2027-01-28",
-          "cashCents": 225282
+          "cashCents": 402435
         },
         {
           "date": "2027-01-29",
-          "cashCents": 225282
+          "cashCents": 402435
         },
         {
           "date": "2027-01-30",
-          "cashCents": 225282
+          "cashCents": 402435
         },
         {
           "date": "2027-01-31",
-          "cashCents": 207944
+          "cashCents": 388520
         },
         {
           "date": "2027-02-01",
-          "cashCents": 107944
+          "cashCents": 288520
         },
         {
           "date": "2027-02-02",
-          "cashCents": 107944
+          "cashCents": 288520
         },
         {
           "date": "2027-02-03",
-          "cashCents": 107944
+          "cashCents": 288520
         },
         {
           "date": "2027-02-04",
-          "cashCents": 107944
+          "cashCents": 288520
         },
         {
           "date": "2027-02-05",
-          "cashCents": 107944
+          "cashCents": 288520
         },
         {
           "date": "2027-02-06",
-          "cashCents": 91944
+          "cashCents": 276520
         },
         {
           "date": "2027-02-07",
-          "cashCents": 74606
+          "cashCents": 262605
         },
         {
           "date": "2027-02-08",
-          "cashCents": 74606
+          "cashCents": 262605
         },
         {
           "date": "2027-02-09",
-          "cashCents": 33606
+          "cashCents": 217605
         },
         {
           "date": "2027-02-10",
-          "cashCents": 163606
+          "cashCents": 367605
         },
         {
           "date": "2027-02-11",
-          "cashCents": 163606
+          "cashCents": 360605
         },
         {
           "date": "2027-02-12",
-          "cashCents": 163606
+          "cashCents": 360605
         },
         {
           "date": "2027-02-13",
-          "cashCents": 163606
+          "cashCents": 360605
         },
         {
           "date": "2027-02-14",
-          "cashCents": 132268
+          "cashCents": 333690
         },
         {
           "date": "2027-02-15",
-          "cashCents": 132268
+          "cashCents": 333690
         },
         {
           "date": "2027-02-16",
-          "cashCents": 126268
+          "cashCents": 331190
         },
         {
           "date": "2027-02-17",
-          "cashCents": 126268
+          "cashCents": 331190
         },
         {
           "date": "2027-02-18",
-          "cashCents": 126268
+          "cashCents": 331190
         },
         {
           "date": "2027-02-19",
-          "cashCents": 126268
+          "cashCents": 331190
         },
         {
           "date": "2027-02-20",
-          "cashCents": 98268
+          "cashCents": 301190
         },
         {
           "date": "2027-02-21",
-          "cashCents": 80930
+          "cashCents": 283275
         },
         {
           "date": "2027-02-22",
-          "cashCents": 45930
+          "cashCents": 283275
         },
         {
           "date": "2027-02-23",
-          "cashCents": 45930
+          "cashCents": 283275
         },
         {
           "date": "2027-02-24",
-          "cashCents": 175930
+          "cashCents": 401275
         },
         {
           "date": "2027-02-25",
-          "cashCents": 175930
+          "cashCents": 401275
         },
         {
           "date": "2027-02-26",
-          "cashCents": 175930
+          "cashCents": 401275
         },
         {
           "date": "2027-02-27",
-          "cashCents": 175930
+          "cashCents": 401275
         },
         {
           "date": "2027-02-28",
-          "cashCents": 158592
+          "cashCents": 387360
         },
         {
           "date": "2027-03-01",
-          "cashCents": 58592
+          "cashCents": 287360
         },
         {
           "date": "2027-03-02",
-          "cashCents": 58592
+          "cashCents": 287360
         },
         {
           "date": "2027-03-03",
-          "cashCents": 58592
+          "cashCents": 287360
         },
         {
           "date": "2027-03-04",
-          "cashCents": 58592
+          "cashCents": 287360
         },
         {
           "date": "2027-03-05",
-          "cashCents": 58592
+          "cashCents": 287360
         },
         {
           "date": "2027-03-06",
-          "cashCents": 42592
+          "cashCents": 275360
         },
         {
           "date": "2027-03-07",
-          "cashCents": 25254
+          "cashCents": 261445
         },
         {
           "date": "2027-03-08",
-          "cashCents": 25254
+          "cashCents": 261445
         },
         {
           "date": "2027-03-09",
-          "cashCents": -15746
+          "cashCents": 216445
         },
         {
           "date": "2027-03-10",
-          "cashCents": 114254
+          "cashCents": 366445
         },
         {
           "date": "2027-03-11",
-          "cashCents": 114254
+          "cashCents": 359445
         },
         {
           "date": "2027-03-12",
-          "cashCents": 114254
+          "cashCents": 359445
         },
         {
           "date": "2027-03-13",
-          "cashCents": 114254
+          "cashCents": 359445
         },
         {
           "date": "2027-03-14",
-          "cashCents": 82916
+          "cashCents": 332530
         },
         {
           "date": "2027-03-15",
-          "cashCents": 82916
+          "cashCents": 332530
         },
         {
           "date": "2027-03-16",
-          "cashCents": 76916
+          "cashCents": 330030
         },
         {
           "date": "2027-03-17",
-          "cashCents": 76916
+          "cashCents": 330030
         },
         {
           "date": "2027-03-18",
-          "cashCents": 76916
+          "cashCents": 330030
         },
         {
           "date": "2027-03-19",
-          "cashCents": 76916
+          "cashCents": 330030
         },
         {
           "date": "2027-03-20",
-          "cashCents": 48916
+          "cashCents": 300030
         },
         {
           "date": "2027-03-21",
-          "cashCents": 31578
+          "cashCents": 282115
         },
         {
           "date": "2027-03-22",
-          "cashCents": -3422
+          "cashCents": 282115
         },
         {
           "date": "2027-03-23",
-          "cashCents": -3422
+          "cashCents": 282115
         },
         {
           "date": "2027-03-24",
-          "cashCents": 126578
+          "cashCents": 400115
         },
         {
           "date": "2027-03-25",
-          "cashCents": 126578
+          "cashCents": 400115
         },
         {
           "date": "2027-03-26",
-          "cashCents": 126578
+          "cashCents": 400115
         },
         {
           "date": "2027-03-27",
-          "cashCents": 126578
+          "cashCents": 400115
         },
         {
           "date": "2027-03-28",
-          "cashCents": 109240
+          "cashCents": 386200
         },
         {
           "date": "2027-03-29",
-          "cashCents": 109240
+          "cashCents": 386200
         },
         {
           "date": "2027-03-30",
-          "cashCents": 109240
+          "cashCents": 386200
         },
         {
           "date": "2027-03-31",
-          "cashCents": 109240
+          "cashCents": 386200
         },
         {
           "date": "2027-04-01",
-          "cashCents": 9240
+          "cashCents": 286200
         },
         {
           "date": "2027-04-02",
-          "cashCents": 9240
+          "cashCents": 286200
         },
         {
           "date": "2027-04-03",
-          "cashCents": 9240
+          "cashCents": 286200
         },
         {
           "date": "2027-04-04",
-          "cashCents": -8098
+          "cashCents": 272285
         },
         {
           "date": "2027-04-05",
-          "cashCents": -8098
+          "cashCents": 272285
         },
         {
           "date": "2027-04-06",
-          "cashCents": -24098
+          "cashCents": 260285
         },
         {
           "date": "2027-04-07",
-          "cashCents": 105902
+          "cashCents": 410285
         },
         {
           "date": "2027-04-08",
-          "cashCents": 105902
+          "cashCents": 410285
         },
         {
           "date": "2027-04-09",
-          "cashCents": 64902
+          "cashCents": 365285
         },
         {
           "date": "2027-04-10",
-          "cashCents": 64902
+          "cashCents": 365285
         },
         {
           "date": "2027-04-11",
-          "cashCents": 47564
+          "cashCents": 344370
         },
         {
           "date": "2027-04-12",
-          "cashCents": 47564
+          "cashCents": 344370
         },
         {
           "date": "2027-04-13",
-          "cashCents": 47564
+          "cashCents": 344370
         },
         {
           "date": "2027-04-14",
-          "cashCents": 33564
+          "cashCents": 331370
         },
         {
           "date": "2027-04-15",
-          "cashCents": 33564
+          "cashCents": 331370
         },
         {
           "date": "2027-04-16",
-          "cashCents": 27564
+          "cashCents": 328870
         },
         {
           "date": "2027-04-17",
-          "cashCents": 27564
+          "cashCents": 328870
         },
         {
           "date": "2027-04-18",
-          "cashCents": 10226
+          "cashCents": 314955
         },
         {
           "date": "2027-04-19",
-          "cashCents": 10226
+          "cashCents": 314955
         },
         {
           "date": "2027-04-20",
-          "cashCents": -17774
+          "cashCents": 284955
         },
         {
           "date": "2027-04-21",
-          "cashCents": 112226
+          "cashCents": 430955
         },
         {
           "date": "2027-04-22",
-          "cashCents": 77226
+          "cashCents": 430955
         },
         {
           "date": "2027-04-23",
-          "cashCents": 77226
+          "cashCents": 430955
         },
         {
           "date": "2027-04-24",
-          "cashCents": 77226
+          "cashCents": 398955
         },
         {
           "date": "2027-04-25",
-          "cashCents": 59888
+          "cashCents": 385040
         },
         {
           "date": "2027-04-26",
-          "cashCents": 59888
+          "cashCents": 385040
         },
         {
           "date": "2027-04-27",
-          "cashCents": 59888
+          "cashCents": 385040
         },
         {
           "date": "2027-04-28",
-          "cashCents": 59888
+          "cashCents": 385040
         },
         {
           "date": "2027-04-29",
-          "cashCents": 59888
+          "cashCents": 385040
         },
         {
           "date": "2027-04-30",
-          "cashCents": 59888
+          "cashCents": 385040
         }
       ],
-      "shortfalls": [
-        {
-          "date": "2027-03-09",
-          "cashCents": -15746
-        },
-        {
-          "date": "2027-03-22",
-          "cashCents": -3422
-        },
-        {
-          "date": "2027-03-23",
-          "cashCents": -3422
-        },
-        {
-          "date": "2027-04-04",
-          "cashCents": -8098
-        },
-        {
-          "date": "2027-04-05",
-          "cashCents": -8098
-        },
-        {
-          "date": "2027-04-06",
-          "cashCents": -24098
-        },
-        {
-          "date": "2027-04-20",
-          "cashCents": -17774
-        }
-      ],
+      "shortfalls": [],
       "assumptions": {
         "cashFloorCents": 0,
         "forecastMethod": "deterministic_daily_cashflow",
@@ -772,1262 +743,734 @@
         {
           "month": 1,
           "date": "2026-11-30",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "month": 2,
           "date": "2026-12-31",
-          "cashCents": 74634
+          "cashCents": 203595
         },
         {
           "month": 3,
           "date": "2027-01-31",
-          "cashCents": 7944
+          "cashCents": 188520
         },
         {
           "month": 6,
           "date": "2027-04-30",
-          "cashCents": -140112
+          "cashCents": 185040
         }
       ],
       "daily": [
         {
           "date": "2026-11-08",
-          "cashCents": 240000
+          "cashCents": 280000
         },
         {
           "date": "2026-11-09",
-          "cashCents": 199000
+          "cashCents": 235000
         },
         {
           "date": "2026-11-10",
-          "cashCents": 199000
+          "cashCents": 235000
         },
         {
           "date": "2026-11-11",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-12",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-13",
-          "cashCents": 199000
+          "cashCents": 228000
         },
         {
           "date": "2026-11-14",
-          "cashCents": 185000
+          "cashCents": 215000
         },
         {
           "date": "2026-11-15",
-          "cashCents": 167662
+          "cashCents": 201085
         },
         {
           "date": "2026-11-16",
-          "cashCents": 161662
+          "cashCents": 198585
         },
         {
           "date": "2026-11-17",
-          "cashCents": 161662
+          "cashCents": 198585
         },
         {
           "date": "2026-11-18",
-          "cashCents": 291662
+          "cashCents": 348585
         },
         {
           "date": "2026-11-19",
-          "cashCents": 291662
+          "cashCents": 348585
         },
         {
           "date": "2026-11-20",
-          "cashCents": 263662
+          "cashCents": 318585
         },
         {
           "date": "2026-11-21",
-          "cashCents": 263662
+          "cashCents": 314585
         },
         {
           "date": "2026-11-22",
-          "cashCents": 211324
+          "cashCents": 300670
         },
         {
           "date": "2026-11-23",
-          "cashCents": 211324
+          "cashCents": 300670
         },
         {
           "date": "2026-11-24",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-25",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-26",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-27",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-28",
-          "cashCents": 211324
+          "cashCents": 268670
         },
         {
           "date": "2026-11-29",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "date": "2026-11-30",
-          "cashCents": 193986
+          "cashCents": 254755
         },
         {
           "date": "2026-12-01",
-          "cashCents": -106014
+          "cashCents": -45245
         },
         {
           "date": "2026-12-02",
-          "cashCents": 23986
+          "cashCents": 104755
         },
         {
           "date": "2026-12-03",
-          "cashCents": 23986
+          "cashCents": 104755
         },
         {
           "date": "2026-12-04",
-          "cashCents": 23986
+          "cashCents": 104755
         },
         {
           "date": "2026-12-05",
-          "cashCents": 23986
+          "cashCents": 104755
         },
         {
           "date": "2026-12-06",
-          "cashCents": -9352
+          "cashCents": 78840
         },
         {
           "date": "2026-12-07",
-          "cashCents": -9352
+          "cashCents": 78840
         },
         {
           "date": "2026-12-08",
-          "cashCents": -9352
+          "cashCents": 78840
         },
         {
           "date": "2026-12-09",
-          "cashCents": -50352
+          "cashCents": 33840
         },
         {
           "date": "2026-12-10",
-          "cashCents": -50352
+          "cashCents": 33840
         },
         {
           "date": "2026-12-11",
-          "cashCents": -50352
+          "cashCents": 26840
         },
         {
           "date": "2026-12-12",
-          "cashCents": -50352
+          "cashCents": 26840
         },
         {
           "date": "2026-12-13",
-          "cashCents": -67690
+          "cashCents": 12925
         },
         {
           "date": "2026-12-14",
-          "cashCents": -81690
+          "cashCents": -75
         },
         {
           "date": "2026-12-15",
-          "cashCents": -81690
+          "cashCents": -75
         },
         {
           "date": "2026-12-16",
-          "cashCents": 42310
+          "cashCents": 147425
         },
         {
           "date": "2026-12-17",
-          "cashCents": 42310
+          "cashCents": 147425
         },
         {
           "date": "2026-12-18",
-          "cashCents": 42310
+          "cashCents": 147425
         },
         {
           "date": "2026-12-19",
-          "cashCents": 42310
+          "cashCents": 147425
         },
         {
           "date": "2026-12-20",
-          "cashCents": -3028
+          "cashCents": 103510
         },
         {
           "date": "2026-12-21",
-          "cashCents": -3028
+          "cashCents": 99510
         },
         {
           "date": "2026-12-22",
-          "cashCents": -38028
+          "cashCents": 99510
         },
         {
           "date": "2026-12-23",
-          "cashCents": -38028
+          "cashCents": 99510
         },
         {
           "date": "2026-12-24",
-          "cashCents": -38028
+          "cashCents": 67510
         },
         {
           "date": "2026-12-25",
-          "cashCents": -38028
+          "cashCents": 67510
         },
         {
           "date": "2026-12-26",
-          "cashCents": -38028
+          "cashCents": 67510
         },
         {
           "date": "2026-12-27",
-          "cashCents": -55366
+          "cashCents": 53595
         },
         {
           "date": "2026-12-28",
-          "cashCents": -55366
+          "cashCents": 53595
         },
         {
           "date": "2026-12-29",
-          "cashCents": -55366
+          "cashCents": 53595
         },
         {
           "date": "2026-12-30",
-          "cashCents": 74634
+          "cashCents": 203595
         },
         {
           "date": "2026-12-31",
-          "cashCents": 74634
+          "cashCents": 203595
         },
         {
           "date": "2027-01-01",
-          "cashCents": -25366
+          "cashCents": 103595
         },
         {
           "date": "2027-01-02",
-          "cashCents": -25366
+          "cashCents": 103595
         },
         {
           "date": "2027-01-03",
-          "cashCents": -42704
+          "cashCents": 89680
         },
         {
           "date": "2027-01-04",
-          "cashCents": -42704
+          "cashCents": 89680
         },
         {
           "date": "2027-01-05",
-          "cashCents": -42704
+          "cashCents": 89680
         },
         {
           "date": "2027-01-06",
-          "cashCents": -58704
+          "cashCents": 77680
         },
         {
           "date": "2027-01-07",
-          "cashCents": -58704
+          "cashCents": 77680
         },
         {
           "date": "2027-01-08",
-          "cashCents": -58704
+          "cashCents": 77680
         },
         {
           "date": "2027-01-09",
-          "cashCents": -99704
+          "cashCents": 32680
         },
         {
           "date": "2027-01-10",
-          "cashCents": -117042
+          "cashCents": 18765
         },
         {
           "date": "2027-01-11",
-          "cashCents": -117042
+          "cashCents": 11765
         },
         {
           "date": "2027-01-12",
-          "cashCents": -117042
+          "cashCents": 11765
         },
         {
           "date": "2027-01-13",
-          "cashCents": 12958
+          "cashCents": 161765
         },
         {
           "date": "2027-01-14",
-          "cashCents": -1042
+          "cashCents": 148765
         },
         {
           "date": "2027-01-15",
-          "cashCents": -1042
+          "cashCents": 148765
         },
         {
           "date": "2027-01-16",
-          "cashCents": -7042
+          "cashCents": 146265
         },
         {
           "date": "2027-01-17",
-          "cashCents": -24380
+          "cashCents": 132350
         },
         {
           "date": "2027-01-18",
-          "cashCents": -24380
+          "cashCents": 132350
         },
         {
           "date": "2027-01-19",
-          "cashCents": -24380
+          "cashCents": 132350
         },
         {
           "date": "2027-01-20",
-          "cashCents": -52380
+          "cashCents": 102350
         },
         {
           "date": "2027-01-21",
-          "cashCents": -52380
+          "cashCents": 98350
         },
         {
           "date": "2027-01-22",
-          "cashCents": -87380
+          "cashCents": 98350
         },
         {
           "date": "2027-01-23",
-          "cashCents": -87380
+          "cashCents": 98350
         },
         {
           "date": "2027-01-24",
-          "cashCents": -104718
+          "cashCents": 52435
         },
         {
           "date": "2027-01-25",
-          "cashCents": -104718
+          "cashCents": 52435
         },
         {
           "date": "2027-01-26",
-          "cashCents": -104718
+          "cashCents": 52435
         },
         {
           "date": "2027-01-27",
-          "cashCents": 25282
+          "cashCents": 202435
         },
         {
           "date": "2027-01-28",
-          "cashCents": 25282
+          "cashCents": 202435
         },
         {
           "date": "2027-01-29",
-          "cashCents": 25282
+          "cashCents": 202435
         },
         {
           "date": "2027-01-30",
-          "cashCents": 25282
+          "cashCents": 202435
         },
         {
           "date": "2027-01-31",
-          "cashCents": 7944
+          "cashCents": 188520
         },
         {
           "date": "2027-02-01",
-          "cashCents": -92056
+          "cashCents": 88520
         },
         {
           "date": "2027-02-02",
-          "cashCents": -92056
+          "cashCents": 88520
         },
         {
           "date": "2027-02-03",
-          "cashCents": -92056
+          "cashCents": 88520
         },
         {
           "date": "2027-02-04",
-          "cashCents": -92056
+          "cashCents": 88520
         },
         {
           "date": "2027-02-05",
-          "cashCents": -92056
+          "cashCents": 88520
         },
         {
           "date": "2027-02-06",
-          "cashCents": -108056
+          "cashCents": 76520
         },
         {
           "date": "2027-02-07",
-          "cashCents": -125394
+          "cashCents": 62605
         },
         {
           "date": "2027-02-08",
-          "cashCents": -125394
+          "cashCents": 62605
         },
         {
           "date": "2027-02-09",
-          "cashCents": -166394
+          "cashCents": 17605
         },
         {
           "date": "2027-02-10",
-          "cashCents": -36394
+          "cashCents": 167605
         },
         {
           "date": "2027-02-11",
-          "cashCents": -36394
+          "cashCents": 160605
         },
         {
           "date": "2027-02-12",
-          "cashCents": -36394
+          "cashCents": 160605
         },
         {
           "date": "2027-02-13",
-          "cashCents": -36394
+          "cashCents": 160605
         },
         {
           "date": "2027-02-14",
-          "cashCents": -67732
+          "cashCents": 133690
         },
         {
           "date": "2027-02-15",
-          "cashCents": -67732
+          "cashCents": 133690
         },
         {
           "date": "2027-02-16",
-          "cashCents": -73732
+          "cashCents": 131190
         },
         {
           "date": "2027-02-17",
-          "cashCents": -73732
+          "cashCents": 131190
         },
         {
           "date": "2027-02-18",
-          "cashCents": -73732
+          "cashCents": 131190
         },
         {
           "date": "2027-02-19",
-          "cashCents": -73732
+          "cashCents": 131190
         },
         {
           "date": "2027-02-20",
-          "cashCents": -101732
+          "cashCents": 101190
         },
         {
           "date": "2027-02-21",
-          "cashCents": -119070
+          "cashCents": 83275
         },
         {
           "date": "2027-02-22",
-          "cashCents": -154070
+          "cashCents": 83275
         },
         {
           "date": "2027-02-23",
-          "cashCents": -154070
+          "cashCents": 83275
         },
         {
           "date": "2027-02-24",
-          "cashCents": -24070
+          "cashCents": 201275
         },
         {
           "date": "2027-02-25",
-          "cashCents": -24070
+          "cashCents": 201275
         },
         {
           "date": "2027-02-26",
-          "cashCents": -24070
+          "cashCents": 201275
         },
         {
           "date": "2027-02-27",
-          "cashCents": -24070
+          "cashCents": 201275
         },
         {
           "date": "2027-02-28",
-          "cashCents": -41408
+          "cashCents": 187360
         },
         {
           "date": "2027-03-01",
-          "cashCents": -141408
+          "cashCents": 87360
         },
         {
           "date": "2027-03-02",
-          "cashCents": -141408
+          "cashCents": 87360
         },
         {
           "date": "2027-03-03",
-          "cashCents": -141408
+          "cashCents": 87360
         },
         {
           "date": "2027-03-04",
-          "cashCents": -141408
+          "cashCents": 87360
         },
         {
           "date": "2027-03-05",
-          "cashCents": -141408
+          "cashCents": 87360
         },
         {
           "date": "2027-03-06",
-          "cashCents": -157408
+          "cashCents": 75360
         },
         {
           "date": "2027-03-07",
-          "cashCents": -174746
+          "cashCents": 61445
         },
         {
           "date": "2027-03-08",
-          "cashCents": -174746
+          "cashCents": 61445
         },
         {
           "date": "2027-03-09",
-          "cashCents": -215746
+          "cashCents": 16445
         },
         {
           "date": "2027-03-10",
-          "cashCents": -85746
+          "cashCents": 166445
         },
         {
           "date": "2027-03-11",
-          "cashCents": -85746
+          "cashCents": 159445
         },
         {
           "date": "2027-03-12",
-          "cashCents": -85746
+          "cashCents": 159445
         },
         {
           "date": "2027-03-13",
-          "cashCents": -85746
+          "cashCents": 159445
         },
         {
           "date": "2027-03-14",
-          "cashCents": -117084
+          "cashCents": 132530
         },
         {
           "date": "2027-03-15",
-          "cashCents": -117084
+          "cashCents": 132530
         },
         {
           "date": "2027-03-16",
-          "cashCents": -123084
+          "cashCents": 130030
         },
         {
           "date": "2027-03-17",
-          "cashCents": -123084
+          "cashCents": 130030
         },
         {
           "date": "2027-03-18",
-          "cashCents": -123084
+          "cashCents": 130030
         },
         {
           "date": "2027-03-19",
-          "cashCents": -123084
+          "cashCents": 130030
         },
         {
           "date": "2027-03-20",
-          "cashCents": -151084
+          "cashCents": 100030
         },
         {
           "date": "2027-03-21",
-          "cashCents": -168422
+          "cashCents": 82115
         },
         {
           "date": "2027-03-22",
-          "cashCents": -203422
+          "cashCents": 82115
         },
         {
           "date": "2027-03-23",
-          "cashCents": -203422
+          "cashCents": 82115
         },
         {
           "date": "2027-03-24",
-          "cashCents": -73422
+          "cashCents": 200115
         },
         {
           "date": "2027-03-25",
-          "cashCents": -73422
+          "cashCents": 200115
         },
         {
           "date": "2027-03-26",
-          "cashCents": -73422
+          "cashCents": 200115
         },
         {
           "date": "2027-03-27",
-          "cashCents": -73422
+          "cashCents": 200115
         },
         {
           "date": "2027-03-28",
-          "cashCents": -90760
+          "cashCents": 186200
         },
         {
           "date": "2027-03-29",
-          "cashCents": -90760
+          "cashCents": 186200
         },
         {
           "date": "2027-03-30",
-          "cashCents": -90760
+          "cashCents": 186200
         },
         {
           "date": "2027-03-31",
-          "cashCents": -90760
+          "cashCents": 186200
         },
         {
           "date": "2027-04-01",
-          "cashCents": -190760
+          "cashCents": 86200
         },
         {
           "date": "2027-04-02",
-          "cashCents": -190760
+          "cashCents": 86200
         },
         {
           "date": "2027-04-03",
-          "cashCents": -190760
+          "cashCents": 86200
         },
         {
           "date": "2027-04-04",
-          "cashCents": -208098
+          "cashCents": 72285
         },
         {
           "date": "2027-04-05",
-          "cashCents": -208098
+          "cashCents": 72285
         },
         {
           "date": "2027-04-06",
-          "cashCents": -224098
+          "cashCents": 60285
         },
         {
           "date": "2027-04-07",
-          "cashCents": -94098
+          "cashCents": 210285
         },
         {
           "date": "2027-04-08",
-          "cashCents": -94098
+          "cashCents": 210285
         },
         {
           "date": "2027-04-09",
-          "cashCents": -135098
+          "cashCents": 165285
         },
         {
           "date": "2027-04-10",
-          "cashCents": -135098
+          "cashCents": 165285
         },
         {
           "date": "2027-04-11",
-          "cashCents": -152436
+          "cashCents": 144370
         },
         {
           "date": "2027-04-12",
-          "cashCents": -152436
+          "cashCents": 144370
         },
         {
           "date": "2027-04-13",
-          "cashCents": -152436
+          "cashCents": 144370
         },
         {
           "date": "2027-04-14",
-          "cashCents": -166436
+          "cashCents": 131370
         },
         {
           "date": "2027-04-15",
-          "cashCents": -166436
+          "cashCents": 131370
         },
         {
           "date": "2027-04-16",
-          "cashCents": -172436
+          "cashCents": 128870
         },
         {
           "date": "2027-04-17",
-          "cashCents": -172436
+          "cashCents": 128870
         },
         {
           "date": "2027-04-18",
-          "cashCents": -189774
+          "cashCents": 114955
         },
         {
           "date": "2027-04-19",
-          "cashCents": -189774
+          "cashCents": 114955
         },
         {
           "date": "2027-04-20",
-          "cashCents": -217774
+          "cashCents": 84955
         },
         {
           "date": "2027-04-21",
-          "cashCents": -87774
+          "cashCents": 230955
         },
         {
           "date": "2027-04-22",
-          "cashCents": -122774
+          "cashCents": 230955
         },
         {
           "date": "2027-04-23",
-          "cashCents": -122774
+          "cashCents": 230955
         },
         {
           "date": "2027-04-24",
-          "cashCents": -122774
+          "cashCents": 198955
         },
         {
           "date": "2027-04-25",
-          "cashCents": -140112
+          "cashCents": 185040
         },
         {
           "date": "2027-04-26",
-          "cashCents": -140112
+          "cashCents": 185040
         },
         {
           "date": "2027-04-27",
-          "cashCents": -140112
+          "cashCents": 185040
         },
         {
           "date": "2027-04-28",
-          "cashCents": -140112
+          "cashCents": 185040
         },
         {
           "date": "2027-04-29",
-          "cashCents": -140112
+          "cashCents": 185040
         },
         {
           "date": "2027-04-30",
-          "cashCents": -140112
+          "cashCents": 185040
         }
       ],
       "shortfalls": [
         {
           "date": "2026-12-01",
-          "cashCents": -106014
-        },
-        {
-          "date": "2026-12-06",
-          "cashCents": -9352
-        },
-        {
-          "date": "2026-12-07",
-          "cashCents": -9352
-        },
-        {
-          "date": "2026-12-08",
-          "cashCents": -9352
-        },
-        {
-          "date": "2026-12-09",
-          "cashCents": -50352
-        },
-        {
-          "date": "2026-12-10",
-          "cashCents": -50352
-        },
-        {
-          "date": "2026-12-11",
-          "cashCents": -50352
-        },
-        {
-          "date": "2026-12-12",
-          "cashCents": -50352
-        },
-        {
-          "date": "2026-12-13",
-          "cashCents": -67690
+          "cashCents": -45245
         },
         {
           "date": "2026-12-14",
-          "cashCents": -81690
+          "cashCents": -75
         },
         {
           "date": "2026-12-15",
-          "cashCents": -81690
-        },
-        {
-          "date": "2026-12-20",
-          "cashCents": -3028
-        },
-        {
-          "date": "2026-12-21",
-          "cashCents": -3028
-        },
-        {
-          "date": "2026-12-22",
-          "cashCents": -38028
-        },
-        {
-          "date": "2026-12-23",
-          "cashCents": -38028
-        },
-        {
-          "date": "2026-12-24",
-          "cashCents": -38028
-        },
-        {
-          "date": "2026-12-25",
-          "cashCents": -38028
-        },
-        {
-          "date": "2026-12-26",
-          "cashCents": -38028
-        },
-        {
-          "date": "2026-12-27",
-          "cashCents": -55366
-        },
-        {
-          "date": "2026-12-28",
-          "cashCents": -55366
-        },
-        {
-          "date": "2026-12-29",
-          "cashCents": -55366
-        },
-        {
-          "date": "2027-01-01",
-          "cashCents": -25366
-        },
-        {
-          "date": "2027-01-02",
-          "cashCents": -25366
-        },
-        {
-          "date": "2027-01-03",
-          "cashCents": -42704
-        },
-        {
-          "date": "2027-01-04",
-          "cashCents": -42704
-        },
-        {
-          "date": "2027-01-05",
-          "cashCents": -42704
-        },
-        {
-          "date": "2027-01-06",
-          "cashCents": -58704
-        },
-        {
-          "date": "2027-01-07",
-          "cashCents": -58704
-        },
-        {
-          "date": "2027-01-08",
-          "cashCents": -58704
-        },
-        {
-          "date": "2027-01-09",
-          "cashCents": -99704
-        },
-        {
-          "date": "2027-01-10",
-          "cashCents": -117042
-        },
-        {
-          "date": "2027-01-11",
-          "cashCents": -117042
-        },
-        {
-          "date": "2027-01-12",
-          "cashCents": -117042
-        },
-        {
-          "date": "2027-01-14",
-          "cashCents": -1042
-        },
-        {
-          "date": "2027-01-15",
-          "cashCents": -1042
-        },
-        {
-          "date": "2027-01-16",
-          "cashCents": -7042
-        },
-        {
-          "date": "2027-01-17",
-          "cashCents": -24380
-        },
-        {
-          "date": "2027-01-18",
-          "cashCents": -24380
-        },
-        {
-          "date": "2027-01-19",
-          "cashCents": -24380
-        },
-        {
-          "date": "2027-01-20",
-          "cashCents": -52380
-        },
-        {
-          "date": "2027-01-21",
-          "cashCents": -52380
-        },
-        {
-          "date": "2027-01-22",
-          "cashCents": -87380
-        },
-        {
-          "date": "2027-01-23",
-          "cashCents": -87380
-        },
-        {
-          "date": "2027-01-24",
-          "cashCents": -104718
-        },
-        {
-          "date": "2027-01-25",
-          "cashCents": -104718
-        },
-        {
-          "date": "2027-01-26",
-          "cashCents": -104718
-        },
-        {
-          "date": "2027-02-01",
-          "cashCents": -92056
-        },
-        {
-          "date": "2027-02-02",
-          "cashCents": -92056
-        },
-        {
-          "date": "2027-02-03",
-          "cashCents": -92056
-        },
-        {
-          "date": "2027-02-04",
-          "cashCents": -92056
-        },
-        {
-          "date": "2027-02-05",
-          "cashCents": -92056
-        },
-        {
-          "date": "2027-02-06",
-          "cashCents": -108056
-        },
-        {
-          "date": "2027-02-07",
-          "cashCents": -125394
-        },
-        {
-          "date": "2027-02-08",
-          "cashCents": -125394
-        },
-        {
-          "date": "2027-02-09",
-          "cashCents": -166394
-        },
-        {
-          "date": "2027-02-10",
-          "cashCents": -36394
-        },
-        {
-          "date": "2027-02-11",
-          "cashCents": -36394
-        },
-        {
-          "date": "2027-02-12",
-          "cashCents": -36394
-        },
-        {
-          "date": "2027-02-13",
-          "cashCents": -36394
-        },
-        {
-          "date": "2027-02-14",
-          "cashCents": -67732
-        },
-        {
-          "date": "2027-02-15",
-          "cashCents": -67732
-        },
-        {
-          "date": "2027-02-16",
-          "cashCents": -73732
-        },
-        {
-          "date": "2027-02-17",
-          "cashCents": -73732
-        },
-        {
-          "date": "2027-02-18",
-          "cashCents": -73732
-        },
-        {
-          "date": "2027-02-19",
-          "cashCents": -73732
-        },
-        {
-          "date": "2027-02-20",
-          "cashCents": -101732
-        },
-        {
-          "date": "2027-02-21",
-          "cashCents": -119070
-        },
-        {
-          "date": "2027-02-22",
-          "cashCents": -154070
-        },
-        {
-          "date": "2027-02-23",
-          "cashCents": -154070
-        },
-        {
-          "date": "2027-02-24",
-          "cashCents": -24070
-        },
-        {
-          "date": "2027-02-25",
-          "cashCents": -24070
-        },
-        {
-          "date": "2027-02-26",
-          "cashCents": -24070
-        },
-        {
-          "date": "2027-02-27",
-          "cashCents": -24070
-        },
-        {
-          "date": "2027-02-28",
-          "cashCents": -41408
-        },
-        {
-          "date": "2027-03-01",
-          "cashCents": -141408
-        },
-        {
-          "date": "2027-03-02",
-          "cashCents": -141408
-        },
-        {
-          "date": "2027-03-03",
-          "cashCents": -141408
-        },
-        {
-          "date": "2027-03-04",
-          "cashCents": -141408
-        },
-        {
-          "date": "2027-03-05",
-          "cashCents": -141408
-        },
-        {
-          "date": "2027-03-06",
-          "cashCents": -157408
-        },
-        {
-          "date": "2027-03-07",
-          "cashCents": -174746
-        },
-        {
-          "date": "2027-03-08",
-          "cashCents": -174746
-        },
-        {
-          "date": "2027-03-09",
-          "cashCents": -215746
-        },
-        {
-          "date": "2027-03-10",
-          "cashCents": -85746
-        },
-        {
-          "date": "2027-03-11",
-          "cashCents": -85746
-        },
-        {
-          "date": "2027-03-12",
-          "cashCents": -85746
-        },
-        {
-          "date": "2027-03-13",
-          "cashCents": -85746
-        },
-        {
-          "date": "2027-03-14",
-          "cashCents": -117084
-        },
-        {
-          "date": "2027-03-15",
-          "cashCents": -117084
-        },
-        {
-          "date": "2027-03-16",
-          "cashCents": -123084
-        },
-        {
-          "date": "2027-03-17",
-          "cashCents": -123084
-        },
-        {
-          "date": "2027-03-18",
-          "cashCents": -123084
-        },
-        {
-          "date": "2027-03-19",
-          "cashCents": -123084
-        },
-        {
-          "date": "2027-03-20",
-          "cashCents": -151084
-        },
-        {
-          "date": "2027-03-21",
-          "cashCents": -168422
-        },
-        {
-          "date": "2027-03-22",
-          "cashCents": -203422
-        },
-        {
-          "date": "2027-03-23",
-          "cashCents": -203422
-        },
-        {
-          "date": "2027-03-24",
-          "cashCents": -73422
-        },
-        {
-          "date": "2027-03-25",
-          "cashCents": -73422
-        },
-        {
-          "date": "2027-03-26",
-          "cashCents": -73422
-        },
-        {
-          "date": "2027-03-27",
-          "cashCents": -73422
-        },
-        {
-          "date": "2027-03-28",
-          "cashCents": -90760
-        },
-        {
-          "date": "2027-03-29",
-          "cashCents": -90760
-        },
-        {
-          "date": "2027-03-30",
-          "cashCents": -90760
-        },
-        {
-          "date": "2027-03-31",
-          "cashCents": -90760
-        },
-        {
-          "date": "2027-04-01",
-          "cashCents": -190760
-        },
-        {
-          "date": "2027-04-02",
-          "cashCents": -190760
-        },
-        {
-          "date": "2027-04-03",
-          "cashCents": -190760
-        },
-        {
-          "date": "2027-04-04",
-          "cashCents": -208098
-        },
-        {
-          "date": "2027-04-05",
-          "cashCents": -208098
-        },
-        {
-          "date": "2027-04-06",
-          "cashCents": -224098
-        },
-        {
-          "date": "2027-04-07",
-          "cashCents": -94098
-        },
-        {
-          "date": "2027-04-08",
-          "cashCents": -94098
-        },
-        {
-          "date": "2027-04-09",
-          "cashCents": -135098
-        },
-        {
-          "date": "2027-04-10",
-          "cashCents": -135098
-        },
-        {
-          "date": "2027-04-11",
-          "cashCents": -152436
-        },
-        {
-          "date": "2027-04-12",
-          "cashCents": -152436
-        },
-        {
-          "date": "2027-04-13",
-          "cashCents": -152436
-        },
-        {
-          "date": "2027-04-14",
-          "cashCents": -166436
-        },
-        {
-          "date": "2027-04-15",
-          "cashCents": -166436
-        },
-        {
-          "date": "2027-04-16",
-          "cashCents": -172436
-        },
-        {
-          "date": "2027-04-17",
-          "cashCents": -172436
-        },
-        {
-          "date": "2027-04-18",
-          "cashCents": -189774
-        },
-        {
-          "date": "2027-04-19",
-          "cashCents": -189774
-        },
-        {
-          "date": "2027-04-20",
-          "cashCents": -217774
-        },
-        {
-          "date": "2027-04-21",
-          "cashCents": -87774
-        },
-        {
-          "date": "2027-04-22",
-          "cashCents": -122774
-        },
-        {
-          "date": "2027-04-23",
-          "cashCents": -122774
-        },
-        {
-          "date": "2027-04-24",
-          "cashCents": -122774
-        },
-        {
-          "date": "2027-04-25",
-          "cashCents": -140112
-        },
-        {
-          "date": "2027-04-26",
-          "cashCents": -140112
-        },
-        {
-          "date": "2027-04-27",
-          "cashCents": -140112
-        },
-        {
-          "date": "2027-04-28",
-          "cashCents": -140112
-        },
-        {
-          "date": "2027-04-29",
-          "cashCents": -140112
-        },
-        {
-          "date": "2027-04-30",
-          "cashCents": -140112
+          "cashCents": -75
         }
       ],
       "assumptions": {
@@ -2045,15 +1488,36 @@
     "assessment": {
       "riskLevel": "shortfall",
       "firstShortfallDate": "2026-12-01",
-      "reasons": []
+      "reasons": [
+        "Scenario causes a cash shortfall the baseline does not have"
+      ]
     },
     "recommendations": [
+      {
+        "id": "delay_one_month",
+        "title": "Delay by one month",
+        "action": "Start on 2027-01-01 instead of 2026-12-01",
+        "scenario": {
+          "type": "one_time",
+          "name": "Laptop",
+          "amountCents": 200000,
+          "startDate": "2027-01-01"
+        },
+        "impactMonth6Cents": 0,
+        "impactMinimumCashCents": 57010,
+        "explanation": "Computed by re-running the deterministic forecast with this change.",
+        "assumptions": [
+          "Same baseline flows and variable-spend estimate",
+          "Impacts are measured against the evaluated scenario"
+        ]
+      },
       {
         "id": "cut_discretionary",
         "title": "Cut discretionary spending by $100/month",
         "action": "Spend $100 less per month from 2026-12-01",
+        "scenario": null,
         "impactMonth6Cents": 50000,
-        "impactMinimumCashCents": 48352,
+        "impactMinimumCashCents": 10000,
         "explanation": "Computed by re-running the deterministic forecast with this change.",
         "assumptions": [
           "Same baseline flows and variable-spend estimate",

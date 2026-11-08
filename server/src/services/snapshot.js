@@ -71,10 +71,10 @@ export function buildOverview({ profile, asOf, accounts, loans, flows }) {
     asOf,
     cash: { availableCents: sum(['checking', 'savings']), checkingCents: sum(['checking']), savingsCents: sum(['savings']) }, // retirement/CDs/credit limits are never cash
     totals: { retirementAndInvestmentsCents: sum(['retirement', 'cd', 'investment']), creditCardDebtCents, loanDebtCents, creditLimitCents, unusedCreditCents: creditLimitCents - creditCardDebtCents, netWorthCents: assets - creditCardDebtCents - loanDebtCents },
-    accounts: accounts.map((a) => ({ id: a._id, name: a.name, type: a.type, balanceCents: a.balanceCents, creditLimitCents: a.creditLimitCents, source: a.source })),
+    accounts: accounts.map((a) => ({ id: a._id, name: a.name, type: a.type, balanceCents: a.balanceCents, creditLimitCents: a.creditLimitCents, source: a.source, riskLevel: a.riskLevel ?? null, annualRateBps: a.annualRateBps ?? null, maturityDate: a.maturityDate ?? null, holdingsNote: a.holdingsNote ?? null })),
     loans: loans.map((l) => ({ id: l._id, name: l.name, loanType: l.loanType, outstandingCents: l.outstandingCents, monthlyPaymentCents: l.monthlyPaymentCents, dueDay: l.dueDay, annualRateBps: l.annualRateBps, source: l.source })),
     income: flows.filter((f) => f.kind === 'income').map((f) => ({ name: f.name, amountCents: f.signedAmountCents, grossAmountCents: f.grossAmountCents ?? null, frequency: f.frequency, nextDate: f.nextDate })).sort((a, b) => a.nextDate.localeCompare(b.nextDate)),
-    obligations: flows.filter((f) => f.signedAmountCents < 0).map((f) => ({ name: f.name, kind: f.kind, amountCents: -f.signedAmountCents, frequency: f.frequency, nextDate: f.nextDate, category: f.category })).sort((a, b) => a.nextDate.localeCompare(b.nextDate)),
+    obligations: flows.filter((f) => f.signedAmountCents < 0).map((f) => ({ name: f.name, kind: f.kind, amountCents: -f.signedAmountCents, frequency: f.frequency, nextDate: f.nextDate, category: f.category, loanId: f.loanId ?? null })).sort((a, b) => a.nextDate.localeCompare(b.nextDate)),
   };
 }
 

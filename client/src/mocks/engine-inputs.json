@@ -1,0 +1,260 @@
+{
+  "_note": "MOCK DATA. Forecast engine inputs (services/snapshot.js loadEngine().input) written by `npm run export:mocks`; used only by mock-mode scenario evaluation and recommendations so they match the live engine.",
+  "profiles": {
+    "cash-crunch": {
+      "asOf": "2026-11-08",
+      "openingCashCents": 80000,
+      "flows": [
+        {
+          "name": "Salary",
+          "kind": "income",
+          "category": "income",
+          "signedAmountCents": 320000,
+          "grossAmountCents": 400000,
+          "frequency": "monthly",
+          "nextDate": "2026-11-28",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Car insurance",
+          "kind": "bill",
+          "category": "transport",
+          "signedAmountCents": -18000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-10",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Rent",
+          "kind": "bill",
+          "category": "housing",
+          "signedAmountCents": -140000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-01",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Electric",
+          "kind": "bill",
+          "category": "utilities",
+          "signedAmountCents": -15000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-05",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Streaming",
+          "kind": "bill",
+          "category": "subscriptions",
+          "signedAmountCents": -3000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-12",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Auto loan",
+          "kind": "loan_payment",
+          "category": "debt",
+          "signedAmountCents": -38000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-15",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Credit card payment",
+          "kind": "credit_card_payment",
+          "category": "debt",
+          "signedAmountCents": -25000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-20",
+          "endDate": null,
+          "active": true
+        }
+      ],
+      "variableMonthlySpendCents": 73300,
+      "cashFloorCents": 0
+    },
+    "debt-heavy": {
+      "asOf": "2026-11-08",
+      "openingCashCents": 280000,
+      "flows": [
+        {
+          "name": "Salary",
+          "kind": "income",
+          "category": "income",
+          "signedAmountCents": 150000,
+          "grossAmountCents": 190000,
+          "frequency": "biweekly",
+          "nextDate": "2026-11-18",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Gym",
+          "kind": "bill",
+          "category": "subscriptions",
+          "signedAmountCents": -4000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-21",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Phone",
+          "kind": "bill",
+          "category": "utilities",
+          "signedAmountCents": -7000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-11",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Car insurance",
+          "kind": "bill",
+          "category": "transport",
+          "signedAmountCents": -13000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-14",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Electric",
+          "kind": "bill",
+          "category": "utilities",
+          "signedAmountCents": -12000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-06",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Streaming",
+          "kind": "bill",
+          "category": "subscriptions",
+          "signedAmountCents": -2500,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-16",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Rent",
+          "kind": "bill",
+          "category": "housing",
+          "signedAmountCents": -100000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-01",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Student loan",
+          "kind": "loan_payment",
+          "category": "debt",
+          "signedAmountCents": -30000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-20",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Auto loan",
+          "kind": "loan_payment",
+          "category": "debt",
+          "signedAmountCents": -45000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-09",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Credit card payment",
+          "kind": "credit_card_payment",
+          "category": "debt",
+          "signedAmountCents": -32000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-24",
+          "endDate": null,
+          "active": true
+        }
+      ],
+      "variableMonthlySpendCents": 60300,
+      "cashFloorCents": 0
+    },
+    "steady-saver": {
+      "asOf": "2026-11-08",
+      "openingCashCents": 500000,
+      "flows": [
+        {
+          "name": "Salary",
+          "kind": "income",
+          "category": "income",
+          "signedAmountCents": 120000,
+          "grossAmountCents": 150000,
+          "frequency": "biweekly",
+          "nextDate": "2026-11-20",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Rent",
+          "kind": "bill",
+          "category": "housing",
+          "signedAmountCents": -105000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-01",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Streaming",
+          "kind": "bill",
+          "category": "subscriptions",
+          "signedAmountCents": -1500,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-11-15",
+          "endDate": null,
+          "active": true
+        },
+        {
+          "name": "Electric",
+          "kind": "bill",
+          "category": "utilities",
+          "signedAmountCents": -9000,
+          "grossAmountCents": null,
+          "frequency": "monthly",
+          "nextDate": "2026-12-05",
+          "endDate": null,
+          "active": true
+        }
+      ],
+      "variableMonthlySpendCents": 53067,
+      "cashFloorCents": 0
+    }
+  }
+}

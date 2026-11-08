@@ -85,7 +85,8 @@ Financial-Positioning-System/
 │   │   │   ├── finances.routes.js
 │   │   │   ├── forecast.routes.js
 │   │   │   ├── scenarios.routes.js
-│   │   │   └── explanations.routes.js
+│   │   │   ├── explanations.routes.js
+│   │   │   └── investments.routes.js       # Investment Planner (section 10)
 │   │   ├── services/
 │   │   │   ├── nessie/                 # Nessie fetch + normalizers
 │   │   │   ├── spendingService.js
@@ -93,11 +94,13 @@ Financial-Positioning-System/
 │   │   │   ├── forecastService.js
 │   │   │   ├── scenarioService.js
 │   │   │   ├── recommendationService.js
-│   │   │   └── explanationService.js
+│   │   │   ├── explanationService.js
+│   │   │   └── investments/               # investment service + in-memory plan store (section 10)
 │   │   ├── engine/
 │   │   │   ├── buildCashEvents.js
 │   │   │   ├── runDailyForecast.js
-│   │   │   └── evaluateScenario.js
+│   │   │   ├── evaluateScenario.js
+│   │   │   └── investments/               # pure allocation / CD / portfolio math (section 10)
 │   │   ├── middleware/
 │   │   │   ├── validate.js
 │   │   │   └── errorHandler.js
@@ -223,6 +226,7 @@ An account may be sourced from Nessie or supplemented by demo seed data.
 | `source` | String enum | `nessie`, `supplemental_synthetic` or `user_entered` (created in the app, 5.4) |
 | `externalId` | String or null | Original Nessie record ID; use for upsert |
 | `asOf` | Date | Timestamp of the represented balance |
+| `riskLevel`, `annualRateBps`, `maturityDate`, `holdingsNote` | String enum (`low`/`moderate`/`high`) / Integer bps / `YYYY-MM-DD` / String, all nullable | Optional supplemental investment metadata for CDs and brokerage accounts (section 10); null for Nessie accounts |
 | `createdAt`, `updatedAt` | Date | Mongoose timestamps |
 
 **Derived figures (never persist as duplicate source-of-truth fields):**
@@ -288,7 +292,7 @@ Authoritative **future scheduling inputs** for predictable income and expenses; 
 
 ### 3.3 Scenarios Are Temporary Request Data (Finalized)
 
-A what-if scenario is an **input to the forecasting engine**, not a real transaction, loan, bill, or account update. `POST /scenarios/evaluate` builds and compares a temporary alternate event stream. Nothing in MongoDB changes. The UI can retain the current inputs/results in React state during the current visit, but a refresh may clear them. **Do not create a `scenarios` MongoDB collection or any save/list/history endpoints in the MVP.**
+A what-if scenario is an **input to the forecasting engine**, not a real transaction, loan, bill, or account update. `POST /scenarios/evaluate` builds and compares a temporary alternate event stream. Nothing in MongoDB changes. The UI can retain the current inputs/results in React state during the current visit, but a refresh may clear them. **Do not create a `scenarios` MongoDB collection or any save/list/history endpoints in the MVP.** (Investment Planner proposed plans are a separate, documented exception held in server memory only; see 10.4. They never change financial records.)
 
 ### 3.4 Indexes and Database Rules
 
@@ -326,7 +330,7 @@ These **finalized deterministic** rules must be implemented as pure functions in
 
 **Base URL:** `/api/v1`  
 **Format:** JSON; camelCase fields; money as integer `...Cents` fields; timestamps as ISO 8601; calendar days as `YYYY-MM-DD`.  
-**Auth:** `Public demo` for all MVP endpoints because there is no login. Clients may select only one of the **three seeded profile slugs**; profile balances, recurring income/bills, loans and per-category spending estimates are **editable by anyone** through the routes in 5.4 (no login, so any visitor can change shared demo data). `scenarios/evaluate` and `explanations` stay **stateless** and never mutate records or create scenario history. No public endpoint creates Nessie transactions or resets shared demo records.
+**Auth:** `Public demo` for all MVP endpoints because there is no login. Clients may select only one of the **three seeded profile slugs**; profile balances, recurring income/bills, loans and per-category spending estimates are **editable by anyone** through the routes in 5.4 (no login, so any visitor can change shared demo data). `scenarios/evaluate` and `explanations` stay **stateless** and never mutate records or create scenario history. The Investment Planner's plan/decision routes write only to a temporary **in-memory** store (10.4) and never mutate financial records. No public endpoint creates Nessie transactions or resets shared demo records.
 
 ### 5.1 Endpoint List
 
@@ -335,30 +339,38 @@ These **finalized deterministic** rules must be implemented as pure functions in
 | `GET` | `/api/v1/health` | Service readiness | — | `{ status: "ok" }` |
 | `GET` | `/api/v1/profiles` | Populate profile selector | — | `{ profiles: [{ id, slug, displayName, lastSyncedAt }] }` |
 | `GET` | `/api/v1/profiles/:slug/overview` | Balances, debt, schedules | — | `{ profile, asOf, cash, accounts, loans, obligations, income }` |
-| `GET` | `/api/v1/profiles/:slug/transactions` | History table | `?from=&to=&category=&limit=50` (max 100, newest first) | `{ items }` |
+| `GET` | `/api/v1/profiles/:slug/transactions` | History table | `?from=&to=&category=&accountId=&limit=50` (max 100, newest first) | `{ items }` |
 | `GET` | `/api/v1/profiles/:slug/spending` | Category trends & estimated recurring/variable spend | `?months=3` | `{ period, totalCents, byCategory, fixedMonthlyCents, variableMonthlyCents, incomeMonthlyCents, expensesMonthlyCents, netCashFlowMonthlyCents }` |
 | `GET` | `/api/v1/profiles/:slug/health-metrics` | Three financial health indicators | — | `{ indicators, assumptions }` |
 | `GET` | `/api/v1/profiles/:slug/forecast` | Baseline projections | — | `{ asOf, currency, checkpoints, daily, shortfalls, assumptions }` |
 | `POST` | `/api/v1/profiles/:slug/scenarios/evaluate` | Compare a what-if against baseline | Scenario JSON below | `{ baseline, scenario, deltas, assessment, recommendations }` |
 | `GET` | `/api/v1/profiles/:slug/recommendations` | Quantified next-best actions | — | `{ recommendations }` |
 | `POST` | `/api/v1/profiles/:slug/explanations` | Optional AI / fallback plain-English explanation | `{ subject: "forecast" }` or `{ subject: "scenario", scenario: {...} }` | `{ text, method: "ai" \| "template" }` |
+| `GET`/`POST`/`DELETE` | `/api/v1/investments/assumptions`, `/api/v1/profiles/:slug/investments/...` | Investment Planner (portfolio, CDs, allocation simulation, in-memory plans/decisions) | see section 10 | see section 10 |
 
 For all paths above, `:slug` is the seeded profile slug, not a MongoDB ObjectId. The backend resolves the slug to the internal `_id`; all subsequent queries are scoped by that `_id`. Unknown slugs return `404`.
 
 **Implemented route notes (`server/src/routes/profiles.routes.js`, `server/src/services/snapshot.js`) — read first when an endpoint looks wrong:**
 
 - **Implemented:** every route in 5.1, including `POST /explanations` (template only; see below). Smoke-tested live against Atlas for all three profiles; `snapshot.test.js` covers the pure parts.
-- **Extra/clarified response fields:** `overview` adds `totals` (`retirementAndInvestmentsCents`, `creditCardDebtCents`, `loanDebtCents`, `creditLimitCents`, `unusedCreditCents`, `netWorthCents`); `spending.byCategory` is an array of `{ category, totalCents }` sorted descending; `health-metrics` returns `{ asOf, indicators: { emergencyCoverage: { months }, debtPaymentBurden: { ratio }, cashFlowSafety: { minCashCents, daysBelowFloor } }, assumptions }`, raw values only (no labels yet); `forecast.assumptions` also carries `historyMonths` and `variableMonthlySpendCents`. `overview.income` lists active income flows `{ name, amountCents (net take-home), grossAmountCents, frequency, nextDate }` sorted by `nextDate` (first = next payday). `spending.incomeMonthlyCents` = active income flows' net amount normalised to monthly; `expensesMonthlyCents` = `fixedMonthlyCents` (bills, loan and card payments) + `variableMonthlyCents`; `netCashFlowMonthlyCents` = income − expenses. Savings/retirement contributions are excluded from expenses (money set aside, not spent). These three ignore `?months` (they come from recurring flows and the `historyMonths` estimate, same as the forecast).
+- **Extra/clarified response fields:** `overview` adds `totals` (`retirementAndInvestmentsCents`, `creditCardDebtCents`, `loanDebtCents`, `creditLimitCents`, `unusedCreditCents`, `netWorthCents`); `spending.byCategory` is an array of `{ category, totalCents }` sorted descending; `health-metrics` returns `{ asOf, indicators: { emergencyCoverage: { months }, debtPaymentBurden: { ratio }, cashFlowSafety: { minCashCents, daysBelowFloor } }, assumptions }`, raw values only (no labels yet); `forecast.assumptions` also carries `historyMonths` and `variableMonthlySpendCents`. `overview.obligations[]` items also carry `loanId` (the linked loan's id for `loan_payment` flows, else `null`; added 2026-11-08 so the Loans page can show each loan's next due date — no amount changes, the payment is still counted once in the forecast). `overview.income` lists active income flows `{ name, amountCents (net take-home), grossAmountCents, frequency, nextDate }` sorted by `nextDate` (first = next payday). `spending.incomeMonthlyCents` = active income flows' net amount normalised to monthly; `expensesMonthlyCents` = `fixedMonthlyCents` (bills, loan and card payments) + `variableMonthlyCents`; `netCashFlowMonthlyCents` = income − expenses. Savings/retirement contributions are excluded from expenses (money set aside, not spent). These three ignore `?months` (they come from recurring flows and the `historyMonths` estimate, same as the forecast).
 - **Where the engine input comes from (`loadEngine`):** opening cash = checking + savings; flows = active `recurringCashFlows`; variable spend = transactions in the last `historyMonths` that are spending kinds (`cash_expense`, `credit_purchase`) and **not** `isRecurringCandidate`, divided by `historyMonths`, with `categoryOverridesCents` replacing a category. Bills (rent etc.) count in `spending`/emergency-coverage history but not in the variable estimate (they are flows).
 - **Variable spend differs slightly from the seed's nominal numbers** (e.g. cash-crunch $802 vs $800/mo) because seed amounts use a noise pattern. Forecast numbers from the API therefore differ by a few dollars from the seed dry-run (cash-crunch first shortfall still 2026-11-20, -$65).
-- **Recommendations:** `GET /recommendations` evaluates "spend $100 / $250 less per month from next month" against the baseline, and returns only options that improve month 6 or the lowest cash point. Fixed amounts, not scaled to the shortfall.
-- **Errors:** invalid scenario -> `422 INVALID_SCENARIO`; bad query -> `400 VALIDATION_FAILED`; unknown slug -> `404 PROFILE_NOT_FOUND`; any Mongo/Mongoose error name -> `503 DB_UNAVAILABLE` (see `errorHandler.js`). If a route returns 503 right after start, MongoDB had not connected yet (the server listens before connecting).
+- **Recommendations:** `GET /recommendations` evaluates "spend $100 / $250 less per month from next month" against the baseline, and returns only options that improve month 6 or the lowest cash point. Fixed amounts, not scaled to the shortfall. Each item has a structured `scenario` (a `monthly_spending_reduction` request) so the client can open it in the Simulator; inside `scenarios/evaluate`, `delay_one_month` carries the delayed request (only while the delayed start is on/before the month-6 checkpoint, otherwise `null`) and `cut_discretionary` has `scenario: null`.
+- **Transactions `accountId` filter (added 2026-11-08, banking navigation):** optional; the filter runs in MongoDB (`{ profileId, accountId }`; the existing `(profileId, occurredAt)` index is enough at demo volume, and no index was added so the Atlas schema is unchanged), so `limit` applies to that account's own history, not to the newest 100 overall. It combines with `from`/`to`/`category`. Validation lives in `validators/transactions.js` (pure, unit-tested): a value that is not a 24-hex ObjectId -> `400 VALIDATION_FAILED`; a well-formed id that is not one of **this profile's** accounts -> `404 ACCOUNT_NOT_FOUND` (an id from another profile never returns that profile's data). Savings accounts usually return no items: the seed records transfers to savings on the checking account (section 6), so the UI explains this instead of showing a bare empty table.
+- **Errors:** invalid scenario -> `422 INVALID_SCENARIO`; bad query -> `400 VALIDATION_FAILED`; unknown slug -> `404 PROFILE_NOT_FOUND`; unknown `accountId` for the profile -> `404 ACCOUNT_NOT_FOUND`; any Mongo/Mongoose error name -> `503 DB_UNAVAILABLE` (see `errorHandler.js`). If a route returns 503 right after start, MongoDB had not connected yet (the server listens before connecting).
 - **Rate limiting (`middleware/rateLimit.js`, `express-rate-limit`):** per IP, in memory: 60/min on forecast, health-metrics, scenarios/evaluate, recommendations; 10/min on explanations; over the limit -> `429 RATE_LIMITED`. `app.set('trust proxy', 1)` is required on Render (one proxy hop); if every visitor starts getting 429 together, that setting is wrong for the host. Counters reset on restart and are not shared across instances. The dashboard fires several calls in parallel, so if the demo ever shows 429s raise `calcLimit` rather than removing it. Overview/transactions/spending/profiles are not limited.
 - **Not done yet:** result caching, request-body validation beyond the engine's own scenario checks (no Zod; hand-written), (`explanations` is the strictest-limit candidate).
 - **Explanations (`services/explanationService.js`):** `explain({ subject, facts, assumptions, warnings })` -> `{ text, method: 'template' | 'ai' }`. **No AI provider exists yet**: `adapters` is an empty registry and `AI_PROVIDER` unset/`none`/unknown always yields the template. To add one, register an async function in `adapters` (it must return a string; empty/throwing/over 8 s falls back to the template). Facts passed to a provider are computed numbers only; never pass raw Nessie data or keys. The route builds facts from the engine, so a model can never change a balance or forecast. Scenario text distinguishes a shortfall the scenario *causes* from one the baseline *already has*.
 - **Slug is user input** but only used as a string equality filter (`findOne({ slug })`), so no operator injection; query params are whitelisted/parsed before use.
 
-**Frontend mocks (`client/src/mocks/`):** real responses captured from the synced snapshot by `npm run export:mocks` (`server/scripts/exportMocks.js`): `profiles.json` plus, per slug, `overview`, `transactions` (limit 100), `spending` (3 months), `health-metrics`, `forecast` (174 daily points), `recommendations`, `scenario-one-time` (`{ request, response }` for a $2,000 laptop on 2026-12-01) and `explanation-forecast`. They are a snapshot: if the API shape or seed data changes, re-run the export and commit the diff. Ids are real Mongo ObjectIds; no secrets are present. The client's `lib/api.js` calls the live API; `VITE_USE_MOCKS=true` (dev only) serves these files instead and ignores query params and request bodies, so use it for layout work, not to check numbers.
+**UI status labels (client presentation only):** `health-metrics` returns raw values; the client labels them without changing them: emergency coverage ≥ 3 months *Healthy*, ≥ 1 *Caution*, else *At risk*; debt-payment burden ≤ 20% *Healthy*, ≤ 36% *Caution*, else *At risk*; cash-flow safety *At risk* if `daysBelowFloor > 0`, *Caution* if `minCashCents` < $1,000, else *Healthy*; `null` → *Not enough data*. Scenario `riskLevel` `shortfall` → *Cash shortfall*, `ok` → *No shortfall*.
+
+**Client data mode:** with `VITE_API_BASE_URL` set the client uses the live API only and shows an error when a request fails (no silent mock substitution). Mocks are used only when `VITE_API_BASE_URL` is unset or the URL has `?mock=1` (`?mock=0` returns to live), and the UI labels that mode. There is no `VITE_USE_MOCKS` flag (replaced by this explicit mode). Profile editing (5.4) is **disabled in mock mode** (fixtures are read-only); after a live edit the client invalidates that profile's cached responses and remounts the page so every view refetches. Client response caches are keyed by data mode and pages remount on a mode switch, so cached mock and live data never mix. Local ports follow the team default (server `5000`, `VITE_API_BASE_URL=http://localhost:5000`; Render sets `PORT`). If `:5000` is taken locally (e.g. macOS AirPlay Receiver), set another `PORT` in your ignored `server/.env` and the matching `VITE_API_BASE_URL` in your ignored `client/.env.local`; do not change the shared defaults.
+
+**Client routes (banking navigation, 2026-11-08; layout in `design.md` sections 3, 6a, 6b):** `/` profile picker; under `/p/:slug`: index (Dashboard, nav label "Overview"), `accounts`, `accounts/:accountId`, `loans`, `simulate`, `investments`. Accounts and Loans read only `GET /overview` and `GET /transactions?accountId=`; no new endpoints, no client-side financial math (all balances, totals, APRs and payments are server values; display-only matching of a loan to its payment flow by `loanId` lives in `client/src/lib/navigation.js`). Route/section helpers and the profile-switch rule (same section; account detail -> Accounts list) are pure functions tested in `client/src/lib/navigation.test.js`. The mock layer applies the same `accountId` validation as the server.
+
+**Frontend mocks (`client/src/mocks/`):** real responses captured from the synced snapshot by `npm run export:mocks` (`server/scripts/exportMocks.js`): `profiles.json` plus, per slug, `overview`, `transactions` (limit 100), `spending` (3 months), `health-metrics`, `forecast` (174 daily points), `recommendations`, `scenario-one-time` (`{ request, response }` for a $2,000 laptop on 2026-12-01) and `explanation-forecast`. They are a snapshot: if the API shape or seed data changes, re-run the export and commit the diff. Ids are real Mongo ObjectIds; no secrets are present. Served only in explicit mock mode (see "Client data mode"); the export also writes `engine-inputs.json` (each profile's `loadEngine().input`), and `mocks/index.js` evaluates what-ifs/recommendations with a copy of the server engine (`mocks/engine/`) so mock numbers match live.
 
 ### 5.2 Request and Response Examples
 
@@ -434,7 +446,7 @@ Content-Type: application/json
 }
 ```
 
-**Recommendation item:** `{ id, title, action, impactMonth6Cents, impactMinimumCashCents, explanation, assumptions }`, where impacts come from the engine, not the LLM.
+**Recommendation item:** `{ id, title, action, scenario, impactMonth6Cents, impactMinimumCashCents, explanation, assumptions }`, where impacts come from the engine, not the LLM. `action` is display text. `scenario` is the exact `POST /scenarios/evaluate` body that tries the suggestion on its own (the UI's "Try it"), or `null` when the suggestion only applies on top of the scenario being evaluated (e.g. `cut_discretionary` inside a scenario response).
 
 ### 5.4 Profile Editing (added 2026-11-07)
 
@@ -518,28 +530,28 @@ Nessie provides synthetic customer/accounts, deposits, withdrawals, transfers, p
 **Seed script notes (`server/scripts/`) — read first when the demo numbers look wrong:**
 
 - **Files:** `demoData.js` (the 3 profiles, `ASOF = 2026-11-08`), `seedPlan.js` (pure builder: records + engine flows, tested offline), `seedDemoProfiles.js` (CLI). `npm run seed` is a **dry-run** that validates every payload and prints the forecast/indicators per profile; `npm run seed -- --post` really writes. Posting is **permanent** (no Nessie DELETE).
-- **Seeded on 2026-11-08 (do not re-run `--post`):** `steady-saver` `f8482db3-8ca0-4bba-b67c-00e3dc47676c`, `debt-heavy` `9011b99e-4935-4407-a443-bc3e7d594357`, `cash-crunch` `3065929a-7bda-4f8f-a4b5-1f71c8c3764d`. Read-back per customer: checking has deposits/withdrawals/bills/loans/transfers/purchases counts of 7|3 / 18-20 / 4 / 1-2 / 3 / 20, the card has 28 purchases; balances match `demoData.js`. If the numbers in `demoData.js` are changed later, Nessie will NOT update (no DELETE): the sync must either use the new data via a fresh customer or `demoData.js` must be reverted to match what is in Nessie.
-- **Retuning:** after editing numbers in `demoData.js`, run the dry-run and `npm test`; `seedPlan.test.js` asserts the contrast (saver: no shortfall; debt-heavy: burden > 25%; cash-crunch: shortfall days while the first month-end is still positive).
-- **Idempotency / orphans:** `--post` skips any slug whose `nessieCustomerId` is already in MongoDB. If a post fails mid-way, the script prints an **orphan Nessie customer id** that is *not* saved in MongoDB. Do not re-run blindly (it creates a second customer): record the failure, then fix the cause and re-run (a new customer is created; the orphan is harmless but cannot be deleted).
+- **Current customers (re-seeded 2026-11-08 with `--post --replace` for the retuned demo stories; do not re-run `--post`):** `steady-saver` `73942d22-a0b2-4be2-9091-8493482fce0d` (70 records), `debt-heavy` `8f45c9a6-da52-40aa-b48a-6b78f197145b` (92), `cash-crunch` `ddf90d25-d20e-4679-ba6a-f22b2014d038` (77). Earlier customers `f8482db3-…`, `9011b99e-…`, `3065929a-…` are unused orphans in Nessie; never map a profile to them. Synced counts: 67 / 84 / 72 transactions; steady-saver has no loans and no card-payment flow.
+- **Retuning:** after editing numbers in `demoData.js`, run the dry-run and `npm test`; `seedPlan.test.js` asserts the contrast (steady-saver: no shortfall, no loan or card-payment flow; debt-heavy: burden > 25% and no shortfall; cash-crunch: shortfall days while the first month-end is still positive). Changing numbers needs new Nessie customers (`--post --replace`), because posted records cannot be edited.
+- **Idempotency / orphans:** `--post` skips any slug whose `nessieCustomerId` is already in MongoDB. `--post --replace` posts a **new** customer per slug anyway; only after that customer is fully posted does it delete the profile's `accounts`, `transactions`, `loans` and `recurringCashFlows` (all sources, including user edits), reset `categoryOverridesCents` and `lastSyncedAt`, and store the new id; then run `npm run sync:nessie`. Each `--replace` run leaves the previous customers in Nessie as unused orphans. If a post fails mid-way, the script prints an **orphan Nessie customer id** that is *not* saved in MongoDB and the old snapshot stays. Do not re-run blindly: record the failure, fix the cause, then re-run.
 - **What lives where:** deposits/withdrawals/transfers/purchases/bills/loans and balances go to Nessie. Credit limit and 401(k) are `supplemental` in `demoData.js` (written to MongoDB by the future sync, labeled `supplemental_synthetic`).
 - **Account layout:** everything is posted on the **checking** account except card purchases (card account). Loans live on checking (loan GET has no account id); transfers are posted on checking only (description `Transfer to Savings [grp:<slug>-<date>]`), so the savings side has no matching record: sync must derive both sides from the token.
 - **Classification the sync must apply (from descriptions):** `Payroll deposit` -> income; `Bill: <nickname>` -> bill (category from the bill, see `demoData.js`); `Loan payment: <name>` -> loan_payment; `Credit card payment [card]` -> credit_payment; `[grp:...]` -> internal_transfer. Merchants are **Kroger** (groceries), **Shell** (transport), **Chipotle** (dining), **Arcade Alley** (entertainment) by fixed ids; the sandbox's merchant categories are inconsistent (`Groceries`/`groceries`/`Grocery`, `Dining`/`dining`/`Eating out`), so map by merchant, not by raw category string.
 - **Engine inputs vs. transfers:** the checking->savings transfer is **not** an engine flow (net cash change is zero). Card purchases are inside `variableMonthlySpendCents`; the card payment flow only covers the carried balance (no double count).
 - **Deterministic:** purchase amounts use a fixed 5-value pattern, never `Math.random`. Monthly days must stay <= 28.
 - **Dates:** all history is back-dated 91 days from `ASOF`; Nessie `creation_date` will show the real posting day and must be ignored.
-- **Known quirk:** `cash-crunch` runs about 100 days below $0 in the horizon (min about -$1.9k) because pay is monthly (28th) and outflows are front-loaded; soften `spend` or `bills` in `demoData.js` if that looks too extreme on stage.
+- **Demo stories (retuned 2026-11-08):** `steady-saver` = simple (one biweekly $1,200 paycheck, rent + 2 bills, no loans, card paid in full so `cardPayment: null` and no card-payment flow; never below $0, cash grows from about $5k to $10.7k). `debt-heavy` = loans + recurring payments (auto + student loan, carried card balance, 6 bills; debt burden 26%, emergency coverage 1.0 mo, no shortfall). `cash-crunch` = monthly pay on the 28th with front-loaded outflows: dips below $0 for about a week before each payday (first 2026-11-20, min about -$409, 41 days in the horizon) while every month-end is positive.
 
 **Sync notes (`server/scripts/syncNessie.js`, `server/src/services/nessie/normalize.js`) — read first when MongoDB data looks wrong:**
 
 - **Run:** `npm run sync:nessie` (add `-- --dry` to fetch and check without writing). It reads each `demoProfiles` row that has a `nessieCustomerId`. Safe to re-run: it upserts by `(profileId, source, externalId)`; verified that two runs leave identical counts (steady-saver 76 tx, debt-heavy 78, cash-crunch 72).
 - **Two phases:** fetch + normalize + checks for **all** profiles first; DB writes only if everything passed, so a Nessie failure keeps the previous snapshot. `lastSyncedAt` is set per profile only after its writes finish.
 - **Checks that abort the sync (`issues`):** a deposit/withdrawal description it does not recognize, a transfer without a `[grp:...]` token, an unknown merchant id, a loan without supplemental terms, or a loan whose `monthly_payment` differs from its latest `Loan payment:` withdrawal (the "seed fails loudly" rule). If a new record type is ever seeded, add its classification in `normalize.js` first.
-- **Supplemental fields (labeled):** credit limit (on the card account), 401(k) account (`source: supplemental_synthetic`, externalId `<slug>:401k`), gross pay, loan `dueDay` and `annualRateBps`, bill categories. Source of truth is `scripts/demoData.js`. Note the credit-card and loan rows keep `source: nessie` even though some fields are supplemental.
+- **Supplemental fields (labeled):** credit limit (on the card account), 401(k) account (`source: supplemental_synthetic`, externalId `<slug>:401k`), Investment Planner holdings from `supplemental.investments` (CDs/brokerage, externalId `<slug>:<key>`, section 10), gross pay, loan `dueDay` and `annualRateBps`, bill categories. Source of truth is `scripts/demoData.js`. Note the credit-card and loan rows keep `source: nessie` even though some fields are supplemental.
 - **Derived, not provided:** income frequency (all deposit gaps <= 15 days -> biweekly, else monthly) and amount (latest deposit); card-payment flow (latest `Credit card payment` withdrawal); `nextDate` for bills/loans/card payment comes from the day-of-month plus `asOfDate`, never Nessie's `upcoming_payment_date`.
 - **Not created on purpose:** no recurring flow for the checking->savings transfer (zero net cash); card purchases are `credit_purchase` with `cashImpactCents = 0`.
 - **No deletes:** the sync only upserts, so a record removed from Nessie would linger in MongoDB. Nessie has no DELETE and the seed is final, so this is acceptable; if data is ever re-seeded, clear the profile's collections first (with confirmation).
 - **Category mapping:** merchant key -> category: groceries->groceries, transport->transport, entertainment->entertainment, dining->`other` (no dining category in the enum; counts as discretionary). `occurredAt` is stored at 12:00 UTC so the calendar day survives timezones.
-- **Check:** `scripts/syncNormalize.test.js` rebuilds fake Nessie responses from the seed plan and asserts the synced flows equal the seed plan's engine flows. Feeding the synced flows into `forecast()` reproduces the dry-run numbers (first shortfall 2026-11-20 / 2027-03-09 / none; month-6 cash $1139 / $606 / $22518).
+- **Check:** `scripts/syncNormalize.test.js` rebuilds fake Nessie responses from the seed plan and asserts the synced flows equal the seed plan's engine flows. Feeding the synced flows into `forecast()` reproduces the dry-run numbers (first shortfall none / none / 2026-11-20; month-6 cash about $10,671 / $3,850 / $3,150 for steady-saver / debt-heavy / cash-crunch).
 
 **Suggested import order:**
 
@@ -585,6 +597,7 @@ Commit `.env.example` files but **never** commit real `.env` files or API keys. 
 - A scenario exists only in the evaluation request/response or current client memory; a subsequent profile read shows unchanged financial data and no saved scenario history.
 - An unconfigured/failed AI provider uses a safe deterministic template-based explanation rather than crashing the demo.
 - API returns a predictable error for invalid profile slug, scenario amounts, and dates.
+- Investment Planner: allocations total exactly 100%; liquid cash never appears in the portfolio total; supplemental CDs/brokerage leave cash-flow results unchanged; approvals report `executed: false` and change no balance; plans reset when the store is cleared.
 
 ## 9. Finalized Engineering Decisions
 
@@ -601,3 +614,110 @@ These decisions have been confirmed for the HackUTD MVP. They are **not open que
 **No additional engineering decisions are required to begin the MVP.** If a new choice becomes necessary during development, document it here and keep the corresponding routes, models, tests, and `phases.md` consistent.
 
 **Engineering priority:** Ship **Nessie → MongoDB → three editable demo profiles → deterministic forecast → temporary what-if comparison → quantified recommendation**, with provider-neutral explanations and a reliable fallback, before adding optional features.
+
+## 10. Investment Planner (Approved Extension)
+
+Team-approved addition (2026-11-07; integrated with the canonical MongoDB profiles 2026-11-08) on top of the PNC MVP. It explains **long-term holdings** (investments, retirement accounts, CDs) separately from spendable cash and lets a user try **hypothetical** allocations. It never executes trades, transfers, CD renewals, or notifications.
+
+### 10.1 Rules
+
+- **Separate from cash:** investment, retirement and CD balances are never added to `availableCashCents`. The portfolio response reports liquid cash in its own `liquidCash` field and excludes it from `totalLongTermCents`.
+- **Hypothetical, labeled assumptions:** returns, volatility, stress shocks and the CD renewal rate are fixed synthetic numbers in `server/src/engine/investments/assumptions.js`, returned by `GET /investments/assumptions` and echoed in each simulation (`assumptions`). They are not market data, forecasts, or advice. Every response carries a `disclaimer`.
+- **Server-side math:** pure functions in `server/src/engine/investments/` (no Express/Mongo). Money is integer cents, rates are integer basis points, allocations are integer percents that must total exactly 100.
+- **Deterministic:** same inputs → same outputs. Yearly values are `round(amountCents × (1 + r)^year)` with `r` the allocation-weighted scenario return; no randomness.
+- **No execution:** approval only records a decision. Every plan/decision response includes `executed: false`.
+- **Data source:** holdings are the profile's `accounts` documents, read through `services/snapshot.js` `loadSnapshot(slug)` (the same read the Dashboard overview uses), so balances, names, `asOf` and totals always match `GET /overview`. Profiles are the canonical slugs `cash-crunch`, `debt-heavy`, `steady-saver`.
+- **Supplemental holdings:** CDs and brokerage accounts are **supplemental synthetic** (Nessie has none). They are defined in `scripts/demoData.js` (`supplemental.investments`), turned into accounts by `services/nessie/normalize.js` (externalId `<slug>:<key>`, `source: "supplemental_synthetic"`), and written by the normal `npm run sync:nessie` upsert. The existing 401(k) (`<slug>:401k`) is unchanged and has no `riskLevel`, so it is shown as "moderate (assumed)". Optional `Account` fields used here: `riskLevel`, `annualRateBps`, `maturityDate`, `holdingsNote` (null for Nessie cash/credit accounts). They are display/scheduling metadata, never cash.
+- **Profile edits (5.4):** editing an account (`PUT /profiles/:slug/accounts/:id`, name/balance/limit only) changes what the Planner shows on the next read, and its investment metadata is kept. Edits never create investment accounts; supplemental holdings come only from the sync.
+- **Effect on other numbers:** none on cash flow (opening cash is checking + savings only; no recurring flows are added). `overview.totals.retirementAndInvestmentsCents` and `netWorthCents` include the new holdings, exactly like the 401(k).
+- **Code:** `routes/investments.routes.js` (thin; `createInvestmentRouter({ loadSnapshot })` for tests), `services/investments/investmentService.js`, `services/investments/planStore.js`, `validators/investments.js`, pure `engine/investments/*`. Tests: `engine/investments/investments.test.js`, `routes/investments.routes.test.js` (canonical `demoData.js` profiles, no MongoDB). Rate limit: `calcLimit` on simulate and plan save.
+
+### 10.2 Endpoints
+
+All under `/api/v1`. Unknown slug → `404 PROFILE_NOT_FOUND` (from `loadSnapshot`); bad input → `400 VALIDATION_FAILED` with `details.field`; unknown plan/CD → `404 PLAN_NOT_FOUND` / `CD_NOT_FOUND`; deciding an already-decided plan → `409 PLAN_ALREADY_DECIDED`.
+
+| Method | Path | Notes |
+| --- | --- | --- |
+| `GET` | `/investments/assumptions` | Global, not profile-specific |
+| `GET` | `/profiles/:slug/investments/portfolio` | Pie groups + per-account detail |
+| `GET` | `/profiles/:slug/investments/cds` | Sorted by maturity; includes stored decisions |
+| `POST` | `/profiles/:slug/investments/allocations/simulate` | Stateless |
+| `GET` / `POST` | `/profiles/:slug/investments/plans` | List / save (`201`), max 20 plans per profile |
+| `POST` | `/profiles/:slug/investments/plans/:planId/decision` | `pending` → `approved` \| `rejected` only |
+| `DELETE` | `/profiles/:slug/investments/plans/:planId` | |
+| `POST` / `DELETE` | `/profiles/:slug/investments/cds/:accountId/decision` | `action`: `move_to_savings` \| `renew_12` \| `decide_later` |
+
+**Request bounds:** `allocation` = `{ usStocks, intlStocks, bonds, cdsCash }`, each an integer 0–100, summing to 100. `amountCents` positive integer ≤ 1,000,000,000 (≤ $10M). `years` integer 1–30. Plan `name` ≤ 60 characters (default generated).
+
+### 10.3 Response Shapes
+
+```json
+// GET /profiles/steady-saver/investments/portfolio   (account ids are Mongo ObjectId strings)
+{
+  "profile": { "slug": "steady-saver", "displayName": "Maya Chen" },
+  "asOf": "2026-11-08",
+  "liquidCash": { "availableCashCents": 1750000, "includedInPortfolio": false, "note": "Checking + savings ..." },
+  "totalLongTermCents": 3970000,
+  "groups": [
+    { "id": "investment", "label": "Investments", "totalCents": 420000, "shareBps": 1058, "accountIds": ["..."] },
+    { "id": "retirement", "label": "Retirement", "totalCents": 2800000, "shareBps": 7053, "accountIds": ["..."] },
+    { "id": "cd", "label": "CDs", "totalCents": 750000, "shareBps": 1889, "accountIds": ["...", "..."] }
+  ],
+  "accounts": [
+    { "id": "...", "name": "12-Month CD", "type": "cd", "group": "cd", "balanceCents": 500000,
+      "riskLevel": "low", "riskLabel": "Low risk", "riskIsAssumed": false, "riskNote": "...",
+      "annualRateBps": 425, "maturityDate": "2027-02-15", "daysToMaturity": 99, "holdingsNote": null,
+      "source": "supplemental_synthetic" }
+  ],
+  "disclaimer": "..."
+}
+```
+
+```json
+// POST /profiles/:slug/investments/allocations/simulate
+// body { "allocation": { "usStocks": 45, "intlStocks": 15, "bonds": 30, "cdsCash": 10 }, "amountCents": 1000000, "years": 10 }
+{
+  "input": { "allocation": {}, "amountCents": 1000000, "years": 10 },
+  "risk": { "volatilityBps": 1175, "band": "elevated", "label": "Elevated" },
+  "scenarios": [ { "id": "base", "label": "Middle case", "annualReturnBps": 541, "finalValueCents": 1693628 } ],
+  "projection": [ { "year": 0, "low": 1000000, "base": 1000000, "high": 1000000 } ],
+  "stress": { "shockBps": -1980, "lossCents": -198000 },
+  "assumptions": { "label": "Hypothetical", "assetClasses": [], "returnScenarios": [] },
+  "disclaimer": "..."
+}
+```
+
+```json
+// GET /profiles/:slug/investments/cds
+{
+  "asOf": "2026-11-08",
+  "reminderLeadDays": 14,
+  "cds": [
+    { "accountId": "...", "name": "6-Month CD", "principalCents": 250000, "annualRateBps": 410,
+      "maturityDate": "2026-12-12", "daysToMaturity": 34, "reminderDate": "2026-11-28", "status": "upcoming",
+      "options": [
+        { "id": "move_to_savings", "label": "Move to high-yield savings", "addsToAvailableCashCents": 250000, "effectiveDate": "2026-12-12" },
+        { "id": "renew_12", "label": "Renew for 12 months", "hypotheticalRateBps": 375, "estimatedInterestCents": 9375, "addsToAvailableCashCents": 0 },
+        { "id": "decide_later", "label": "Decide closer to the date", "addsToAvailableCashCents": 0 }
+      ],
+      "decision": null }
+  ],
+  "storage": { "type": "memory", "resetsOnRestart": true, "note": "..." },
+  "disclaimer": "..."
+}
+```
+
+`accountId` is the account's Mongo `_id` string. `status` is `upcoming` (> 30 days), `due_soon` (0–30 days) or `matured` (< 0). CDs without a `maturityDate` are listed in `undatedCds` instead.
+
+**Plan object:** `{ id, name, status: "pending" | "approved" | "rejected", allocation, amountCents, years, risk, scenarios, createdAt, decidedAt, executed: false }`. **CD decision object:** `{ accountId, action, decision: "approved" | "rejected", decidedAt, executed: false }`.
+
+### 10.4 Temporary Plan Storage (MVP)
+
+Proposed plans and CD decisions live in a **process-memory** store (`services/investments/planStore.js`), keyed by profile slug. There is **no Mongo collection**. Consequences, which the UI must state:
+
+- **Everything resets when the server restarts or redeploys** (Render restarts included), and multiple server instances would not share it.
+- Every viewer of the public demo shares the same store for a given profile.
+- "Move to savings" approval does **not** change balances or the cash forecast; it is a recorded intent only.
+- Each list/save/decision response includes `storage: { type: "memory", resetsOnRestart: true, note }`.
+
+Promoting plans to a persisted collection is a deliberate future change and must update this section first.

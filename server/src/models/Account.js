@@ -11,6 +11,11 @@ const accountSchema = new mongoose.Schema(
     source: { type: String, required: true, enum: SOURCES },
     externalId: { type: String, default: null },
     asOf: { type: Date, required: true },
+    // Optional supplemental investment metadata (engineering.md section 10); null for cash/credit accounts.
+    riskLevel: { type: String, enum: ['low', 'moderate', 'high', null], default: null },
+    annualRateBps: { type: Number, default: null, validate: { validator: (v) => v === null || Number.isInteger(v), message: '{PATH} must be integer bps' } },
+    maturityDate: { type: String, default: null, match: /^\d{4}-\d{2}-\d{2}$/ },
+    holdingsNote: { type: String, default: null },
   },
   { timestamps: true },
 );

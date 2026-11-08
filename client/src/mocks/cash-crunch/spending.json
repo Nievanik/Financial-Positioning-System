@@ -4,7 +4,7 @@
     "to": "2026-11-08",
     "months": 3
   },
-  "totalCents": 789600,
+  "totalCents": 747900,
   "byCategory": [
     {
       "category": "housing",
@@ -12,32 +12,32 @@
     },
     {
       "category": "groceries",
-      "totalCents": 125100
+      "totalCents": 119200
     },
     {
       "category": "transport",
-      "totalCents": 98400
-    },
-    {
-      "category": "utilities",
-      "totalCents": 54000
+      "totalCents": 89300
     },
     {
       "category": "other",
-      "totalCents": 53500
+      "totalCents": 47400
+    },
+    {
+      "category": "utilities",
+      "totalCents": 45000
     },
     {
       "category": "entertainment",
-      "totalCents": 23600
+      "totalCents": 18000
     },
     {
       "category": "subscriptions",
-      "totalCents": 15000
+      "totalCents": 9000
     }
   ],
-  "fixedMonthlyCents": 251000,
-  "variableMonthlyCents": 80200,
-  "incomeMonthlyCents": 300000,
-  "expensesMonthlyCents": 331200,
-  "netCashFlowMonthlyCents": -31200
+  "fixedMonthlyCents": 239000,
+  "variableMonthlyCents": 73300,
+  "incomeMonthlyCents": 320000,
+  "expensesMonthlyCents": 312300,
+  "netCashFlowMonthlyCents": 7700
 }
