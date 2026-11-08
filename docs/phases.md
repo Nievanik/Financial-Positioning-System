@@ -78,6 +78,7 @@
 - [x] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
 - [x] Handle loading, empty, error, and profile-switch states clearly. *(Per-card skeleton/error+retry; backend-down banner checked; profile switch aborts in-flight requests.)*
 - [x] **Edit profile data** (scope change 2026-11-07, `engineering.md` 5.4): "Edit data" dialog in the top bar edits balances, income/bills (rent etc.), loans (with their single payment flow) and monthly spending estimates; the dashboard refetches after each save. Verified live against Atlas (forecast moves with each edit, test edits reverted). *(Not done: no route-level tests (validators are unit-tested in `services/edits.test.js`); no undo, so reset shared data with `npm run sync:nessie`, which also overwrites edits to Nessie rows but does not remove `user_entered` rows; mocks have no `/editable`, so the dialog shows an error in mock mode.)*
+  - [x] Option A integration (2026-11-08, `feature/demo-hybrid`): editor ported into the three-page app's design system (header "Edit data"; disabled with an explanation in mock mode); every save clears the client cache and remounts the page so the Dashboard, Simulator and Investment Planner all refetch. Verified on a disposable local MongoDB (not Atlas): balance, CD, bill add/delete and spending-estimate edits update cash, long-term totals, net worth and the forecast on every page.
 
 **Exit gate:** A judge can select a profile, understand its current position, inspect spending and health indicators, and see its future cash outlook using real backend results.
 
@@ -99,7 +100,7 @@
 - [x] Backend: `routes/investments.routes.js` + `services/investments/` + pure `engine/investments/` (portfolio grouping, CD timeline, hypothetical allocation simulation), in-memory proposed plans and CD decisions (`executed: false`, reset on restart); route + engine tests run without MongoDB.
 - [x] Data: CD and brokerage holdings added as `supplemental_synthetic` accounts via `demoData.js` → `normalize.js` (401(k) and cash-flow numbers unchanged; seed dry-run identical).
 - [ ] **Run `npm run sync:nessie -- --dry`, then `npm run sync:nessie` against Atlas (needs explicit approval)** so the new holdings exist in MongoDB; then `npm run export:mocks`.
-- [ ] UI wired to the live investment endpoints (client patch on `feature/sabik-dashboard`).
+- [x] UI wired to the live investment endpoints (three-page app; merged in `feature/demo-hybrid`).
 
 **Stretch — only after the PNC + Nessie core is fully working:**
 - [ ] Add a Toyota scenario type or profile with labeled synthetic vehicle and financing data (this requires updating `engineering.md`, which currently fixes exactly 3 profiles).

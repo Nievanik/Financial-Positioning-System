@@ -1,85 +1,59 @@
-// Pure helpers only (no React/aliases), so Node's built-in runner is enough: npm test
-import { test } from 'node:test'
+// Pure client helpers (no React, no `@/` aliases), so Node's built-in runner is enough: npm test
 import assert from 'node:assert/strict'
-import { floorInView, niceTicks } from './chart.js'
-import { addDays, money, moneyCompact, titleCase } from './format.js'
+import { test } from 'node:test'
+import { adaptHealthMetrics, adaptOverview } from './apiAdapters.js'
+import { addDays, addMonths, daysBetween, formatDay } from './dates.js'
+import { indicatorStatus } from './indicatorLabels.js'
+import { centsToInput, dollarsToCents, formatCents } from './money.js'
 
-test('niceTicks covers the range with 2-7 round ticks, including a flat line', () => {
-  for (const [lo, hi] of [[-187192, 274984], [1683369, 2298329], [-24098, 291662], [5000, 5000], [0, 120]]) {
-    const t = niceTicks(lo, hi)
-    assert.ok(t[0] <= lo && t.at(-1) >= hi && t.length >= 2 && t.length <= 7, `${lo}..${hi}: ${t}`)
-  }
-  assert.deepEqual(niceTicks(-187192, 274984), [-200000, 0, 200000, 400000])
+test('money: dollar text <-> integer cents without float drift; display formatting', () => {
+  assert.equal(dollarsToCents('2,000'), 200000)
+  assert.equal(dollarsToCents('0.1'), 10)
+  assert.equal(dollarsToCents('19.99'), 1999)
+  assert.equal(dollarsToCents('abc'), null)
+  assert.equal(dollarsToCents('1.234'), null)
+  assert.equal(centsToInput(520), '5.20')
+  assert.equal(centsToInput(200000), '2000')
+  assert.equal(centsToInput(null), '')
+  assert.equal(formatCents(-134229, { whole: true }), '−$1,342')
+  assert.equal(formatCents(50000, { whole: true, signed: true }), '+$500')
 })
 
-test('floor is only kept in view when the balance comes near it', () => {
-  assert.equal(floorInView(1683369, 2298329, 0), false)
-  assert.equal(floorInView(-187192, 274984, 0), true)
+test('dates: calendar days stay calendar days (no timezone shift), month clipping', () => {
+  assert.equal(addDays('2026-11-08', 1), '2026-11-09')
+  assert.equal(addMonths('2027-01-31', 1), '2027-02-28')
+  assert.equal(daysBetween('2026-11-08', '2026-12-12'), 34)
+  assert.equal(formatDay('2026-11-30'), 'Nov 30, 2026')
 })
 
-test('format: cents to dollars, date math across month/year', () => {
-  assert.equal(money(105000), '$1,050')
-  assert.equal(money(-1095000), '-$10,950')
-  assert.equal(money(6842, { exact: true }), '$68.42')
-  assert.equal(moneyCompact(3240000), '$32.4k')
-  assert.equal(addDays('2026-12-25', 10), '2027-01-04')
-  assert.equal(titleCase('credit_card'), 'Credit card')
+test('indicator labels use the documented thresholds and never change values', () => {
+  assert.equal(indicatorStatus('emergencyCoverage', { months: 3 }), 'good')
+  assert.equal(indicatorStatus('emergencyCoverage', { months: 0.35 }), 'risk')
+  assert.equal(indicatorStatus('debtPaymentBurden', { ratio: 0.29 }), 'caution')
+  assert.equal(indicatorStatus('cashFlowSafety', { minCashCents: 5000000, daysBelowFloor: 1 }), 'risk')
+  assert.equal(indicatorStatus('cashFlowSafety', { minCashCents: 50000, daysBelowFloor: 0 }), 'caution')
+  assert.equal(indicatorStatus('emergencyCoverage', { months: null }), 'unknown')
+  const h = adaptHealthMetrics({ indicators: { emergencyCoverage: { months: 0.349 }, debtPaymentBurden: { ratio: 0.18 }, cashFlowSafety: { minCashCents: -187192, daysBelowFloor: 100 } } })
+  assert.deepEqual(h.indicators.map((i) => [i.id, i.value, i.status]), [
+    ['emergency_coverage', 0.349, 'risk'],
+    ['debt_payment_burden', 0.18, 'good'],
+    ['cash_flow_safety', -187192, 'risk'],
+  ])
 })
 
-test('health thresholds (engineering.md section 4 rule 6), including boundaries and nulls', async () => {
-  const { coverage, burden, safety } = await import('./health.js')
-  assert.deepEqual([0.35, 0.99, 1, 2.99, 3, 7.4].map((m) => coverage(m).tone), ['bad', 'bad', 'watch', 'watch', 'good', 'good'])
-  assert.deepEqual([0.12, 0.199, 0.2, 0.36, 0.361].map((r) => burden(r).tone), ['good', 'good', 'watch', 'watch', 'bad'])
-  assert.equal(coverage(null).tone, 'none')
-  assert.equal(burden(null).tone, 'none')
-  const opts = { floorCents: 0, forecastDays: 174 }
-  assert.equal(safety({ minCashCents: 1683369, daysBelowFloor: 0 }, opts).tone, 'good')
-  assert.equal(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).tone, 'bad')
-  assert.ok(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).meter <= 1 / 3)
-  assert.ok(safety({ minCashCents: -24098, daysBelowFloor: 7 }, opts).meter > safety({ minCashCents: -9, daysBelowFloor: 100 }, opts).meter)
-  assert.equal(safety({ minCashCents: -1, daysBelowFloor: 174 }, opts).meter, 0.05)
-})
-
-test('spending: top 4 named categories, the rest (and the API "other") folded into Other', async () => {
-  const { topCategories } = await import('./finance.js')
-  const rows = [['housing', 420000], ['groceries', 125100], ['transport', 98400], ['other', 60000], ['utilities', 54000], ['entertainment', 23600], ['subscriptions', 15000]]
-    .map(([category, totalCents]) => ({ category, totalCents }))
-  const top = topCategories(rows)
-  assert.deepEqual(top.map((c) => c.category), ['housing', 'groceries', 'transport', 'utilities', 'other'])
-  assert.equal(top.at(-1).totalCents, 60000 + 23600 + 15000)
-  assert.equal(top.reduce((s, c) => s + c.totalCents, 0), rows.reduce((s, c) => s + c.totalCents, 0))
-  assert.deepEqual(topCategories(rows.slice(0, 2)).map((c) => c.category), ['housing', 'groceries'])
-})
-
-test('transactions: seed tags stripped, signs by cashflow kind', async () => {
-  const { txName, txSign } = await import('./finance.js')
-  assert.equal(txName({ merchantName: '', description: 'Transfer to Savings [grp:cash-crunch-2026-10-28]' }), 'Transfer to Savings')
-  assert.equal(txName({ merchantName: '', description: 'Credit card payment [card]' }), 'Credit card payment')
-  assert.equal(txName({ merchantName: 'Kroger', description: 'Kroger' }), 'Kroger')
-  assert.deepEqual(['income', 'internal_transfer', 'credit_purchase', 'loan_payment'].map((k) => txSign({ cashflowKind: k })), ['+', '', '−', '−'])
-})
-
-test('what-if form -> API body in integer cents, start months after asOf', async () => {
-  const { toRequest, startMonths } = await import('./scenario.js')
-  const { prettyDates } = await import('./format.js')
-  const form = { amount: 2000, downPayment: 1500.5, monthly: 300, duration: 6, startDate: '2026-12-01' }
-  assert.deepEqual(toRequest({ ...form, type: 'one_time' }), { type: 'one_time', name: 'One-time purchase', startDate: '2026-12-01', amountCents: 200000 })
-  assert.deepEqual(toRequest({ ...form, type: 'down_payment_recurring' }), {
-    type: 'down_payment_recurring', name: 'Financed purchase', startDate: '2026-12-01', downPaymentCents: 150050, monthlyAmountCents: 30000, durationMonths: 6,
+test('overview adapter: income is a positive inflow, obligations negative, totals untouched', () => {
+  const o = adaptOverview({
+    cash: { availableCents: 105000, checkingCents: 90000, savingsCents: 15000 },
+    totals: { retirementAndInvestmentsCents: 365000, netWorthCents: -850000, creditCardDebtCents: 220000, creditLimitCents: 400000, unusedCreditCents: 180000, loanDebtCents: 1100000 },
+    accounts: [{ id: 'a1', type: 'cd', balanceCents: 200000, maturityDate: '2026-12-20' }],
+    income: [{ name: 'Salary', amountCents: 300000, grossAmountCents: 370000, frequency: 'monthly', nextDate: '2026-11-28' }],
+    obligations: [{ name: 'Rent', kind: 'bill', amountCents: 140000, frequency: 'monthly', nextDate: '2026-12-01' }],
   })
-  assert.equal(toRequest({ ...form, type: 'monthly_spending_reduction' }).monthlyAmountCents, 30000)
-  assert.deepEqual(startMonths('2026-11-08'), ['2026-12-01', '2027-01-01', '2027-02-01', '2027-03-01', '2027-04-01'])
-  assert.equal(startMonths('2026-12-31')[0], '2027-01-01')
-  assert.equal(prettyDates('Start on 2027-01-01 instead'), 'Start on Jan 1, 2027 instead')
-})
-
-test('money form inputs round-trip to integer cents and reject bad input', async () => {
-  const { fromInput, toInput } = await import('./format.js')
-  assert.equal(fromInput('$1,500.5'), 150050)
-  assert.equal(fromInput('19.99'), 1999)
-  assert.equal(fromInput('7.8%'), 780)
-  for (const bad of ['', '-5', '1.234', 'abc']) assert.ok(Number.isNaN(fromInput(bad)), bad)
-  assert.equal(toInput(150000), '1500')
-  assert.equal(toInput(1999), '19.99')
-  assert.equal(toInput(null), '')
+  assert.equal(o.cash.availableCashCents, 105000)
+  assert.equal(o.cash.longTermCents, 365000)
+  assert.equal(o.income[0].signedAmountCents, 300000)
+  assert.equal(o.income[0].kind, 'income')
+  assert.equal(o.obligations[0].signedAmountCents, -140000)
+  assert.equal(o.accounts[0].maturityDate, '2026-12-20')
+  assert.deepEqual(adaptOverview({ cash: {}, totals: {} }).income, [])
 })

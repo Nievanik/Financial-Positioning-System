@@ -1,65 +1,26 @@
-import { useCallback, useState } from 'react'
-import { useApi } from '@/hooks/useApi'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { Topbar } from '@/components/layout/Topbar'
-import { ErrorNote } from '@/components/layout/Panel'
-import { Dashboard } from '@/components/dashboard/Dashboard'
-import { EditDataDialog } from '@/components/edit/EditDataDialog'
-
-// Selected profile lives in ?profile=slug so a reload or shared link keeps it.
-const slugFromUrl = () => new URLSearchParams(window.location.search).get('profile')
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import AppShell from '@/components/layout/AppShell'
+import ProfileGate from '@/features/profiles/ProfileGate'
+import Dashboard from '@/pages/Dashboard'
+import Investments from '@/pages/Investments'
+import NotFound from '@/pages/NotFound'
+import ProfilePicker from '@/pages/ProfilePicker'
+import Simulator from '@/pages/Simulator'
 
 export default function App() {
-  const profiles = useApi('/profiles')
-  const [chosen, setChosen] = useState(slugFromUrl)
-  const [active, setActive] = useState('overview')
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [version, setVersion] = useState(0) // bumped after an edit so the dashboard remounts and refetches
-  const closeMenu = useCallback(() => setMenuOpen(false), [])
-
-  const list = profiles.data?.profiles
-  const profile = list?.find((p) => p.slug === chosen) ?? list?.[0]
-
-  const chooseProfile = (slug) => {
-    setChosen(slug)
-    const url = new URL(window.location.href)
-    url.searchParams.set('profile', slug)
-    window.history.replaceState(null, '', url)
-  }
-
   return (
-    <div className="min-h-screen md:grid md:grid-cols-[236px_minmax(0,1fr)]">
-      <Sidebar
-        profile={profile}
-        active={active}
-        onNavigate={(id) => { setActive(id); closeMenu() }}
-        open={menuOpen}
-        onClose={closeMenu}
-      />
-      <main className="min-w-0">
-        <Topbar
-          profiles={list}
-          slug={profile?.slug}
-          onProfileChange={chooseProfile}
-          active={active}
-          menuOpen={menuOpen}
-          onMenu={() => setMenuOpen(true)}
-          onEdit={() => setEditing(true)}
-        />
-        {profiles.error ? (
-          <div className="mx-auto max-w-[1420px] px-4 pt-8 md:px-[38px]">
-            <ErrorNote error={profiles.error} onRetry={profiles.retry} />
-          </div>
-        ) : list?.length === 0 ? (
-          <p className="px-4 pt-8 text-muted-foreground md:px-[38px]">
-            No demo profiles found. Run <code>npm run sync:nessie</code> in <code>server/</code>.
-          </p>
-        ) : (
-          <Dashboard key={`${profile?.slug}:${version}`} profile={profile} />
-        )}
-      </main>
-      <EditDataDialog profile={profile} open={editing} onClose={() => setEditing(false)} onChanged={() => setVersion((v) => v + 1)} />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route index element={<ProfilePicker />} />
+          <Route path="p/:slug" element={<ProfileGate />}>
+            <Route index element={<Dashboard />} />
+            <Route path="simulate" element={<Simulator />} />
+            <Route path="investments" element={<Investments />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }

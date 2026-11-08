@@ -1,42 +1,70 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+@import 'tailwindcss';
 
-/* Design tokens: docs/design.md Part A (copied from the feature/json mock). */
-@theme {
-  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-heading: var(--font-sans);
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --color-ink: #182538;
-  --color-line: #e8ebf0;
-  --color-paper: #ffffff;
-  --color-bg: #f5f6f8;
-  --color-navy: #142b49;
-  --color-teal: #168f83;
-  --color-teal-pale: #e8f5f2;
-  --color-amber: #c8872b;
-  --color-amber-pale: #fff5e5;
-  --color-red: #cc5f5f;
-  --color-red-pale: #fbeaea;
+:root {
+  --background: oklch(0.985 0.003 247);
+  --foreground: oklch(0.21 0.03 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.03 265);
+  --muted: oklch(0.96 0.006 247);
+  --muted-foreground: oklch(0.5 0.03 257);
+  --border: oklch(0.92 0.008 255);
+  --input: oklch(0.88 0.01 255);
+  --ring: oklch(0.55 0.11 185);
+  --primary: oklch(0.5 0.1 185);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.01 250);
+  --secondary-foreground: oklch(0.25 0.03 265);
+  --accent: oklch(0.95 0.03 185);
+  --accent-foreground: oklch(0.3 0.07 185);
+  --destructive: oklch(0.58 0.2 25);
+  --destructive-soft: oklch(0.96 0.03 25);
+  --warning: oklch(0.7 0.15 70);
+  --warning-soft: oklch(0.97 0.04 85);
+  --success: oklch(0.58 0.13 155);
+  --success-soft: oklch(0.96 0.04 155);
+  --chart-1: oklch(0.55 0.11 185);
+  --chart-2: oklch(0.6 0.15 260);
+  --chart-3: oklch(0.7 0.14 70);
+  --chart-4: oklch(0.6 0.16 330);
+  --chart-5: oklch(0.65 0.13 145);
+  --chart-6: oklch(0.6 0.14 30);
+  --chart-7: oklch(0.6 0.12 220);
+  --chart-8: oklch(0.55 0.05 260);
+  --radius: 0.75rem;
+}
 
-  --color-nav-title: #a1aaba;
-  --color-nav-link: #6e7a8d;
-  --color-nav-active: #edf2f8;
-  --color-nav-hover: #f4f6f9;
-  --color-avatar: #e5edf4;
-  --color-label: #647186;
-  --color-tile: #eff3f8;
-  --color-strong: #344257;
-  --color-track: #edf0f3;
-  --color-soft: #f8fafb;
-
-  --shadow-card: 0 5px 22px #1b2c4410;
-
-  /* Design breakpoints are max-width 430/760/1100; as mobile-first min-widths: */
-  --breakpoint-sm: 431px;
-  --breakpoint-md: 761px;
-  --breakpoint-lg: 1101px;
+.dark {
+  --background: oklch(0.17 0.02 265);
+  --foreground: oklch(0.96 0.005 250);
+  --card: oklch(0.21 0.025 265);
+  --card-foreground: oklch(0.96 0.005 250);
+  --muted: oklch(0.26 0.025 265);
+  --muted-foreground: oklch(0.7 0.02 257);
+  --border: oklch(0.3 0.025 265);
+  --input: oklch(0.35 0.025 265);
+  --ring: oklch(0.7 0.11 185);
+  --primary: oklch(0.7 0.11 185);
+  --primary-foreground: oklch(0.18 0.02 265);
+  --secondary: oklch(0.27 0.025 265);
+  --secondary-foreground: oklch(0.95 0.005 250);
+  --accent: oklch(0.3 0.05 185);
+  --accent-foreground: oklch(0.92 0.05 185);
+  --destructive: oklch(0.68 0.19 25);
+  --destructive-soft: oklch(0.3 0.07 25);
+  --warning: oklch(0.8 0.14 80);
+  --warning-soft: oklch(0.3 0.06 80);
+  --success: oklch(0.72 0.14 155);
+  --success-soft: oklch(0.28 0.05 155);
+  --chart-1: oklch(0.72 0.11 185);
+  --chart-2: oklch(0.7 0.14 260);
+  --chart-3: oklch(0.8 0.13 75);
+  --chart-4: oklch(0.72 0.15 330);
+  --chart-5: oklch(0.75 0.13 145);
+  --chart-6: oklch(0.72 0.14 35);
+  --chart-7: oklch(0.72 0.11 220);
+  --chart-8: oklch(0.65 0.04 260);
 }
 
 @theme inline {
@@ -44,79 +72,79 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-}
-
-/* shadcn variables pointed at the design palette (light only; the design has no dark theme). */
-:root {
-  --background: #f5f6f8;
-  --foreground: #182538;
-  --card: #ffffff;
-  --card-foreground: #182538;
-  --popover: #ffffff;
-  --popover-foreground: #182538;
-  --primary: #142b49;
-  --primary-foreground: #ffffff;
-  --secondary: #eef2f7;
-  --secondary-foreground: #142b49;
-  --muted: #f4f6f9;
-  --muted-foreground: #788496;
-  --accent: #f4f6f9;
-  --accent-foreground: #142b49;
-  --destructive: #cc5f5f;
-  --border: #e8ebf0;
-  --input: #e8ebf0;
-  --ring: #168f83;
-  /* Category palette, in design order; chart-5 = "Other". */
-  --chart-1: #168f83;
-  --chart-2: #4c718f;
-  --chart-3: #93aa86;
-  --chart-4: #dba54e;
-  --chart-5: #b9c4d1;
-  --radius: 0.5625rem;
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
   }
   html {
-    @apply font-sans;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
   body {
-    @apply bg-bg text-ink text-sm/normal antialiased;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'tnum' 1;
   }
-  button, input, select {
-    font: inherit;
-  }
-  button {
-    cursor: pointer;
-  }
-  /* Keyboard focus ring (mouse clicks don't show it); offset keeps it visible on the navy what-if card too. */
   :focus-visible {
-    outline: 2px solid var(--color-teal);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
   }
+}
+
+/* Recharts: keep focus outlines off SVG wrappers (we provide our own). */
+.recharts-wrapper *:focus {
+  outline: none;
+}
+
+/* Range input (allocation sliders) */
+input[type='range'].fps-range {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--muted);
+  cursor: pointer;
+}
+input[type='range'].fps-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--primary);
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+input[type='range'].fps-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--primary);
+  border: 2px solid var(--card);
 }
