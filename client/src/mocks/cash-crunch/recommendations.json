@@ -1,0 +1,28 @@
+{
+  "recommendations": [
+    {
+      "id": "cut_100",
+      "title": "Cut discretionary spending by $100/month",
+      "action": "Spend $100 less per month from 2026-12-01",
+      "impactMonth6Cents": 50000,
+      "impactMinimumCashCents": 50000,
+      "explanation": "Computed by re-running the deterministic forecast with this change.",
+      "assumptions": [
+        "Same baseline flows and variable-spend estimate",
+        "Impacts are measured against the evaluated scenario"
+      ]
+    },
+    {
+      "id": "cut_250",
+      "title": "Cut discretionary spending by $250/month",
+      "action": "Spend $250 less per month from 2026-12-01",
+      "impactMonth6Cents": 125000,
+      "impactMinimumCashCents": 125000,
+      "explanation": "Computed by re-running the deterministic forecast with this change.",
+      "assumptions": [
+        "Same baseline flows and variable-spend estimate",
+        "Impacts are measured against the evaluated scenario"
+      ]
+    }
+  ]
+}
