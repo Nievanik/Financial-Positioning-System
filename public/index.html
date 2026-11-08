@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Node.js Local Banking Environment</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #eceff1; margin: 40px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #1e3a8a; margin-top: 0; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { background: #1e40af; color: white; font-weight: bold; border: none; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #1d4ed8; }
+        .balance-badge { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 6px; margin: 20px 0; color: #166534; font-size: 20px; font-weight: bold; }
+        .tx-item { padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; font-size: 14px; }
+        .Deposit { color: #15803d; }
+        .Withdrawal { color: #b91c1c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Node.js Banking Terminal</h1>
+    
+    <label for="accId">Nessie Account Identification String:</label>
+    <input type="text" id="accId" placeholder="e.g., 62b3a123c456789012345678">
+    <button onclick="loadAccountPortal()">Access Bank Dashboard</button>
+
+    <div id="portal" style="display: none;">
+        <div class="balance-badge">
+            Account Owner Nickname: <span id="lblNickname">-</span> <br>
+            Current Cleared Balance: $<span id="lblBalance">0.00</span>
+        </div>
+
+        <h3>Execute Transaction Simulation</h3>
+        <input type="number" id="txAmount" placeholder="0.00" step="0.01">
+        <input type="text" id="txMemo" placeholder="Transaction memo (e.g. Paycheck)">
+        <button onclick="submitDeposit()">Submit Electronic Deposit</button>
+
+        <h3>Recent Transaction Records</h3>
+        <div id="txHistory"></div>
+    </div>
+</div>
+
+<script>
+    async function loadAccountPortal() {
+        const id = document.getElementById('accId').value.trim();
+        if(!id) return alert('Please input a valid account hex ID string');
+
+        // Fetch basic details
+        const accRes = await fetch(`/api/accounts/${id}`);
+        if(!accRes.ok) return alert('Account not discovered in the Nessie Sandbox.');
+        const accData = await accRes.json();
+
+        document.getElementById('lblNickname').innerText = accData.nickname;
+        document.getElementById('lblBalance').innerText = accData.balance.toFixed(2);
+
+        // Fetch ledger history
+        const txRes = await fetch(`/api/accounts/${id}/transactions`);
+        const txData = await txRes.json();
+        
+        const historyContainer = document.getElementById('txHistory');
+        historyContainer.innerHTML = '';
+        
+        txData.forEach(tx => {
+            historyContainer.innerHTML += `
+                <div class="tx-item">
+                    <span><strong>${tx.type}</strong> (${tx.description || 'No memo'})</span>
+                    <span class="${tx.type}">$${Math.abs(tx.amount).toFixed(2)}</span>
+                </div>`;
+        });
+
+        document.getElementById('portal').style.display = 'block';
+    }
+
+    async function submitDeposit() {
+        const id = document.getElementById('accId').value.trim();
+        const amount = document.getElementById('txAmount').value;
+        const description = document.getElementById('txMemo').value;
+
+        if(!amount || amount <= 0) return alert('Enter a valid deposit volume.');
+
+        const res = await fetch(`/api/accounts/${id}/deposit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount, description })
+        });
+
+        if(res.ok) {
+            document.getElementById('txAmount').value = '';
+            document.getElementById('txMemo').value = '';
+            loadAccountPortal(); // Reload updated UI view
+        }
+    }
+</script>
+</body>
+</html>
