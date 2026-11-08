@@ -114,4 +114,9 @@
   button {
     cursor: pointer;
   }
+  /* Keyboard focus ring (mouse clicks don't show it); offset keeps it visible on the navy what-if card too. */
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+  }
 }

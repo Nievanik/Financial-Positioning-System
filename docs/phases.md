@@ -21,7 +21,7 @@
 
 **Documents to write, in this order:**
 - [x] **`engineering.md`** — agreed on the full project folder structure (`client/`, `server/`, `docs/`), MongoDB/Mongoose database schema and relationships, Nessie-to-FPS data mapping, REST API routes, request/response examples, validation/error formats, and core financial-engine data contracts.
-- [ ] **`design.md`** — define the frontend design templates: page layouts, navigation, dashboard structure, reusable components, colors/typography/spacing, chart conventions, responsive behavior, and loading/empty/error states using Tailwind CSS + shadcn/ui.
+- [x] **`design.md`** — define the frontend design templates: page layouts, navigation, dashboard structure, reusable components, colors/typography/spacing, chart conventions, responsive behavior, and loading/empty/error states using Tailwind CSS + shadcn/ui.
 - [ ] Review `engineering.md` and `design.md` (once written) against `requirements.md` and `techstack.md`; resolve mismatches before implementation.
 
 **Project setup:**
@@ -70,13 +70,13 @@
 **Exit gate:** For a seeded profile, tests and API responses reproduce explainable 1/2/3/6-month projections and correctly identify a known cash-shortfall scenario.
 
 ## Phase 3 — Unified Dashboard & Forecast Experience
-- [ ] Build the main dashboard layout and **demo-profile selector** (no login or authentication required).
+- [x] Build the main dashboard layout and **demo-profile selector** (no login or authentication required). *(`?profile=slug`; mobile drawer.)*
 - [x] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values. *(Stat cards + Balances & net worth panel.)*
 - [x] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments. *(SpendingPanel donut + income/expenses/net row, TransactionsPanel with category filter, UpcomingPanel.)*
 - [x] Visualize the three or more financial health indicators with plain-language descriptions and calculation details. *(HealthPanel: N/3 ring, pills + meters per threshold, "How we calculate this".)*
 - [x] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings. *(ForecastPanel: 1M/2M/3M/6M, floor line, red below-floor segment + first-shortfall marker, insight text from `POST /explanations`.)*
-- [ ] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
-- [ ] Handle loading, empty, error, and profile-switch states clearly.
+- [x] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
+- [x] Handle loading, empty, error, and profile-switch states clearly. *(Per-card skeleton/error+retry; backend-down banner checked; profile switch aborts in-flight requests.)*
 
 **Exit gate:** A judge can select a profile, understand its current position, inspect spending and health indicators, and see its future cash outlook using real backend results.
 
