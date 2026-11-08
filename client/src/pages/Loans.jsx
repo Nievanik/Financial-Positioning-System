@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useCurrentProfile } from '@/features/profiles/useCurrentProfile'
 import { formatDay } from '@/lib/dates'
 import { label, LOAN_TYPE_LABELS } from '@/lib/labels'
-import { formatBps, formatCents } from '@/lib/money'
+import { formatApr, formatCents } from '@/lib/money'
 import { loanPaymentFlow, profilePath } from '@/lib/navigation'
 import { PageHeader } from './Dashboard'
 
@@ -33,7 +33,7 @@ function LoanCard({ loan, flow }) {
         <dl className="grid gap-4 sm:grid-cols-4">
           <div className="space-y-0.5">
             <dt className="text-xs text-muted-foreground">APR</dt>
-            <dd className="text-sm font-medium tabular-nums">{loan.annualRateBps ? formatBps(loan.annualRateBps) : 'Not provided'}</dd>
+            <dd className="text-sm font-medium tabular-nums">{formatApr(loan.annualRateBps)}</dd>
           </div>
           <div className="space-y-0.5">
             <dt className="text-xs text-muted-foreground">Monthly payment</dt>

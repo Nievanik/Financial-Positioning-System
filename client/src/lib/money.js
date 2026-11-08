@@ -71,3 +71,8 @@ export function formatBps(bps) {
   if (typeof bps !== 'number' || !Number.isFinite(bps)) return '—'
   return `${(bps / 100).toFixed(2)}%`
 }
+
+/** Loan APR in basis points for display. 0 is a real rate ("0.00%"); only null/undefined means "Not provided". */
+export function formatApr(bps) {
+  return bps === null || bps === undefined ? 'Not provided' : formatBps(bps)
+}
