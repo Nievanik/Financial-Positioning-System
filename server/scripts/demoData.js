@@ -28,7 +28,15 @@ export const PROFILES = [
     cardPayment: { day: 25, amount: 300 },
     savingsTransfer: { day: 3, amount: 300 },
     spend: { groceries: 380, dining: 150, transport: 100, entertainment: 80 },
-    supplemental: { retirement401kCents: 2800000 },
+    supplemental: {
+      retirement401kCents: 2800000,
+      // Investment Planner holdings (engineering.md section 10). Synthetic only: Nessie has no CD/brokerage accounts.
+      investments: [
+        { key: 'brokerage', name: 'Index Brokerage', type: 'investment', balanceCents: 420000, riskLevel: 'high', holdingsNote: 'S&P 500 + international index ETFs' },
+        { key: 'cd-6m', name: '6-Month CD', type: 'cd', balanceCents: 250000, riskLevel: 'low', annualRateBps: 410, maturityDate: '2026-12-12' },
+        { key: 'cd-12m', name: '12-Month CD', type: 'cd', balanceCents: 500000, riskLevel: 'low', annualRateBps: 425, maturityDate: '2027-02-15' },
+      ],
+    },
   },
   {
     slug: 'debt-heavy',
@@ -49,7 +57,12 @@ export const PROFILES = [
     cardPayment: { day: 22, amount: 350 },
     savingsTransfer: { day: 3, amount: 25 },
     spend: { groceries: 420, dining: 170, transport: 110, entertainment: 50 },
-    supplemental: { retirement401kCents: 350000 },
+    supplemental: {
+      retirement401kCents: 350000,
+      investments: [
+        { key: 'cd-6m', name: '6-Month CD', type: 'cd', balanceCents: 150000, riskLevel: 'low', annualRateBps: 390, maturityDate: '2026-12-28' },
+      ],
+    },
   },
   {
     slug: 'cash-crunch',
@@ -67,6 +80,12 @@ export const PROFILES = [
     cardPayment: { day: 20, amount: 300 },
     savingsTransfer: { day: 28, amount: 20 },
     spend: { groceries: 420, dining: 180, transport: 120, entertainment: 80 },
-    supplemental: { retirement401kCents: 120000 },
+    supplemental: {
+      retirement401kCents: 120000,
+      investments: [
+        { key: 'micro-invest', name: 'Micro-investing App', type: 'investment', balanceCents: 45000, riskLevel: 'high', holdingsNote: 'Round-up ETF portfolio' },
+        { key: 'cd-9m', name: '9-Month CD', type: 'cd', balanceCents: 200000, riskLevel: 'low', annualRateBps: 410, maturityDate: '2026-12-20' },
+      ],
+    },
   },
 ];
