@@ -29,3 +29,11 @@ export const moneyCompact = (cents) => usdCompact.format(cents / 100).replace('K
 
 // Backend text (explanations, recommendation actions) embeds ISO dates; show them like the rest of the UI.
 export const prettyDates = (text = '') => text.replace(/\b\d{4}-\d{2}-\d{2}\b/g, (d) => formatDate(d))
+
+// Form <-> API money: 150000 -> "1500", "1,500.5" -> 150050; anything else (blank, negative, 3 decimals) -> NaN.
+// Also used for percent <-> basis points ("7.8" -> 780), which is the same x100.
+export const toInput = (cents) => (cents == null ? '' : (cents / 100).toFixed(2).replace(/\.00$/, ''))
+export const fromInput = (s) => {
+  const t = String(s).replace(/[$,%\s]/g, '')
+  return /^\d+(\.\d{1,2})?$/.test(t) ? Math.round(Number(t) * 100) : NaN
+}

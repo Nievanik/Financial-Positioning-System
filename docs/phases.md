@@ -77,6 +77,7 @@
 - [x] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings. *(ForecastPanel: 1M/2M/3M/6M, floor line, red below-floor segment + first-shortfall marker, insight text from `POST /explanations`.)*
 - [x] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
 - [x] Handle loading, empty, error, and profile-switch states clearly. *(Per-card skeleton/error+retry; backend-down banner checked; profile switch aborts in-flight requests.)*
+- [x] **Edit profile data** (scope change 2026-11-07, `engineering.md` 5.4): "Edit data" dialog in the top bar edits balances, income/bills (rent etc.), loans (with their single payment flow) and monthly spending estimates; the dashboard refetches after each save. Verified live against Atlas (forecast moves with each edit, test edits reverted). *(Not done: no route-level tests (validators are unit-tested in `services/edits.test.js`); no undo, so reset shared data with `npm run sync:nessie`, which also overwrites edits to Nessie rows but does not remove `user_entered` rows; mocks have no `/editable`, so the dialog shows an error in mock mode.)*
 
 **Exit gate:** A judge can select a profile, understand its current position, inspect spending and health indicators, and see its future cash outlook using real backend results.
 

@@ -72,3 +72,14 @@ test('what-if form -> API body in integer cents, start months after asOf', async
   assert.equal(startMonths('2026-12-31')[0], '2027-01-01')
   assert.equal(prettyDates('Start on 2027-01-01 instead'), 'Start on Jan 1, 2027 instead')
 })
+
+test('money form inputs round-trip to integer cents and reject bad input', async () => {
+  const { fromInput, toInput } = await import('./format.js')
+  assert.equal(fromInput('$1,500.5'), 150050)
+  assert.equal(fromInput('19.99'), 1999)
+  assert.equal(fromInput('7.8%'), 780)
+  for (const bad of ['', '-5', '1.234', 'abc']) assert.ok(Number.isNaN(fromInput(bad)), bad)
+  assert.equal(toInput(150000), '1500')
+  assert.equal(toInput(1999), '19.99')
+  assert.equal(toInput(null), '')
+})

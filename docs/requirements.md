@@ -22,6 +22,7 @@ Build a financial navigator that **understands a user's finances, forecasts futu
 ## Data and demo requirements
 
 - **No user login:** Let the user choose a predefined, fictional customer profile.
+- **Editable profile data:** The user can change the chosen profile's balances, recurring income and bills (e.g. rent), debts, and monthly spending estimates; every number on the dashboard recalculates from the new inputs. Transactions are not editable.
 - **Nessie integration:** Retrieve synthetic banking data, import/normalize it into MongoDB, and refresh when needed.
 - **Additional mock data:** Clearly label synthetic details that Nessie does not provide (such as particular retirement accounts or mortgage fields).
 - **Numerical integrity:** Distinguish available cash from retirement funds and unused credit; avoid double-counting transfers, credit-card payments, or savings contributions.

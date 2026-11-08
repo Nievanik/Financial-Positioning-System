@@ -1,4 +1,4 @@
-// Read-only demo profile routes + stateless evaluation (docs/engineering.md section 5). Nothing here writes to MongoDB.
+// Demo profile read routes + stateless evaluation (docs/engineering.md section 5). Nothing here writes; editing is in edit.routes.js.
 import { Router } from 'express';
 import DemoProfile from '../models/DemoProfile.js';
 import Transaction from '../models/Transaction.js';

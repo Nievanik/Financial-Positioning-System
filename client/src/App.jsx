@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { Topbar } from '@/components/layout/Topbar'
 import { ErrorNote } from '@/components/layout/Panel'
 import { Dashboard } from '@/components/dashboard/Dashboard'
+import { EditDataDialog } from '@/components/edit/EditDataDialog'
 
 // Selected profile lives in ?profile=slug so a reload or shared link keeps it.
 const slugFromUrl = () => new URLSearchParams(window.location.search).get('profile')
@@ -13,6 +14,8 @@ export default function App() {
   const [chosen, setChosen] = useState(slugFromUrl)
   const [active, setActive] = useState('overview')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [version, setVersion] = useState(0) // bumped after an edit so the dashboard remounts and refetches
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
   const list = profiles.data?.profiles
@@ -42,6 +45,7 @@ export default function App() {
           active={active}
           menuOpen={menuOpen}
           onMenu={() => setMenuOpen(true)}
+          onEdit={() => setEditing(true)}
         />
         {profiles.error ? (
           <div className="mx-auto max-w-[1420px] px-4 pt-8 md:px-[38px]">
@@ -52,9 +56,10 @@ export default function App() {
             No demo profiles found. Run <code>npm run sync:nessie</code> in <code>server/</code>.
           </p>
         ) : (
-          <Dashboard key={profile?.slug} profile={profile} />
+          <Dashboard key={`${profile?.slug}:${version}`} profile={profile} />
         )}
       </main>
+      <EditDataDialog profile={profile} open={editing} onClose={() => setEditing(false)} onChanged={() => setVersion((v) => v + 1)} />
     </div>
   )
 }

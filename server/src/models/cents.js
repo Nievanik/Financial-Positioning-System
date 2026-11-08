@@ -5,6 +5,6 @@ export const cents = (extra = {}) => ({
   ...extra,
 });
 
-export const SOURCES = ['nessie', 'supplemental_synthetic'];
+export const SOURCES = ['nessie', 'supplemental_synthetic', 'user_entered']; // user_entered: created in the app (engineering.md 5.4)
 // Idempotent-upsert key; only enforced for records that have an external id.
 export const provenanceIndex = [{ profileId: 1, source: 1, externalId: 1 }, { unique: true, partialFilterExpression: { externalId: { $type: 'string' } } }];

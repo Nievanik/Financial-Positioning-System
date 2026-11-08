@@ -19,7 +19,7 @@
 | Database | MongoDB Atlas + Mongoose |
 | External data | Capital One Nessie API; import synthetic banking records into MongoDB; refresh when needed |
 | Client/server communication | REST over HTTPS; browser uses native `fetch` |
-| Authentication | None — users select one of **exactly three** predefined fictional demo profiles; no profile editing |
+| Authentication | None — users select one of **exactly three** predefined fictional demo profiles; anyone can edit a profile's balances, recurring flows, loans and spending estimates (section 5.4) |
 | Deployment | Render (frontend static site and backend web service) |
 | AI explanation | Provider **undecided**; provider-neutral backend adapter and deterministic template fallback |
 | Forecast engine | **Finalized:** deterministic daily cash-flow projection; no Monte Carlo/uncertainty engine in MVP |
@@ -28,7 +28,7 @@
 
 ```mermaid
 flowchart LR
-    UI[React + Vite dashboard - 3 read-only profiles] -->|fetch /api/v1| API[Express REST API]
+    UI[React + Vite dashboard - 3 editable profiles] -->|fetch /api/v1| API[Express REST API]
     API --> DB[(MongoDB Atlas)]
     API --> ENGINE[Spending / forecasting / scenario engine]
     ENGINE --> DB
@@ -220,7 +220,7 @@ An account may be sourced from Nessie or supplemented by demo seed data.
 | `type` | String enum | `checking`, `savings`, `credit_card`, `retirement`, `cd`, `investment` |
 | `balanceCents` | Integer | Positive asset balance for cash/retirement/investment; **outstanding amount owed** for credit cards |
 | `creditLimitCents` | Integer or null | Credit cards only; excluded from available cash |
-| `source` | String enum | `nessie` or `supplemental_synthetic` |
+| `source` | String enum | `nessie`, `supplemental_synthetic` or `user_entered` (created in the app, 5.4) |
 | `externalId` | String or null | Original Nessie record ID; use for upsert |
 | `asOf` | Date | Timestamp of the represented balance |
 | `createdAt`, `updatedAt` | Date | Mongoose timestamps |
@@ -261,7 +261,7 @@ Tracks obligations/liabilities; does **not** itself generate an additional forec
 | `monthlyPaymentCents` | Integer | For display and validation |
 | `dueDay` | Integer (1–31) | Month-end clipping for shorter months |
 | `annualRateBps` | Integer or null | Optional; annual rate in basis points |
-| `source`, `externalId` | String | `nessie` or `supplemental_synthetic` |
+| `source`, `externalId` | String | `nessie`, `supplemental_synthetic` or `user_entered` (created in the app, 5.4) |
 
 **Forecast rule:** Each loan payment appears exactly once in `recurringCashFlows` as kind `loan_payment`. The seed/sync script must assert that each loan's `monthlyPaymentCents` equals its linked recurring flow, and fail loudly otherwise. The loan document describes the debt; it is not separately subtracted.
 
@@ -326,7 +326,7 @@ These **finalized deterministic** rules must be implemented as pure functions in
 
 **Base URL:** `/api/v1`  
 **Format:** JSON; camelCase fields; money as integer `...Cents` fields; timestamps as ISO 8601; calendar days as `YYYY-MM-DD`.  
-**Auth:** `Public demo` for all MVP endpoints because there is no login. Clients may select only one of the **three seeded profile slugs**; all profile financial data is **read-only**. The only `POST` routes perform **stateless evaluation/explanation** and never mutate financial records or create scenario history. No public endpoint creates Nessie transactions or resets shared demo records.
+**Auth:** `Public demo` for all MVP endpoints because there is no login. Clients may select only one of the **three seeded profile slugs**; profile balances, recurring income/bills, loans and per-category spending estimates are **editable by anyone** through the routes in 5.4 (no login, so any visitor can change shared demo data). `scenarios/evaluate` and `explanations` stay **stateless** and never mutate records or create scenario history. No public endpoint creates Nessie transactions or resets shared demo records.
 
 ### 5.1 Endpoint List
 
@@ -436,9 +436,25 @@ Content-Type: application/json
 
 **Recommendation item:** `{ id, title, action, impactMonth6Cents, impactMinimumCashCents, explanation, assumptions }`, where impacts come from the engine, not the LLM.
 
+### 5.4 Profile Editing (added 2026-11-07)
+
+Any visitor can change a profile's inputs; the forecast, health, spending and what-if routes read them on the next request. No login, no history, no undo. Routes in `server/src/routes/edit.routes.js`, body validation in `server/src/services/edits.js` (pure, tested), 30 writes/min per IP (`writeLimit`). `PUT` replaces the whole editable record, so create and update share one validator.
+
+| Method | Path | Body (money in integer cents) | Notes |
+| --- | --- | --- | --- |
+| `GET` | `/profiles/:slug/editable` | — | `{ asOf, accounts, flows, loans, categoryOverridesCents, categories, spendCategories }`; `flows` = active flows except `loan_payment` |
+| `PUT` | `/profiles/:slug/accounts/:id` | `{ name, balanceCents, creditLimitCents? }` | balance must be >= 0 (cards: amount owed); credit limit only on `credit_card`. No account create/delete. |
+| `POST` / `PUT` / `DELETE` | `/profiles/:slug/flows[/:id]` | `{ name, kind, amountCents, frequency, nextDate, endDate?, category? }` | `amountCents` > 0; sign comes from `kind` (`income` positive, others negative). `kind` cannot be `loan_payment` (managed through loans). `nextDate` must be after `asOf`. |
+| `POST` / `PUT` / `DELETE` | `/profiles/:slug/loans[/:id]` | `{ name, loanType, outstandingCents, monthlyPaymentCents, dueDay (1-28), annualRateBps? }` | Writes the loan **and** its single `loan_payment` flow (`-monthlyPaymentCents`, next `dueDay` after `asOf`), so the payment is still counted once. Delete removes both. |
+| `PUT` | `/profiles/:slug/spending-estimates` | `{ categoryOverridesCents: { [category]: cents } }` (`spendCategories` only: no `debt`/`savings`, which are flows) | Replaces `forecastSettings.categoryOverridesCents` (monthly variable spend per category; omitted categories use the transaction-history estimate). |
+
+- New rows get `source: user_entered`. Edited rows keep their source; **`npm run sync:nessie` overwrites edits to Nessie-sourced rows** (upsert by `externalId`), so re-syncing is also the way to reset the demo data.
+- Unknown id or an id from another profile -> `404 NOT_FOUND`; bad body -> `400 VALIDATION_FAILED`.
+- Transactions stay read-only, so `spending.byCategory` (history) does not change when estimates are overridden; the forecast and `variableMonthlyCents` do.
+
 ### 5.3 API Conventions
 
-- **Success:** HTTP `200` for GET/evaluation. Do not implement public CRUD routes for demo financial data or scenario persistence.
+- **Success:** HTTP `200` for GET/evaluation/updates, `201` for creates, `204` for deletes. Editing routes are limited to 5.4; no CRUD for transactions, profiles or scenarios.
 - **Errors:** Consistent shape `{ "error": { "code": "VALIDATION_FAILED", "message": "...", "details": {} } }`.
 - **HTTP statuses:** `400` malformed input, `404` unknown demo profile, `422` valid JSON but impossible scenario, `429` throttled, `500` unexpected error, `503` upstream/DB unavailable.
 - **Validation:** Use a server-side validation layer (recommended: Zod or an equivalent simple library); never trust client-provided amounts, dates, profile IDs, or claimed computed values.
@@ -577,11 +593,11 @@ These decisions have been confirmed for the HackUTD MVP. They are **not open que
 | Decision | Final choice | Consequence for implementation |
 | --- | --- | --- |
 | Demo profiles | **Exactly 3 fictional customers** | Seed three distinct, selectable profiles. No login, registration, or other customer creation flow. |
-| Manual data editing | **No** | Dashboard data is read-only; users explore decisions exclusively with the what-if simulator. No account/income/loan/bill editing API. |
+| Manual data editing | **Yes (changed 2026-11-07)** | Any visitor can edit a profile's balances, income/bills, loans and spending estimates (5.4). Transactions stay read-only. Supersedes the earlier "read-only" decision. |
 | Forecast method | **Deterministic daily projection** | Reusable pure functions, dated cash-flow events, month-end checkpoints, daily shortfall detection. No probabilistic engine in MVP. |
 | Scenario storage | **Temporary only** | Compute baseline versus what-if in memory; do not persist scenarios or alter stored financial records. |
 | AI provider | **Undecided, provider-neutral interface** | Explanation service exposes a stable internal contract and template fallback. Do not bind the architecture to Gemini, OpenAI, or another provider until selected. |
 
 **No additional engineering decisions are required to begin the MVP.** If a new choice becomes necessary during development, document it here and keep the corresponding routes, models, tests, and `phases.md` consistent.
 
-**Engineering priority:** Ship **Nessie → MongoDB → three read-only demo profiles → deterministic forecast → temporary what-if comparison → quantified recommendation**, with provider-neutral explanations and a reliable fallback, before adding optional features.
+**Engineering priority:** Ship **Nessie → MongoDB → three editable demo profiles → deterministic forecast → temporary what-if comparison → quantified recommendation**, with provider-neutral explanations and a reliable fallback, before adding optional features.

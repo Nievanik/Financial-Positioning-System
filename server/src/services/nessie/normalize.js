@@ -9,7 +9,7 @@ const MERCHANT_CATEGORY = { groceries: 'groceries', transport: 'transport', dini
 const pad = (n) => String(n).padStart(2, '0');
 
 // First scheduled date strictly after asOf for a monthly day-of-month (day <= 28).
-const nextMonthly = (asOf, day) => toIso(occurrences({ frequency: 'monthly', nextDate: `${asOf.slice(0, 8)}${pad(day)}` }, toDay(asOf), Infinity).next().value);
+export const nextMonthly = (asOf, day) => toIso(occurrences({ frequency: 'monthly', nextDate: `${asOf.slice(0, 8)}${pad(day)}` }, toDay(asOf), Infinity).next().value);
 const nextFrom = (freq, lastDate, asOf) => toIso(occurrences({ frequency: freq, nextDate: lastDate }, toDay(asOf), Infinity).next().value);
 const latest = (list, dateKey) => [...list].sort((a, b) => a[dateKey].localeCompare(b[dateKey])).at(-1);
 

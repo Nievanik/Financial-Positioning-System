@@ -8,3 +8,4 @@ export const limiter = (max, windowMs = 60_000) => rateLimit({
 
 export const calcLimit = limiter(60); // forecast, health-metrics, scenarios, recommendations
 export const explainLimit = limiter(10); // the only route that can spend AI quota
+export const writeLimit = limiter(30); // profile editing routes (engineering.md 5.4)

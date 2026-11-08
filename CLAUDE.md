@@ -19,7 +19,7 @@ This file is a router, not a spec. Put detail in `docs/`, not here.
 
 ## Settled Decisions (don't reopen)
 - React + Vite + **JavaScript** (no TypeScript/Next.js); Tailwind + shadcn/ui; Recharts; Express + Node (ES modules); MongoDB Atlas + Mongoose; native `fetch`; Render; one monorepo (`client/`, `server/`).
-- **Exactly 3** read-only fictional demo profiles; no login, no editing. URL `:slug` is the profile slug.
+- **Exactly 3** fictional demo profiles; no login. Anyone can edit their balances, income/bills, loans and spending estimates (`engineering.md` 5.4); transactions stay read-only. URL `:slug` is the profile slug.
 - **Deterministic daily cash-flow forecast** (month-end checkpoints 1/2/3/6 + daily shortfall detection). No Monte Carlo, no AI-generated numbers.
 - What-if scenarios are **stateless** (no `scenarios` collection). In-app AI provider is **undecided**: provider-neutral adapter + template fallback.
 - Superseded, don't bring back: Next.js, TypeScript, PostgreSQL, Prisma, Tiger Data, Vultr, Solana, GoDaddy, Gemini-as-chosen.
@@ -44,7 +44,7 @@ This file is a router, not a spec. Put detail in `docs/`, not here.
 `main` stable <- `dev` integration <- `feature/*` branches via PR. No destructive DB commands without confirmation.
 
 ## Status
-Backend MVP is built and locally verified (engine, models, Nessie client, seed/sync scripts, API routes, rate limiting; `npm test` in `server/`); frontend dashboard is built on branch `feature/frontend` from `docs/design.md` (feature/json visual design mapped onto this API; all Part D steps done): overview, forecast chart, health, spending/transactions, what-if planner. `VITE_USE_MOCKS=true` runs the client on `client/src/mocks/`. Nothing here is deployed. `phases.md` has the exact state; check the repo before claiming anything is implemented.
+Backend MVP is built and locally verified (engine, models, Nessie client, seed/sync scripts, API routes, rate limiting; `npm test` in `server/`); frontend dashboard is built on branch `feature/frontend` from `docs/design.md` (feature/json visual design mapped onto this API; all Part D steps done): overview, forecast chart, health, spending/transactions, what-if planner, and an "Edit data" dialog (balances, income/bills, loans, spending estimates; `engineering.md` 5.4) on `feature/edit-profile-data`. `VITE_USE_MOCKS=true` runs the client on `client/src/mocks/`. Nothing here is deployed. `phases.md` has the exact state; check the repo before claiming anything is implemented.
 
 ## Before Calling Anything Done
 Works end to end within scope, no invariant violated, engine logic has a passing test, build passes, affected docs updated, `phases.md` updated.
