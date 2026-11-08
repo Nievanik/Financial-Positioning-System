@@ -35,7 +35,7 @@ A working demo connects to Nessie, displays a fictional customer's finances, for
 - Forecasts are **estimates**, not guaranteed outcomes or loan approvals.
 - Only synthetic data; no real banking credentials or real-money transactions.
 - **Toyota integration, real bank linking, and money transfers are out of scope for the initial MVP.**
-- Forecasting implementation and testing tooling are **to be decided**; the feature outputs and numerical checks above remain required.
+- Forecasting method is decided (deterministic daily projection, see `engineering.md`); testing tooling is **to be decided**. Numerical checks remain required.
 
 **Shared priority:** Deliver a polished **data → forecast → simulate → recommend** flow before adding more features.
 

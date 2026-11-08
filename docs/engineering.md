@@ -5,7 +5,7 @@
 **Primary scope:** PNC 360° Financial Health Navigator + Capital One Nessie synthetic banking data  
 **Not in this MVP:** Toyota module, real banking connections, real money movement, authentication
 
-> **Purpose:** This is the shared implementation reference for all three developers. When a field, route, or calculation contract changes, update this file before changing the corresponding code. Product scope comes from `requirements.md`; dependencies come from `TechStack.md`; delivery order comes from `Phases.md`. Frontend layouts and visual choices belong in the future `design.md`.
+> **Purpose:** This is the shared implementation reference for all three developers. When a field, route, or calculation contract changes, update this file before changing the corresponding code. Product scope comes from `requirements.md`; dependencies come from `techstack.md`; delivery order comes from `phases.md`. Frontend layouts and visual choices belong in the future `design.md`.
 >
 > **Implementation contract:** The five product/engineering choices in section 9 are finalized. The schema, endpoint naming, validation rules, and directory layout below are the agreed implementation defaults for the MVP; they do **not** imply that the code has already been created. Change this document first if the team deliberately revises the contract.
 
@@ -86,7 +86,6 @@ Financial-Positioning-System/
 │   │   │   ├── forecast.routes.js
 │   │   │   ├── scenarios.routes.js
 │   │   │   └── explanations.routes.js
-│   │   ├── controllers/               # HTTP input/output only
 │   │   ├── services/
 │   │   │   ├── nessie/                 # Nessie fetch + normalizers
 │   │   │   ├── spendingService.js
@@ -113,9 +112,9 @@ Financial-Positioning-System/
 │   ├── .env.example
 │   └── package.json
 ├── docs/
-│   ├── TechStack.md                   # existing; retain spelling/case
+│   ├── techstack.md                   # existing
 │   ├── requirements.md                # existing
-│   ├── Phases.md                      # existing
+│   ├── phases.md                      # existing
 │   ├── engineering.md                 # THIS FILE
 │   └── design.md                      # planned, frontend visuals/templates
 ├── .gitignore
@@ -124,11 +123,12 @@ Financial-Positioning-System/
 ```
 
 **Conventions:**
-- Routes define URL paths. Controllers parse/validate and respond. Services implement use cases. `engine/` contains pure calculation functions with no Express or database dependencies.
+- Routes define URL paths, validate input (via `middleware/validate.js`) and respond; there is no separate controllers layer in the MVP. Services implement use cases. `engine/` contains pure calculation functions with no Express or database dependencies.
 - Mongoose models describe persistence; **do not** put financial math in route handlers or Mongoose hooks.
 - Use ES modules (`import` / `export`) consistently in both applications.
 - All new service and API changes should have at least one focused test, especially cash calculations.
-- If your three existing Markdown files currently live at repository root, keep them there and place `engineering.md` beside them; the `docs/` tree above is a **suggested eventual layout**, not a required move.
+- All docs live in `docs/` with **lowercase** filenames (Linux-safe); only `README.md` and `CLAUDE.md` stay at the repo root.
+- **Tests:** use Node's built-in `node:test` unless the team picks Vitest at scaffold time; either way the Section 8 invariants are mandatory.
 
 ## 3. MongoDB Schema
 
@@ -203,8 +203,10 @@ Exactly **three** seeded documents, one per selectable **fictional** customer. N
 | `nessieCustomerId` | String or null | Link to Nessie customer, if applicable |
 | `currency` | String | `USD` in MVP |
 | `timeZone` | String | Default `America/Chicago` for date scheduling; use profile timezone in calculations |
-| `forecastSettings` | Embedded object | `{ historyMonths: 3, cashFloorCents: 0, variableExpenseDay: 20, categoryOverridesCents: {} }` |
+| `forecastSettings` | Embedded object | `{ asOfDate: "YYYY-MM-DD", historyMonths: 3, cashFloorCents: 0, variableExpenseFrequency: "weekly", categoryOverridesCents: {} }` |
 | `lastSyncedAt` | Date or null | Last successful Nessie import |
+
+**Frozen snapshot date:** `forecastSettings.asOfDate` is the snapshot date for all calculations (not the server clock). The seed script sets it and generates every `nextDate` relative to it, so the demo is reproducible on judging day. Scenario dates must be after `asOfDate` and inside the forecast horizon.
 | `createdAt`, `updatedAt` | Date | Mongoose timestamps |
 
 #### `accounts`
@@ -240,7 +242,7 @@ Normalized historical events for expense analysis and cash-flow inference. Store
 | `description`, `merchantName` | String | Normalized display text |
 | `amountCents` | Positive integer | Always nonnegative; direction is modeled separately |
 | `cashflowKind` | String enum | `income`, `cash_expense`, `internal_transfer`, `credit_purchase`, `credit_payment`, `loan_payment`, `savings_contribution`, `retirement_contribution` |
-| `cashImpactCents` | Signed integer | Effect on the **combined checking+savings cash balance** at the event date; zero for internal transfers and credit purchases |
+| `cashImpactCents` | Signed integer | **Derived by the normalizer** from `cashflowKind` and account types, never hand-entered. Effect on the **combined checking+savings cash balance** at the event date; zero for internal transfers and credit purchases |
 | `category` | String enum | `income`, `groceries`, `housing`, `transport`, `utilities`, `entertainment`, `subscriptions`, `health`, `debt`, `savings`, `other` |
 | `transferGroupId` | String or null | Groups two sides of a transfer to prevent duplication |
 | `isRecurringCandidate` | Boolean | Classification hint, not proof of a future obligation |
@@ -261,7 +263,7 @@ Tracks obligations/liabilities; does **not** itself generate an additional forec
 | `annualRateBps` | Integer or null | Optional; annual rate in basis points |
 | `source`, `externalId` | String | `nessie` or `supplemental_synthetic` |
 
-**Forecast rule:** Each loan payment appears exactly once in `recurringCashFlows` as kind `loan_payment`. The loan document describes the debt; it is not separately subtracted.
+**Forecast rule:** Each loan payment appears exactly once in `recurringCashFlows` as kind `loan_payment`. The seed/sync script must assert that each loan's `monthlyPaymentCents` equals its linked recurring flow, and fail loudly otherwise. The loan document describes the debt; it is not separately subtracted.
 
 #### `recurringCashFlows`
 
@@ -272,7 +274,8 @@ Authoritative **future scheduling inputs** for predictable income and expenses; 
 | `_id`, `profileId` | ObjectId | Required |
 | `name` | String | `Salary`, `Rent`, `Car payment`, `401(k)` |
 | `kind` | String enum | `income`, `bill`, `loan_payment`, `credit_card_payment`, `savings_contribution`, `retirement_contribution` |
-| `signedAmountCents` | Integer | Positive for salary; negative for cash outflows |
+| `signedAmountCents` | Integer | Cash effect: positive for **net** (take-home) salary; negative for outflows |
+| `grossAmountCents` | Integer or null | Income only: gross pay per occurrence, used for debt-payment burden. Seed it explicitly; Nessie deposits are net |
 | `frequency` | String enum | `weekly`, `biweekly`, `monthly` |
 | `nextDate` | Date | First future scheduled event |
 | `endDate` | Date or null | Optional stop date |
@@ -281,7 +284,7 @@ Authoritative **future scheduling inputs** for predictable income and expenses; 
 | `source`, `externalId` | String | Ingestion provenance / idempotency |
 | `active` | Boolean | False excludes flow from projections |
 
-**Credit-card rule:** Existing card debt repayments and *newly forecast card purchase spending* must not represent the same outflow twice. For the initial model, planned variable spending is treated as one estimated future cash outflow on its configured settlement day, regardless of payment method. An existing card-repayment schedule represents **existing carried balances only**. Explain this simplification in the UI.
+**Credit-card rule:** Existing card debt repayments and *newly forecast card purchase spending* must not represent the same outflow twice. For the initial model, planned variable spending is treated as estimated future cash outflows spread **evenly across each week** (monthly estimate ÷ weeks in month, one event per week), regardless of payment method. A single lump-sum day is deliberately avoided because it would make shortfall detection depend on an arbitrary date. An existing card-repayment schedule represents **existing carried balances only**. Explain this simplification in the UI.
 
 ### 3.3 Scenarios Are Temporary Request Data (Finalized)
 
@@ -307,14 +310,14 @@ These **finalized deterministic** rules must be implemented as pure functions in
 1. **As-of snapshot:** Read balances and transactions consistently as of the selected profile snapshot. Show `asOf` and `lastSyncedAt`.
 2. **Historical spending:** Group genuine merchant purchases/expenses by category; exclude transfer activity and debt repayments from merchant-spend totals. Estimate monthly variable spending using the recent `historyMonths` window. Subtract recognized fixed obligations and avoid counting them again as variable spending.
 3. **Daily projection:** Begin at checking + savings balance; generate dated income, bills, loan repayments, retirement contributions, and estimated variable-expense events for each day through the **sixth forecast checkpoint**. Use the net effect on combined cash; checking-to-savings movements are zero net change. The MVP uses **no stochastic sampling, Monte Carlo simulation, or AI-generated projections**.
-4. **Forecast checkpoints:** Return the daily series plus **month-end** snapshots for months 1, 2, 3, and 6. **Fixed convention:** Month 1 is the first future calendar month-end after `asOf`; month 6 is the sixth such month-end. Daily events stop at that sixth checkpoint. Flag **any day** below `cashFloorCents`, even when its month-end balance recovers.
+4. **Forecast checkpoints:** Return the daily series plus **month-end** snapshots for months 1, 2, 3, and 6. **Fixed convention:** Month 1 is the first future calendar month-end after `asOf`; month 6 is the sixth such month-end. Daily events stop at that sixth checkpoint. Because month 1 may be only a few weeks away, the UI must show each checkpoint's actual date and not label them as exact 30/60/90/180-day horizons. Flag **any day** below `cashFloorCents`, even when its month-end balance recovers.
 5. **Scenario comparison:** Clone baseline inputs, add the proposed purchase/recurring commitment, rerun the same algorithm, and return both series, checkpoint deltas, and first shortfall date. **Do not modify database records or persist scenario history**.
 6. **Health metrics (at least three):**
-   - **Emergency coverage:** available cash divided by typical **essential** monthly costs (months; return `null` if denominator is zero).
-   - **Debt-payment burden:** scheduled monthly debt payments divided by expected **monthly gross income** (ratio; return `null` if income is zero). Label it as an estimate where income type is uncertain.
+   - **Emergency coverage:** available cash divided by typical **essential** monthly costs (months; return `null` if denominator is zero). *Essential* = average monthly spend in `housing`, `utilities`, `groceries`, `transport`, `health`, **plus** scheduled monthly debt payments. Entertainment, subscriptions and `other` are discretionary.
+   - **Debt-payment burden:** scheduled monthly debt payments divided by expected **monthly gross income** (sum of `grossAmountCents` for income flows, normalized to monthly) (ratio; return `null` if income is zero). Label it as an estimate where income type is uncertain.
    - **Cash-flow safety:** projected minimum daily available cash and count of days below the cash floor over the six-month horizon.
 7. **Recommendations:** Calculate suggestions (e.g., delay by one month, cut discretionary spending by $100/month) by evaluating alternate event streams. Attach numeric before/after changes; never fabricate a saving.
-8. **AI:** Keep a **provider-neutral adapter** (e.g. `explain({ subject, facts, assumptions, warnings })`) behind `explanationService.js`; no provider-specific imports should leak into controllers or engine code. If a provider is configured later, send only computed metrics, assumptions, warnings, and recommendation results for explanation. The model cannot generate or override balances, debt ratios, forecast points, or affordability decisions. Always provide a deterministic templated explanation when no provider is configured or a call fails.
+8. **AI:** Keep a **provider-neutral adapter** (e.g. `explain({ subject, facts, assumptions, warnings })`) behind `explanationService.js`; no provider-specific imports should leak into routes or engine code. If a provider is configured later, send only computed metrics, assumptions, warnings, and recommendation results for explanation. The model cannot generate or override balances, debt ratios, forecast points, or affordability decisions. Always provide a deterministic templated explanation when no provider is configured or a call fails.
 
 **Caveat:** A positive six-month cash projection does not establish affordability of a multi-year mortgage or qualify someone for a loan. Forecast outputs are simulations, not guarantees.
 
@@ -330,16 +333,16 @@ These **finalized deterministic** rules must be implemented as pure functions in
 | --- | --- | --- | --- | --- |
 | `GET` | `/api/v1/health` | Service readiness | — | `{ status: "ok" }` |
 | `GET` | `/api/v1/profiles` | Populate profile selector | — | `{ profiles: [{ id, slug, displayName, lastSyncedAt }] }` |
-| `GET` | `/api/v1/profiles/:profileId/overview` | Balances, debt, schedules | — | `{ profile, asOf, cash, accounts, loans, obligations }` |
-| `GET` | `/api/v1/profiles/:profileId/transactions` | History table | `?from=&to=&category=&limit=50&cursor=` | `{ items, nextCursor }` |
-| `GET` | `/api/v1/profiles/:profileId/spending` | Category trends & estimated recurring/variable spend | `?months=3` | `{ period, totalCents, byCategory, fixedMonthlyCents, variableMonthlyCents }` |
-| `GET` | `/api/v1/profiles/:profileId/health-metrics` | Three financial health indicators | — | `{ indicators, assumptions }` |
-| `GET` | `/api/v1/profiles/:profileId/forecast` | Baseline projections | — | `{ asOf, currency, checkpoints, daily, shortfalls, assumptions }` |
-| `POST` | `/api/v1/profiles/:profileId/scenarios/evaluate` | Compare a what-if against baseline | Scenario JSON below | `{ baseline, scenario, deltas, assessment, recommendations }` |
-| `GET` | `/api/v1/profiles/:profileId/recommendations` | Quantified next-best actions | — | `{ recommendations }` |
-| `POST` | `/api/v1/profiles/:profileId/explanations` | Optional AI / fallback plain-English explanation | `{ subject: "forecast" }` or `{ subject: "scenario", scenario: {...} }` | `{ text, method: "ai" \| "template" }` |
+| `GET` | `/api/v1/profiles/:slug/overview` | Balances, debt, schedules | — | `{ profile, asOf, cash, accounts, loans, obligations }` |
+| `GET` | `/api/v1/profiles/:slug/transactions` | History table | `?from=&to=&category=&limit=50` (max 100, newest first) | `{ items }` |
+| `GET` | `/api/v1/profiles/:slug/spending` | Category trends & estimated recurring/variable spend | `?months=3` | `{ period, totalCents, byCategory, fixedMonthlyCents, variableMonthlyCents }` |
+| `GET` | `/api/v1/profiles/:slug/health-metrics` | Three financial health indicators | — | `{ indicators, assumptions }` |
+| `GET` | `/api/v1/profiles/:slug/forecast` | Baseline projections | — | `{ asOf, currency, checkpoints, daily, shortfalls, assumptions }` |
+| `POST` | `/api/v1/profiles/:slug/scenarios/evaluate` | Compare a what-if against baseline | Scenario JSON below | `{ baseline, scenario, deltas, assessment, recommendations }` |
+| `GET` | `/api/v1/profiles/:slug/recommendations` | Quantified next-best actions | — | `{ recommendations }` |
+| `POST` | `/api/v1/profiles/:slug/explanations` | Optional AI / fallback plain-English explanation | `{ subject: "forecast" }` or `{ subject: "scenario", scenario: {...} }` | `{ text, method: "ai" \| "template" }` |
 
-For all paths above, `:profileId` **is the seeded profile `slug`**, not a MongoDB ObjectId. The backend resolves the slug to the internal `_id`; all subsequent queries are scoped by that `_id`. Unknown slugs return `404`.
+For all paths above, `:slug` is the seeded profile slug, not a MongoDB ObjectId. The backend resolves the slug to the internal `_id`; all subsequent queries are scoped by that `_id`. Unknown slugs return `404`.
 
 ### 5.2 Request and Response Examples
 
@@ -372,7 +375,11 @@ Content-Type: application/json
 }
 ```
 
-`durationMonths` specifies how long to inject recurring payments **within the demo forecast** (max 6); this is not a representation of the full loan term. The server always evaluates against the same baseline and horizon. Future option: `monthly_spending_reduction` for automated recommendation comparisons.
+```json
+{ "type": "monthly_spending_reduction", "name": "Cut dining out", "monthlyAmountCents": 10000, "category": "entertainment", "startDate": "2026-12-01", "durationMonths": 6 }
+```
+
+`durationMonths` specifies how long to inject recurring payments **within the demo forecast** (max 6); this is not a representation of the full loan term. The server always evaluates against the same baseline and horizon. `monthly_spending_reduction` is an **MVP scenario type**, used internally by recommendations and accepted by `evaluate`:
 
 **Illustrative forecast response shape** (numbers are only examples; never hardcode these):
 
@@ -394,7 +401,7 @@ Content-Type: application/json
     "historyMonths": 3,
     "cashFloorCents": 0,
     "forecastMethod": "deterministic_daily_cashflow",
-    "variableExpenseSettlementDay": 20
+    "variableExpenseFrequency": "weekly"
   }
 }
 ```
@@ -421,12 +428,38 @@ Content-Type: application/json
 - **Validation:** Use a server-side validation layer (recommended: Zod or an equivalent simple library); never trust client-provided amounts, dates, profile IDs, or claimed computed values.
 - **Bounds:** Positive finite integer cents; input dates within a reasonable demo window; monthly scenario amounts nonnegative; six-month maximum scenario horizon; transaction pagination capped (e.g. 100 per page).
 - **Caching:** Dashboard data may be fetched in parallel. Forecast/scenario calculations use a consistent stored snapshot; include snapshot timestamps for reproducibility. Never share results across profiles; key any cache by profile and snapshot date.
-- **CORS:** Allow only the configured frontend origin(s) on Render. Basic rate limits on resource-intensive forecasting/AI routes; never return credentials or raw Nessie API responses.
+- **CORS:** Allow only the configured frontend origin(s) on Render. Basic rate limits on forecasting/scenario routes and a stricter one on `/explanations` (the only route that can spend AI quota); never return credentials or raw Nessie API responses.
 - **API keys:** Only the backend reads secrets. Browser `.env` has **only** `VITE_API_BASE_URL`.
 
 ## 6. Nessie Import Contract
 
 Nessie provides synthetic customer/accounts, deposits, withdrawals, transfers, purchases, bills, loans and merchants. The server adapts those distinct source shapes into the five normalized collections above. Supplementary synthetic records fill gaps (for example, retirement contributions or a mortgage not represented in a given Nessie demo customer).
+
+**Field-source map (verified against the Nessie docs, 2026-11-07).** Base URL `https://api.nessieisreal.com`; auth is an API key (from GitHub login) sent as a `?key=` query parameter, so it is server-only and URLs must never be logged. Customer endpoints let us create/modify data we own; `/enterprise/*` is read-only.
+
+| Our data | Nessie provides? | Source |
+| --- | --- | --- |
+| Customer name/address | Yes (`first_name`, `last_name`, `address`) | Nessie |
+| Checking / savings / credit-card accounts, `balance`, `nickname` | Yes (`type` is only `Checking`, `Savings`, `Credit Card`; `balance` is an integer, treat as whole dollars and convert to cents) | Nessie |
+| Credit limit, APR, retirement/IRA/CD/investment accounts | **No** | Supplemental (labeled) |
+| Purchases, deposits, withdrawals, transfers | Yes (`medium`, `transaction_date`, `status`, `amount` integer dollars, `description`; purchases also `merchant_id`) | Nessie |
+| Spending categories | Partly: merchants have a coarse `category` array (e.g. `["food"]`) | Map merchant category to our enum; housing/utilities come from bills |
+| Bills / recurring payments | Yes (`payee`, `payment_amount`, `recurring_date` day-of-month, `upcoming_payment_date`, `status`) | Nessie; monthly only, so weekly/biweekly flows are supplemental |
+| Income | **No** field; only deposits (e.g. description "Payroll deposit") | Infer net pay from deposits; `grossAmountCents` supplemental |
+| Loans | Partly (`type`, `status`, `amount`, `monthly_payment`, `credit_score`) | Nessie; **outstanding balance, due day, rate are not provided** so supplemental |
+
+**Live-checked with a real key (read-only, 2026-11-07):** IDs are UUID strings (not 24-char ObjectIds), so `externalId` stays a plain String. Merchant `category` is a plain string such as `Groceries`, `Insurance`, `Subscriptions` (not an array as the docs example shows), which maps well to our category enum. Enterprise transfer records contain only `_id`, `transaction_date`, `status`, `amount` and `description`; **no payer/payee**, so `transferGroupId` and checking-to-savings detection must be derived by us (for example from `description` or from the paired account lookups), or we must write the descriptions ourselves when seeding. The shared sandbox holds thousands of other users' customers; never import those, only customers we create under our own key.
+
+**Write-tested with our own key (2026-11-07):**
+- Creating customers, Checking/Savings/Credit Card accounts, deposits, purchases, transfers, bills and loans all work, and **back-dated dates are accepted** (so we can seed 3 months of history).
+- **Balances are static fields.** Posting deposits, purchases or transfers does *not* change an account's `balance`. The seed script must set balances itself, and the sync must run a reconciliation check against our derived history.
+- **Always send `status`.** A purchase POST without `status` returns 201 but poisons every later `GET /accounts/{id}/purchases` for that account with a validation error, and no DELETE route exists. Validate payloads in the seed script before posting.
+- **Transfer POST accepts only** `status`, `amount`, `transaction_date`, `description` (no `medium`, `payee_id`, or `payee`). There is no counterparty, so encode it in `description` with a parseable token (e.g. `Transfer to Savings [grp:abc123]`) and derive `internal_transfer`/`transferGroupId` from that. Transfer list responses use `id`, not `_id`.
+- Purchases are stored with `type: "merchant"` and `payer_id` = the account; the date field is `purchase_date`. Loans are read via `/accounts/{id}/loans` and carry no account/customer id in the body.
+- Credit-card `balance` is stored exactly as posted, so we choose positive = amount owed (matches `accounts.balanceCents`).
+- Still unknown: rate limits and how to delete/fix bad records. Use a fresh customer if a probe goes wrong.
+
+**Plan:** because we can POST customer data, `seedDemoProfiles.js` should create our 3 fictional customers, accounts, transactions, bills and loans **in Nessie itself**, then `syncNessie.js` reads them back into MongoDB. That makes Nessie the real source for the banking core. Only the "No" rows above are supplemental. Show "synced from Nessie at <lastSyncedAt>" in the UI and, if possible, run `npm run sync:nessie` live once to prove the integration.
 
 **Suggested import order:**
 
@@ -438,7 +471,7 @@ Nessie provides synthetic customer/accounts, deposits, withdrawals, transfers, p
 
 **Default workflow:** `npm run seed` and `npm run sync:nessie` executed on the **server** via CLI/script. No public `POST /sync` route. Keep previously seeded data available if Nessie is unreachable during judging.
 
-**Official Nessie reference:** https://nessieisreal.com/docs — verify the exact payload properties and endpoint URLs there before implementing individual adapter functions. In particular, do not assume that a Nessie loan, bill, or purchase has exactly the same fields as our normalized model.
+**Official Nessie reference:** https://prod.nessieisreal.com/docs — verify the exact payload properties and endpoint URLs there before implementing individual adapter functions. In particular, do not assume that a Nessie loan, bill, or purchase has exactly the same fields as our normalized model.
 
 ## 7. Environment Variables
 
@@ -467,6 +500,7 @@ Commit `.env.example` files but **never** commit real `.env` files or API keys. 
 - `POST /scenarios/evaluate` does **not** change any database account/transaction/loan records.
 - Re-running Nessie ingestion does not duplicate records.
 - Identical profile snapshots, as-of dates, and scenario inputs produce identical forecasts on repeated requests.
+- Seed script fails if a loan's payment and its recurring flow disagree.
 - Exactly three distinct selectable demo profiles exist; each resolves consistently by slug and cannot be edited through the API.
 - A scenario exists only in the evaluation request/response or current client memory; a subsequent profile read shows unchanged financial data and no saved scenario history.
 - An unconfigured/failed AI provider uses a safe deterministic template-based explanation rather than crashing the demo.
@@ -484,6 +518,6 @@ These decisions have been confirmed for the HackUTD MVP. They are **not open que
 | Scenario storage | **Temporary only** | Compute baseline versus what-if in memory; do not persist scenarios or alter stored financial records. |
 | AI provider | **Undecided, provider-neutral interface** | Explanation service exposes a stable internal contract and template fallback. Do not bind the architecture to Gemini, OpenAI, or another provider until selected. |
 
-**No additional engineering decisions are required to begin the MVP.** If a new choice becomes necessary during development, document it here and keep the corresponding routes, models, tests, and `Phases.md` consistent.
+**No additional engineering decisions are required to begin the MVP.** If a new choice becomes necessary during development, document it here and keep the corresponding routes, models, tests, and `phases.md` consistent.
 
 **Engineering priority:** Ship **Nessie → MongoDB → three read-only demo profiles → deterministic forecast → temporary what-if comparison → quantified recommendation**, with provider-neutral explanations and a reliable fallback, before adding optional features.

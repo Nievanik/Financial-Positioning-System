@@ -36,9 +36,9 @@ FPS combines synthetic banking data, spending analysis, cash-flow forecasts, and
 | Deployment | Render Static Site (client) + Render Web Service (server) |
 | Development assistants | Claude + Codex |
 
-**Not yet decided:** In-app AI API provider, financial forecasting implementation, and testing tools. Claude and Codex are development assistants, **not** automatically the in-app AI provider.
+**Decided in `docs/engineering.md`:** deterministic daily cash-flow forecast, exactly 3 read-only demo profiles, temporary (unsaved) what-if scenarios. **Not yet decided:** in-app AI API provider (a template fallback is always provided). Claude and Codex are development assistants, **not** automatically the in-app AI provider.
 
-For architecture, technology boundaries, and deployment details, see [`techstack.md`](./techstack.md).
+For architecture, technology boundaries, and deployment details, see [`docs/techstack.md`](./docs/techstack.md).
 
 ## Repository structure
 
@@ -46,10 +46,8 @@ For architecture, technology boundaries, and deployment details, see [`techstack
 Financial-Positioning-System/
 ├── client/           # React + Vite
 ├── server/           # Express.js + Mongoose + Nessie integration
-├── docs/             # Plans, architecture, progress tracking
-├── README.md
-├── Requirements.md
-└── techstack.md
+├── docs/             # requirements.md, techstack.md, engineering.md, phases.md
+└── README.md
 ```
 
 ## Getting started (after scaffolding)
@@ -113,10 +111,8 @@ Reuse the same financial analysis and scenario capabilities for simulated vehicl
 
 **Team size:** 3 developers, working in one GitHub repository (`client/` + `server/`) with feature branches and pull requests.
 
-- **Data + integration:** Nessie data, normalization, MongoDB/Mongoose models, backend API routes.
-- **Financial engine:** Expense analysis, indicators, forecasts, scenarios, and numerical checks.
-- **Frontend + explanation:** Dashboard, charts, scenario interface, and in-app AI explanation integration once selected.
+Work on short-lived `feature/*` branches, open PRs into `dev`, and merge tested work from `dev` into `main`. Roles are flexible; there are no fixed lanes.
 
 **Definition of done:** A reproducible demo where a fictional customer can inspect finances, identify a potential risk, compare both scenario types, and understand an action supported by the computed figures.
 
-See [`Requirements.md`](./Requirements.md) for the concise feature requirements.
+See [`docs/requirements.md`](./docs/requirements.md) for the concise feature requirements.

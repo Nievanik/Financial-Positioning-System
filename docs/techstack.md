@@ -28,10 +28,9 @@
 | Area | Status | Notes |
 | --- | --- | --- |
 | In-app AI API provider | **Decide later** | Claude/Codex are coding assistants; no runtime AI vendor is committed |
-| Forecasting implementation | **Decide later** | Must still produce auditable forecast figures for 1, 2, 3, and 6 months and flag interim cash shortfalls |
-| Testing framework/tools | **Decide later** | Numerical accuracy and reproducible demo checks remain essential |
+| Testing framework/tools | **Decide later** (pick `node:test` or Vitest at scaffold time) | Numerical accuracy and reproducible demo checks remain essential |
 
-Do not silently substitute a vendor or a methodology for any deferred item.
+Forecasting is **decided** (deterministic daily cash-flow projection; see `engineering.md`). Do not silently substitute a vendor or a methodology for any deferred item.
 
 ## Architecture
 
@@ -71,15 +70,13 @@ Financial-Positioning-System/
 ├── server/
 │   ├── src/
 │   │   ├── routes/
-│   │   ├── controllers/
+│   │   ├── engine/
 │   │   ├── models/
 │   │   ├── services/
 │   │   └── middleware/
 │   └── package.json
 ├── docs/
 ├── README.md
-├── Requirements.md
-└── techstack.md
 ```
 
 The folders under `src/` are a **recommended scaffold**, not an assertion that the code already exists.
@@ -121,4 +118,4 @@ Never commit environment files or keys.
 
 No Tiger Data, Vultr, Solana, GoDaddy Registry, PostgreSQL, Supabase, Prisma, Cursor/Grok Bot, or other extra sponsor integrations. No real bank login, real-money transfers, or production underwriting.
 
-See [`Requirements.md`](./Requirements.md) for product requirements and [`README.md`](./README.md) for project overview and initial setup.
+See [`requirements.md`](./requirements.md) for product requirements and [`README.md`](../README.md) for project overview and initial setup.

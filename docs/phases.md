@@ -15,14 +15,14 @@
 
 ## Phase 0 — Foundation & Project Contracts
 **Existing documents (keep as the source of truth):**
-- [x] `TechStack.md` — finalized tools, frameworks, hosting, and integrations.
+- [x] `techstack.md` — finalized tools, frameworks, hosting, and integrations.
 - [x] `requirements.md` — product scope, MVP features, and priorities.
-- [x] `Phases.md` — this fixed build-order roadmap.
+- [x] `phases.md` — this fixed build-order roadmap.
 
 **Documents to write, in this order:**
-- [ ] **`engineering.md`** — agree on the full project folder structure (`client/`, `server/`, `docs/`), MongoDB/Mongoose database schema and relationships, Nessie-to-FPS data mapping, REST API routes, request/response examples, validation/error formats, and core financial-engine data contracts.
+- [x] **`engineering.md`** — agreed on the full project folder structure (`client/`, `server/`, `docs/`), MongoDB/Mongoose database schema and relationships, Nessie-to-FPS data mapping, REST API routes, request/response examples, validation/error formats, and core financial-engine data contracts.
 - [ ] **`design.md`** — define the frontend design templates: page layouts, navigation, dashboard structure, reusable components, colors/typography/spacing, chart conventions, responsive behavior, and loading/empty/error states using Tailwind CSS + shadcn/ui.
-- [ ] Review `engineering.md` and `design.md` against `requirements.md` and `TechStack.md`; resolve mismatches before implementation.
+- [ ] Review `engineering.md` and `design.md` (once written) against `requirements.md` and `techstack.md`; resolve mismatches before implementation.
 
 **Project setup:**
 - [ ] Create/confirm the GitHub monorepo structure according to `engineering.md`; use feature branches and pull requests through a shared integration branch before merging to `main`.
@@ -40,7 +40,7 @@
 - [ ] Import and normalize available Nessie data (accounts, purchases/transactions, bills, transfers, and applicable loan/payment data) into the app's common schema.
 - [ ] Add clearly labeled synthetic records for finances Nessie does not provide reliably (e.g., income details, retirement/IRA, CDs, mortgage or vehicle terms, savings contributions).
 - [ ] Keep **spendable cash**, savings/investments/retirement, debts, and unused credit **separate**; identify transfers and card payments to prevent double-counting.
-- [ ] Support at least two selectable, realistic demo profiles and a reproducible seed/refresh script.
+- [ ] Seed **exactly three** selectable, read-only demo profiles with contrasting outcomes (healthy, debt pressure, cash-shortfall) using a frozen `asOf` date, plus a reproducible seed/refresh script. Document which fields come from Nessie vs. supplemental synthetic data.
 - [ ] Build REST endpoints for profiles, financial summary, transactions/spending, and bills/debts; handle empty and failed data loads.
 
 **Exit gate:** Selecting any demo profile returns consistent, labeled financial data through working Express endpoints, even when Nessie is temporarily unavailable (using previously seeded demo data).
@@ -69,14 +69,14 @@
 
 ## Phase 4 — What-If Simulator, Guidance & Toyota Extension
 **Core — complete before stretch work:**
-- [ ] Create a what-if interface for **one-time expenses**, **monthly recurring changes**, and **down-payment + recurring-payment** scenarios (e.g., a vehicle purchase).
+- [ ] Create a what-if interface for **one-time expenses**, **down-payment + recurring-payment** scenarios, and **monthly spending reductions** (`monthly_spending_reduction`, used by recommendations).
 - [ ] Recalculate through the **same Phase 2 engine**; compare baseline vs. scenario at 1/2/3/6 months, including shortfall dates and changed indicators.
 - [ ] Generate at least one **calculation-backed next-best action** per relevant financial situation, including its rationale and trade-offs.
 - [ ] Add AI-generated plain-language explanations or a conversational coach **if the application AI provider is selected and integration is stable**. Feed it computed facts; never let it invent balances, forecasts, approvals, or eligibility.
 - [ ] Provide a deterministic, non-AI explanation fallback so the demo works without an AI response.
 
 **Stretch — only after the PNC + Nessie core is fully working:**
-- [ ] Add a Toyota profile with labeled synthetic vehicle and financing data.
+- [ ] Add a Toyota scenario type or profile with labeled synthetic vehicle and financing data (this requires updating `engineering.md`, which currently fixes exactly 3 profiles).
 - [ ] Compare realistic vehicle choices (e.g., keep current vehicle, pay down loan, refinance, replace) using the existing forecast/what-if engine and explicit assumptions.
 - [ ] Show payment/cash-flow trade-offs and an appropriate suggested next step; avoid claims of guaranteed offers or approval.
 
