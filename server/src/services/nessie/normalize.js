@@ -25,6 +25,13 @@ export function normalizeProfile({ asOf, slug, nessie, supplemental, merchants }
     asOf: at(asOf),
   }));
   accounts.push({ externalId: `${slug}:401k`, source: 'supplemental_synthetic', name: '401(k)', type: 'retirement', balanceCents: supplemental.retirement401kCents, creditLimitCents: null, asOf: at(asOf) });
+  // Investment Planner holdings (CDs, brokerage): supplemental only, never Nessie and never cash (engineering.md section 10).
+  for (const h of supplemental.investments ?? []) {
+    accounts.push({
+      externalId: `${slug}:${h.key}`, source: 'supplemental_synthetic', name: h.name, type: h.type, balanceCents: h.balanceCents, creditLimitCents: null, asOf: at(asOf),
+      riskLevel: h.riskLevel ?? null, annualRateBps: h.annualRateBps ?? null, maturityDate: h.maturityDate ?? null, holdingsNote: h.holdingsNote ?? null,
+    });
+  }
 
   const billCategory = Object.fromEntries(supplemental.bills.map((b) => [b.nickname, b.category]));
   const tx = [];

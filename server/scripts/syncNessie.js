@@ -48,7 +48,7 @@ async function main() {
     const nessie = await fetchProfile(client, profile.nessieCustomerId);
     const out = normalizeProfile({
       asOf: profile.forecastSettings.asOfDate, slug: profile.slug, nessie, merchants,
-      supplemental: { bills: spec.bills, loans: spec.loans.map((l) => ({ name: l.name, day: l.day, rateBps: l.rateBps })), retirement401kCents: spec.supplemental.retirement401kCents, creditLimitCents: spec.card.limit * 100, grossPayCents: spec.pay.gross * 100 },
+      supplemental: { bills: spec.bills, loans: spec.loans.map((l) => ({ name: l.name, day: l.day, rateBps: l.rateBps })), retirement401kCents: spec.supplemental.retirement401kCents, investments: spec.supplemental.investments ?? [], creditLimitCents: spec.card.limit * 100, grossPayCents: spec.pay.gross * 100 },
     });
     if (out.issues.length) throw new Error(`${profile.slug}: ${out.issues.join('; ')}`);
     prepared.push({ profile, out });

@@ -43,3 +43,21 @@ test('income: overview lists only income flows (next payday first); monthly inco
   assert.equal(incomeMonthlyCents(flows), Math.round((120000 * 26) / 12) + 20000);
   assert.equal(incomeMonthlyCents([]), 0);
 });
+
+test('overview: supplemental CDs/brokerage count in long-term totals and net worth, never in cash; metadata passes through', () => {
+  const o = buildOverview({
+    profile: { slug: 's', displayName: 'S', currency: 'USD', timeZone: 'x', lastSyncedAt: null }, asOf: '2026-11-08',
+    accounts: [
+      { type: 'checking', balanceCents: 100 }, { type: 'savings', balanceCents: 200 }, { type: 'retirement', balanceCents: 5000 },
+      { type: 'cd', balanceCents: 400, riskLevel: 'low', annualRateBps: 410, maturityDate: '2026-12-12', source: 'supplemental_synthetic' },
+      { type: 'investment', balanceCents: 600, riskLevel: 'high', holdingsNote: 'ETFs', source: 'supplemental_synthetic' },
+    ],
+    loans: [], flows: [],
+  });
+  assert.equal(o.cash.availableCents, 300);
+  assert.equal(o.totals.retirementAndInvestmentsCents, 5000 + 400 + 600);
+  assert.equal(o.totals.netWorthCents, 300 + 6000);
+  const cd = o.accounts.find((a) => a.type === 'cd');
+  assert.deepEqual([cd.riskLevel, cd.annualRateBps, cd.maturityDate, cd.source], ['low', 410, '2026-12-12', 'supplemental_synthetic']);
+  assert.equal(o.accounts.find((a) => a.type === 'checking').maturityDate, null);
+});
