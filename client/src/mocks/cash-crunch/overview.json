@@ -4,59 +4,99 @@
     "displayName": "Sam Okafor",
     "currency": "USD",
     "timeZone": "America/Chicago",
-    "lastSyncedAt": "2026-11-08T04:23:19.227Z"
+    "lastSyncedAt": "2026-11-08T14:39:43.637Z"
   },
   "asOf": "2026-11-08",
   "cash": {
-    "availableCents": 105000,
-    "checkingCents": 90000,
-    "savingsCents": 15000
+    "availableCents": 80000,
+    "checkingCents": 70000,
+    "savingsCents": 10000
   },
   "totals": {
-    "retirementAndInvestmentsCents": 120000,
+    "retirementAndInvestmentsCents": 365000,
     "creditCardDebtCents": 220000,
     "loanDebtCents": 1100000,
     "creditLimitCents": 400000,
     "unusedCreditCents": 180000,
-    "netWorthCents": -1095000
+    "netWorthCents": -875000
   },
   "accounts": [
     {
-      "id": "6aeff92c88371dec4434336c",
-      "name": "Sam's Checking",
-      "type": "checking",
-      "balanceCents": 90000,
+      "id": "6af089ae88371dec44343b99",
+      "name": "9-Month CD",
+      "type": "cd",
+      "balanceCents": 200000,
       "creditLimitCents": null,
-      "source": "nessie"
+      "source": "supplemental_synthetic",
+      "riskLevel": "low",
+      "annualRateBps": 410,
+      "maturityDate": "2026-12-20",
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92c88371dec4434336e",
+      "id": "6af089ae88371dec44343b96",
+      "name": "Sam's Checking",
+      "type": "checking",
+      "balanceCents": 70000,
+      "creditLimitCents": null,
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
+    },
+    {
+      "id": "6af089ae88371dec44343b95",
       "name": "Sam's Card",
       "type": "credit_card",
       "balanceCents": 220000,
       "creditLimitCents": 400000,
-      "source": "nessie"
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92c88371dec4434336f",
+      "id": "6af089ae88371dec44343b98",
+      "name": "Micro-investing App",
+      "type": "investment",
+      "balanceCents": 45000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic",
+      "riskLevel": "high",
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": "Round-up ETF portfolio"
+    },
+    {
+      "id": "6af089ae88371dec44343b97",
       "name": "401(k)",
       "type": "retirement",
       "balanceCents": 120000,
       "creditLimitCents": null,
-      "source": "supplemental_synthetic"
+      "source": "supplemental_synthetic",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     },
     {
-      "id": "6aeff92c88371dec4434336d",
+      "id": "6af089ae88371dec44343b94",
       "name": "Sam's Savings",
       "type": "savings",
-      "balanceCents": 15000,
+      "balanceCents": 10000,
       "creditLimitCents": null,
-      "source": "nessie"
+      "source": "nessie",
+      "riskLevel": null,
+      "annualRateBps": null,
+      "maturityDate": null,
+      "holdingsNote": null
     }
   ],
   "loans": [
     {
-      "id": "6aeff92c88371dec44343370",
+      "id": "6af089ae88371dec44343b9a",
       "name": "Auto loan",
       "loanType": "auto",
       "outstandingCents": 1100000,
@@ -69,8 +109,8 @@
   "income": [
     {
       "name": "Salary",
-      "amountCents": 300000,
-      "grossAmountCents": 370000,
+      "amountCents": 320000,
+      "grossAmountCents": 400000,
       "frequency": "monthly",
       "nextDate": "2026-11-28"
     }
@@ -79,18 +119,20 @@
     {
       "name": "Car insurance",
       "kind": "bill",
-      "amountCents": 20000,
+      "amountCents": 18000,
       "frequency": "monthly",
       "nextDate": "2026-11-10",
-      "category": "transport"
+      "category": "transport",
+      "loanId": null
     },
     {
       "name": "Streaming",
       "kind": "bill",
-      "amountCents": 5000,
+      "amountCents": 3000,
       "frequency": "monthly",
       "nextDate": "2026-11-12",
-      "category": "subscriptions"
+      "category": "subscriptions",
+      "loanId": null
     },
     {
       "name": "Auto loan",
@@ -98,15 +140,17 @@
       "amountCents": 38000,
       "frequency": "monthly",
       "nextDate": "2026-11-15",
-      "category": "debt"
+      "category": "debt",
+      "loanId": "6af089ae88371dec44343b9a"
     },
     {
       "name": "Credit card payment",
       "kind": "credit_card_payment",
-      "amountCents": 30000,
+      "amountCents": 25000,
       "frequency": "monthly",
       "nextDate": "2026-11-20",
-      "category": "debt"
+      "category": "debt",
+      "loanId": null
     },
     {
       "name": "Rent",
@@ -114,15 +158,17 @@
       "amountCents": 140000,
       "frequency": "monthly",
       "nextDate": "2026-12-01",
-      "category": "housing"
+      "category": "housing",
+      "loanId": null
     },
     {
       "name": "Electric",
       "kind": "bill",
-      "amountCents": 18000,
+      "amountCents": 15000,
       "frequency": "monthly",
       "nextDate": "2026-12-05",
-      "category": "utilities"
+      "category": "utilities",
+      "loanId": null
     }
   ]
 }

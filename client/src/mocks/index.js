@@ -4,7 +4,6 @@
  *
  * Data sources (all labeled synthetic):
  * - `<slug>/*.json`, `profiles.json`: real API responses exported by `npm run export:mocks` (origin/dev).
- * - `investment-holdings.json`: supplemental CD/brokerage accounts + server-computed totals that include them.
  * - `engine-inputs.json` + `engine/*`: server engine copy so what-if results and recommendations equal the live API.
  * - `investments.js` + `investmentEngine.js`: Investment Planner routes (in-tab memory for plans).
  */
@@ -12,7 +11,6 @@ import { ApiError } from '@/lib/apiError'
 import { formatCents } from '@/lib/money'
 import engineInputs from './engine-inputs.json'
 import { baselineRecommendations, evaluateScenario } from './engine/scenarios.js'
-import holdingsFixture from './investment-holdings.json'
 import { assumptionsPayload, investmentMockRoute } from './investments'
 import profilesFixture from './profiles.json'
 
@@ -23,13 +21,7 @@ const files = import.meta.glob('./*/*.json', { eager: true, import: 'default' })
 const fixture = (slug, name) => files[`./${slug}/${name}.json`]
 const SLUGS = profilesFixture.profiles.map((p) => p.slug)
 
-/** Overview with the supplemental holdings merged in (no-op once the export already contains them). */
-function overview(slug) {
-  const base = fixture(slug, 'overview')
-  const supp = holdingsFixture.profiles[slug]
-  if (!supp || base.accounts.some((a) => a.type === 'cd' || a.type === 'investment')) return base
-  return { ...base, accounts: [...base.accounts, ...supp.accounts], totals: supp.totals }
-}
+const overview = (slug) => fixture(slug, 'overview') // exported overview already includes supplemental CD/brokerage holdings
 
 function holdings(slug) {
   const o = overview(slug)

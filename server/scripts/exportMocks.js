@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import mongoose from 'mongoose';
 import app from '../src/app.js';
+import { loadEngine } from '../src/services/snapshot.js';
 
 const OUT = path.resolve(import.meta.dirname, '../../client/src/mocks');
 const SCENARIO = { type: 'one_time', name: 'Laptop', amountCents: 200000, startDate: '2026-12-01' };
@@ -24,6 +25,14 @@ const write = async (file, data) => {
 try {
   const { profiles } = await call('/profiles');
   await write('profiles.json', { profiles });
+  // Mock-mode what-if/recommendations run the client engine copy on these inputs, so they must match the live engine.
+  const FLOW_KEYS = ['name', 'kind', 'category', 'signedAmountCents', 'grossAmountCents', 'frequency', 'nextDate', 'endDate', 'active'];
+  const inputs = {};
+  for (const { slug } of profiles) {
+    const { input } = await loadEngine(slug);
+    inputs[slug] = { ...input, flows: input.flows.map((f) => Object.fromEntries(FLOW_KEYS.map((k) => [k, f[k] ?? null]))) };
+  }
+  await write('engine-inputs.json', { _note: 'MOCK DATA. Forecast engine inputs (services/snapshot.js loadEngine().input) written by `npm run export:mocks`; used only by mock-mode scenario evaluation and recommendations so they match the live engine.', profiles: inputs });
   for (const { slug } of profiles) {
     const p = `/profiles/${slug}`;
     await write(`${slug}/overview.json`, await call(`${p}/overview`));

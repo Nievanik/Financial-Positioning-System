@@ -2,13 +2,13 @@
   "asOf": "2026-11-08",
   "indicators": {
     "emergencyCoverage": {
-      "months": 7.403772116124992
+      "months": 3.2822613467774757
     },
     "debtPaymentBurden": {
-      "ratio": 0.12000009230776332
+      "ratio": 0
     },
     "cashFlowSafety": {
-      "minCashCents": 1683369,
+      "minCashCents": 476762,
       "daysBelowFloor": 0
     }
   },

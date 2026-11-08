@@ -132,6 +132,8 @@
 - [ ] Capture screenshots and a backup demo video; rehearse the presentation and verify the deployed link.
 - [ ] Finish submission requirements and perform one final smoke test of the hosted application.
 
+- [x] **Demo data retuned (2026-11-08):** three clear judge stories: `steady-saver` simple (one paycheck, no loans, never below $0), `debt-heavy` loans + recurring payments (26% debt burden, no overdraft), `cash-crunch` short dip below $0 before each monthly payday (41 days, min about -$409). New Nessie customers posted with `npm run seed -- --post --replace`, synced, mocks re-exported (`export:mocks` now also writes `engine-inputs.json`; `investment-holdings.json` removed). Verified: API numbers match the dry run, mock what-if/recommendations equal live, server 64/64, client 11/11, lint, build.
+
 **Exit gate:** A judge can follow the full financial story quickly, the team can demonstrate it reliably, and submission assets are ready.
 
 ---
