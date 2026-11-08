@@ -1,96 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Node.js Local Banking Environment</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #eceff1; margin: 40px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #1e3a8a; margin-top: 0; }
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { background: #1e40af; color: white; font-weight: bold; border: none; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #1d4ed8; }
-        .balance-badge { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 6px; margin: 20px 0; color: #166534; font-size: 20px; font-weight: bold; }
-        .tx-item { padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; font-size: 14px; }
-        .Deposit { color: #15803d; }
-        .Withdrawal { color: #b91c1c; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>Northstar — Financial overview</title>
+  <style>
+    :root{--ink:#182538;--muted:#788496;--line:#e8ebf0;--paper:#fff;--bg:#f5f6f8;--navy:#142b49;--teal:#168f83;--teal-pale:#e8f5f2;--amber:#c8872b;--amber-pale:#fff5e5;--red:#cc5f5f;--shadow:0 5px 22px #1b2c4410}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.shell{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}.sidebar{background:#fff;border-right:1px solid var(--line);padding:25px 16px;display:flex;flex-direction:column;gap:32px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px;font-weight:750;font-size:17px;letter-spacing:-.4px}.brandmark{height:34px;width:34px;border-radius:11px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:17px}.nav-title{font-size:10px;font-weight:700;letter-spacing:1.1px;color:#a1aaba;padding:0 12px 9px}.nav{display:grid;gap:5px}.nav a{padding:10px 12px;border-radius:9px;color:#6e7a8d;text-decoration:none;display:flex;gap:12px;align-items:center;font-weight:550}.nav a.active{background:#edf2f8;color:var(--navy);font-weight:700}.nav a:hover{background:#f4f6f9}.ico{width:19px;text-align:center;font-size:16px}.side-bottom{margin-top:auto}.profile{border-top:1px solid var(--line);padding:18px 9px 0;display:flex;gap:10px;align-items:center}.avatar{height:36px;width:36px;border-radius:50%;background:#e5edf4;color:var(--navy);display:grid;place-items:center;font-weight:700}.profile small,.muted{color:var(--muted)}.main{min-width:0}.topbar{height:72px;border-bottom:1px solid var(--line);background:#ffffffb8;display:flex;align-items:center;justify-content:space-between;padding:0 38px}.crumb{color:var(--muted)}.top-actions{display:flex;align-items:center;gap:12px}.select{background:white;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:#405067}.icon-button{border:1px solid var(--line);background:#fff;height:37px;width:39px;border-radius:9px;color:#607084}.content{max-width:1420px;margin:0 auto;padding:32px 38px 50px}.heading{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:24px}.eyebrow{color:var(--teal);font-size:11px;text-transform:uppercase;letter-spacing:1.1px;font-weight:750}.heading h1{font-size:27px;letter-spacing:-.7px;margin:5px 0 3px}.heading p{margin:0;color:var(--muted)}.date{font-size:12px;color:var(--muted);padding-top:8px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:17px}.card{background:var(--paper);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}.stat{padding:18px 19px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:#647186;font-size:12px;font-weight:600}.stat-icon{height:31px;width:31px;border-radius:9px;display:grid;place-items:center;background:#eff3f8;color:var(--navy);font-size:15px}.stat-value{font-size:25px;letter-spacing:-.65px;font-weight:730;margin:10px 0 4px}.stat-foot{font-size:11px;color:var(--muted)}.positive{color:var(--teal);font-weight:650}.negative{color:var(--red);font-weight:650}.grid-main{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(280px,.9fr);gap:17px;margin-bottom:17px}.panel{padding:20px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:17px}.panel h2{font-size:15px;margin:0 0 3px;letter-spacing:-.2px}.panel-sub{font-size:11px;color:var(--muted)}.segmented{border:1px solid var(--line);border-radius:8px;padding:3px;display:flex;gap:1px}.segmented button{border:0;background:transparent;border-radius:6px;padding:5px 8px;color:#79869a;font-size:11px}.segmented button.active{background:#eef2f7;color:var(--navy);font-weight:700}.chart-wrap{position:relative;height:245px}.chart-wrap svg{width:100%;height:100%;overflow:visible}.legend{display:flex;gap:17px;margin-top:8px;font-size:11px;color:var(--muted)}.legend span{display:flex;align-items:center;gap:6px}.dot{height:8px;width:8px;border-radius:50%;background:var(--teal)}.dot.soft{background:#b6c4d4}.insight{background:var(--teal-pale);border-radius:10px;padding:12px 13px;margin-top:10px;color:#27675e;font-size:11px;display:flex;gap:9px}.insight strong{display:block;color:#205c54;font-size:12px;margin-bottom:2px}.health-score{display:flex;align-items:center;gap:17px;background:#f8fafb;border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:14px}.score-ring{width:59px;height:59px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) 0 78%,#e3ecea 78%);position:relative;flex:none}.score-ring:before{content:"";position:absolute;inset:5px;background:#f8fafb;border-radius:50%}.score-ring b{z-index:1;font-size:16px}.score-label{font-size:13px;font-weight:700}.score-label small{display:block;font-weight:400;color:var(--muted);font-size:11px}.metric{padding:12px 1px;border-bottom:1px solid #eff1f4}.metric:last-child{border-bottom:0;padding-bottom:2px}.metric-head{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:650}.metric p{font-size:10.5px;color:var(--muted);margin:4px 0 8px}.pill{font-size:10px;padding:3px 7px;border-radius:20px;font-weight:700;white-space:nowrap}.pill.good{background:#e8f5f0;color:#23816f}.pill.watch{background:var(--amber-pale);color:#a36a1d}.meter{height:5px;border-radius:9px;background:#edf0f3;overflow:hidden}.meter i{height:100%;display:block;border-radius:9px;background:var(--teal)}.meter i.warn{background:#e3a33e}.grid-lower{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr) minmax(250px,.85fr);gap:17px}.spend-total{font-size:22px;font-weight:730;margin:2px 0}.spend-chart{display:flex;align-items:center;gap:16px;padding:5px 0 12px}.donut{width:116px;height:116px;border-radius:50%;background:conic-gradient(#168f83 0 32%,#4c718f 32% 52%,#93aa86 52% 68%,#dba54e 68% 81%,#b9c4d1 81%);position:relative;flex:none}.donut:after{content:"";position:absolute;inset:19px;background:white;border-radius:50%}.donut-label{position:absolute;inset:0;display:grid;place-content:center;text-align:center;z-index:1;font-size:13px;font-weight:700}.donut-label small{font-weight:400;color:var(--muted);font-size:9px}.categories{display:grid;gap:8px;flex:1;font-size:10px}.cat{display:flex;justify-content:space-between;gap:8px;color:#667387}.cat b{color:#344257;font-size:10px}.catname{display:flex;align-items:center;gap:6px}.swatch{width:7px;height:7px;border-radius:50%}.transactions{width:100%;border-collapse:collapse;font-size:11px}.transactions th{text-align:left;color:#99a3b1;font-size:9px;font-weight:650;text-transform:uppercase;letter-spacing:.55px;padding:0 7px 9px}.transactions td{padding:10px 7px;border-top:1px solid #f0f2f5;white-space:nowrap}.merchant{display:flex;align-items:center;gap:9px;font-weight:650;color:#344257}.merchant-icon{height:28px;width:28px;border-radius:8px;display:grid;place-items:center;background:#f0f3f7}.amount{text-align:right;font-weight:700}.scenario{background:var(--navy);color:white;border-color:var(--navy);padding:19px}.scenario .panel-sub{color:#b8c6d6}.scenario h2{color:white}.scenario .select{background:#233d5d;color:#fff;border-color:#3a5370}.scenario select option{color:#182538}.field{margin:15px 0}.field-label{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#d3dce6;margin-bottom:7px}.field-label strong{color:#fff;font-size:12px}.scenario input[type=range]{width:100%;accent-color:#4ac0a8}.scenario-result{background:#203a59;border:1px solid #37516d;border-radius:10px;padding:12px;margin-top:12px}.scenario-result span{font-size:10px;color:#bdcbd9}.scenario-result strong{display:block;font-size:20px;margin:2px 0}.scenario-result small{color:#cbd6e2;font-size:10px}.scenario button.action{width:100%;margin-top:12px;border:0;background:#36b39d;color:#102e39;border-radius:8px;padding:10px;font-weight:750;font-size:11px}.recommend{background:#fffaf1;border:1px solid #f2e8d6;border-radius:11px;padding:14px;margin-top:11px}.recommend .rtitle{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:#a67430;font-weight:750}.recommend p{font-size:11px;color:#5e533f;margin:6px 0 0}.footnote{text-align:center;color:#9aa4b1;font-size:10px;padding-top:20px}.mobile-menu{display:none}
+    @media(max-width:1100px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-lower{grid-template-columns:1fr 1fr}.scenario{grid-column:1/-1}.scenario-inner{display:grid;grid-template-columns:1fr 1fr;gap:20px}.scenario .panel-head{grid-column:1/-1;margin-bottom:0}.scenario button.action{margin-top:5px}.grid-main{grid-template-columns:minmax(0,1.4fr) minmax(260px,.9fr)}}
+    @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{height:60px;padding:0 18px}.mobile-menu{display:inline-block}.content{padding:24px 16px 35px}.heading h1{font-size:23px}.date{display:none}.top-actions{gap:7px}.select{max-width:185px;font-size:11px;padding:8px}.grid-main,.grid-lower{grid-template-columns:1fr}.scenario{grid-column:auto}.scenario-inner{display:block}.scenario .panel-head{margin-bottom:17px}.chart-wrap{height:220px}.panel{padding:16px}.transactions td:nth-child(2),.transactions th:nth-child(2){display:none}}
+    @media(max-width:430px){.cards{gap:9px}.stat{padding:13px}.stat-value{font-size:20px}.stat-top{font-size:10px}.stat-foot{font-size:9px}.panel-head{align-items:flex-start}.spend-chart{gap:10px}.donut{width:100px;height:100px}.segmented button{padding:5px 6px}.content{padding-left:12px;padding-right:12px}}
+  </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Node.js Banking Terminal</h1>
-    
-    <label for="accId">Nessie Account Identification String:</label>
-    <input type="text" id="accId" placeholder="e.g., 62b3a123c456789012345678">
-    <button onclick="loadAccountPortal()">Access Bank Dashboard</button>
-
-    <div id="portal" style="display: none;">
-        <div class="balance-badge">
-            Account Owner Nickname: <span id="lblNickname">-</span> <br>
-            Current Cleared Balance: $<span id="lblBalance">0.00</span>
-        </div>
-
-        <h3>Execute Transaction Simulation</h3>
-        <input type="number" id="txAmount" placeholder="0.00" step="0.01">
-        <input type="text" id="txMemo" placeholder="Transaction memo (e.g. Paycheck)">
-        <button onclick="submitDeposit()">Submit Electronic Deposit</button>
-
-        <h3>Recent Transaction Records</h3>
-        <div id="txHistory"></div>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brandmark">N</span> northstar<span style="color:#91a0b2;font-weight:500">/</span></div>
+    <div><div class="nav-title">WORKSPACE</div><nav class="nav"><a class="active" href="#overview"><span class="ico">▦</span>Overview</a><a href="#forecast"><span class="ico">⌁</span>Cash flow</a><a href="#spending"><span class="ico">◔</span>Spending</a><a href="#transactions"><span class="ico">↕</span>Transactions</a></nav></div>
+    <div><div class="nav-title">YOUR PLAN</div><nav class="nav"><a href="#health"><span class="ico">✳</span>Financial health</a><a href="#scenario"><span class="ico">◇</span>What-if planner</a></nav></div>
+    <div class="side-bottom"><div class="nav-title">DEMO PROFILE</div><div class="profile"><div class="avatar">JD</div><div><b>Jordan Davis</b><br><small>Sample customer</small></div></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="crumb"><span class="mobile-menu">☰　</span>Workspace　/　<strong style="color:#344257">Overview</strong></div><div class="top-actions"><select class="select" aria-label="Demo profile"><option>Jordan Davis · Sample profile</option><option>Alex Morgan · Sample profile</option><option>Casey Lee · Sample profile</option></select><button class="icon-button" aria-label="Notifications">♧</button></div></header>
+    <div class="content" id="overview">
+      <div class="heading"><div><div class="eyebrow">Your financial snapshot</div><h1>Good morning, Jordan <span style="font-size:22px">☀</span></h1><p>Here’s where things stand and what’s coming up.</p></div><div class="date">Updated just now · Demo data</div></div>
+      <section class="cards" aria-label="Financial summary">
+        <article class="card stat"><div class="stat-top">Available cash <span class="stat-icon">◉</span></div><div class="stat-value">$18,420</div><div class="stat-foot"><span class="positive">↑ 4.2%</span> from last month</div></article>
+        <article class="card stat"><div class="stat-top">Monthly income <span class="stat-icon">↗</span></div><div class="stat-value">$6,850</div><div class="stat-foot">Next payday <b>Nov 15</b></div></article>
+        <article class="card stat"><div class="stat-top">Monthly spending <span class="stat-icon">↘</span></div><div class="stat-value">$4,280</div><div class="stat-foot"><span class="positive">↓ 6.1%</span> vs. monthly average</div></article>
+        <article class="card stat"><div class="stat-top">Bills coming up <span class="stat-icon">▤</span></div><div class="stat-value">$1,640</div><div class="stat-foot">Next 14 days · 5 payments</div></article>
+      </section>
+      <section class="grid-main">
+        <article class="card panel" id="forecast">
+          <div class="panel-head"><div><h2>Cash flow forecast</h2><div class="panel-sub">Estimated available cash over the next 6 months</div></div><div class="segmented" aria-label="Forecast period"><button>1M</button><button>3M</button><button class="active">6M</button></div></div>
+          <div class="chart-wrap"><svg viewBox="0 0 680 250" preserveAspectRatio="none" role="img" aria-label="Cash forecast rises from 18 thousand to 30 thousand dollars over six months">
+            <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#168f83" stop-opacity=".20"/><stop offset="1" stop-color="#168f83" stop-opacity="0"/></linearGradient></defs>
+            <g stroke="#edf0f3" stroke-width="1"><line x1="55" y1="25" x2="665" y2="25"/><line x1="55" y1="76" x2="665" y2="76"/><line x1="55" y1="127" x2="665" y2="127"/><line x1="55" y1="178" x2="665" y2="178"/><line x1="55" y1="220" x2="665" y2="220"/></g>
+            <g fill="#9aa5b3" font-size="10" font-family="sans-serif"><text x="4" y="29">$32k</text><text x="4" y="80">$26k</text><text x="4" y="131">$20k</text><text x="4" y="182">$14k</text><text x="4" y="224">$9k</text><text x="53" y="243">Nov</text><text x="167" y="243">Dec</text><text x="270" y="243">Jan</text><text x="375" y="243">Feb</text><text x="480" y="243">Mar</text><text x="583" y="243">Apr</text></g>
+            <path d="M60 142 C100 137 125 150 162 132 S220 118 263 123 S320 109 365 104 S425 91 467 96 S530 78 568 78 S620 54 660 49 L660 220 L60 220Z" fill="url(#fill)"/>
+            <path d="M60 142 C100 137 125 150 162 132 S220 118 263 123 S320 109 365 104 S425 91 467 96 S530 78 568 78 S620 54 660 49" fill="none" stroke="#168f83" stroke-width="3" stroke-linecap="round"/>
+            <path d="M60 142 C100 137 125 150 162 132 S220 118 263 123 S320 109 365 104 S425 91 467 96 S530 78 568 78 S620 54 660 49" fill="none" stroke="#a8bacb" stroke-width="2" stroke-dasharray="5 6" opacity=".8" transform="translate(0 34)"/>
+            <circle cx="60" cy="142" r="4" fill="#168f83" stroke="white" stroke-width="2"/><circle cx="660" cy="49" r="4" fill="#168f83" stroke="white" stroke-width="2"/>
+          </svg></div>
+          <div class="legend"><span><i class="dot"></i>Projected balance</span><span><i class="dot soft"></i>Low-balance threshold</span></div>
+          <div class="insight"><span>✦</span><div><strong>Looking steady</strong>Your projected balance stays above your $9,000 safety buffer through April.</div></div>
+        </article>
+        <article class="card panel" id="health">
+          <div class="panel-head"><div><h2>Financial health</h2><div class="panel-sub">A few signals to keep you on track</div></div><span style="color:#8b96a5">···</span></div>
+          <div class="health-score"><div class="score-ring"><b>78</b></div><div class="score-label">Good momentum<small>Based on 3 simple indicators</small></div></div>
+          <div class="metric"><div class="metric-head"><span>Emergency savings</span><span class="pill good">On track</span></div><p>4.2 months of essential expenses covered</p><div class="meter"><i style="width:70%"></i></div></div>
+          <div class="metric"><div class="metric-head"><span>Debt payment burden</span><span class="pill good">Healthy</span></div><p>18% of monthly income goes to debt payments</p><div class="meter"><i style="width:58%"></i></div></div>
+          <div class="metric"><div class="metric-head"><span>Cash-flow safety</span><span class="pill watch">Keep an eye on it</span></div><p>One larger bill lands near your lower-balance week</p><div class="meter"><i class="warn" style="width:43%"></i></div></div>
+        </article>
+      </section>
+      <section class="grid-lower">
+        <article class="card panel" id="spending">
+          <div class="panel-head"><div><h2>Spending breakdown</h2><div class="panel-sub">This month · by category</div></div><button class="icon-button" style="height:30px;width:34px">⌄</button></div>
+          <div class="spend-total">$4,280</div><div class="panel-sub">$280 less than your usual month</div>
+          <div class="spend-chart"><div class="donut"><div class="donut-label">$4,280<small>total spent</small></div></div><div class="categories"><div class="cat"><span class="catname"><i class="swatch" style="background:#168f83"></i>Housing</span><b>$1,370</b></div><div class="cat"><span class="catname"><i class="swatch" style="background:#4c718f"></i>Food</span><b>$856</b></div><div class="cat"><span class="catname"><i class="swatch" style="background:#93aa86"></i>Transport</span><b>$684</b></div><div class="cat"><span class="catname"><i class="swatch" style="background:#dba54e"></i>Shopping</span><b>$556</b></div><div class="cat"><span class="catname"><i class="swatch" style="background:#b9c4d1"></i>Other</span><b>$814</b></div></div></div>
+        </article>
+        <article class="card panel" id="transactions">
+          <div class="panel-head"><div><h2>Recent transactions</h2><div class="panel-sub">Latest activity across your accounts</div></div><a href="#transactions" style="font-size:10px;color:#52708e;text-decoration:none;font-weight:700">View all →</a></div>
+          <table class="transactions"><thead><tr><th>Merchant</th><th>Account</th><th style="text-align:right">Amount</th></tr></thead><tbody>
+            <tr><td><span class="merchant"><i class="merchant-icon">⌂</i>Greenway Market</span></td><td class="muted">Checking</td><td class="amount">−$68.42</td></tr>
+            <tr><td><span class="merchant"><i class="merchant-icon">↗</i>Paycheck · Acme Co.</span></td><td class="muted">Checking</td><td class="amount" style="color:var(--teal)">+$2,740.00</td></tr>
+            <tr><td><span class="merchant"><i class="merchant-icon">◌</i>Metro Utilities</span></td><td class="muted">Checking</td><td class="amount">−$124.80</td></tr>
+            <tr><td><span class="merchant"><i class="merchant-icon">☕</i>Little Oak Coffee</span></td><td class="muted">Credit card</td><td class="amount">−$8.75</td></tr>
+          </tbody></table>
+        </article>
+        <article class="card scenario" id="scenario">
+          <div class="panel-head"><div><h2>Try a what-if</h2><div class="panel-sub">See how a decision could affect your cash</div></div><span>◇</span></div>
+          <div class="scenario-inner"><div>
+            <div class="field"><div class="field-label"><span>Decision type</span></div><select class="select" id="kind" style="width:100%"><option value="one">One-time purchase</option><option value="recurring">New monthly payment</option></select></div>
+            <div class="field"><div class="field-label"><span id="amountLabel">Purchase amount</span><strong id="amountValue">$2,000</strong></div><input type="range" id="amount" min="250" max="10000" step="250" value="2000"></div>
+            <div class="field"><div class="field-label"><span>Time horizon</span></div><select class="select" id="horizon" style="width:100%"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></div>
+          </div><div>
+            <div class="scenario-result"><span>Estimated cash after <b id="horizonText">6</b> months</span><strong id="result">$28,420</strong><small id="impact">$2,000 less than your current projection</small></div>
+            <button class="action" id="apply">Compare with forecast →</button>
+            <div class="recommend"><div class="rtitle">A thought to consider</div><p id="suggestion">This purchase fits your current projection. Keep your safety buffer in mind.</p></div>
+          </div></div>
+        </article>
+      </section>
+      <div class="footnote">Sample profile and illustrative figures for the demo · Not connected to a live financial account</div>
     </div>
+  </main>
 </div>
-
 <script>
-    async function loadAccountPortal() {
-        const id = document.getElementById('accId').value.trim();
-        if(!id) return alert('Please input a valid account hex ID string');
-
-        // Fetch basic details
-        const accRes = await fetch(`/api/accounts/${id}`);
-        if(!accRes.ok) return alert('Account not discovered in the Nessie Sandbox.');
-        const accData = await accRes.json();
-
-        document.getElementById('lblNickname').innerText = accData.nickname;
-        document.getElementById('lblBalance').innerText = accData.balance.toFixed(2);
-
-        // Fetch ledger history
-        const txRes = await fetch(`/api/accounts/${id}/transactions`);
-        const txData = await txRes.json();
-        
-        const historyContainer = document.getElementById('txHistory');
-        historyContainer.innerHTML = '';
-        
-        txData.forEach(tx => {
-            historyContainer.innerHTML += `
-                <div class="tx-item">
-                    <span><strong>${tx.type}</strong> (${tx.description || 'No memo'})</span>
-                    <span class="${tx.type}">$${Math.abs(tx.amount).toFixed(2)}</span>
-                </div>`;
-        });
-
-        document.getElementById('portal').style.display = 'block';
-    }
-
-    async function submitDeposit() {
-        const id = document.getElementById('accId').value.trim();
-        const amount = document.getElementById('txAmount').value;
-        const description = document.getElementById('txMemo').value;
-
-        if(!amount || amount <= 0) return alert('Enter a valid deposit volume.');
-
-        const res = await fetch(`/api/accounts/${id}/deposit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount, description })
-        });
-
-        if(res.ok) {
-            document.getElementById('txAmount').value = '';
-            document.getElementById('txMemo').value = '';
-            loadAccountPortal(); // Reload updated UI view
-        }
-    }
+  const amount=document.getElementById('amount'), kind=document.getElementById('kind'), horizon=document.getElementById('horizon');
+  function updateScenario(){const n=Number(amount.value), months=Number(horizon.value), recurring=kind.value==='recurring';document.getElementById('amountLabel').textContent=recurring?'Monthly payment':'Purchase amount';document.getElementById('amountValue').textContent='$'+n.toLocaleString();document.getElementById('horizonText').textContent=months;const cost=recurring?n*months:n;const projection=18420+2000*months;const after=projection-cost;document.getElementById('result').textContent='$'+Math.max(0,after).toLocaleString();document.getElementById('impact').textContent='$'+cost.toLocaleString()+' less than your current projection';document.getElementById('suggestion').textContent=after<9000?'This could bring your balance below the $9,000 safety buffer. Try a lower amount or a later start date.':recurring?'This fits the current projection. Remember, the total impact grows with each monthly payment.':'This fits your current projection. Keep your safety buffer in mind.'}
+  amount.addEventListener('input',updateScenario);kind.addEventListener('change',updateScenario);horizon.addEventListener('change',updateScenario);document.getElementById('apply').addEventListener('click',()=>{document.getElementById('forecast').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('apply').textContent='Scenario reflected below ↓';setTimeout(()=>document.getElementById('apply').textContent='Compare with forecast →',2200)});document.querySelectorAll('.segmented button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.segmented button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}));updateScenario();
 </script>
 </body>
 </html>
