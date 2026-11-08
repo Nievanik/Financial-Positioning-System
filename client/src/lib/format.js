@@ -21,3 +21,8 @@ export const shortDate = (value) => formatDate(value, { month: 'short', day: 'nu
 export const addDays = (day, n) => new Date(Date.parse(`${day}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10)
 
 export const titleCase = (s = '') => s.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
+
+const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 })
+
+// Chart axis labels: 3240000 cents -> "$32.4k", -187192 -> "-$1.9k".
+export const moneyCompact = (cents) => usdCompact.format(cents / 100).replace('K', 'k').replace('M', 'm')

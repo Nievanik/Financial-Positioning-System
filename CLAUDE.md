@@ -37,14 +37,14 @@ This file is a router, not a spec. Put detail in `docs/`, not here.
 |---|---|
 | Client dev / build / lint | `cd client && npm run dev` / `npm run build` / `npm run lint` |
 | Server dev / start | `cd server && npm run dev` / `npm start` |
-| Tests | `cd server && npm test` |
+| Tests | `cd server && npm test` / `cd client && npm test` (pure `src/lib` helpers) |
 | Data (server) | `npm run seed` (dry-run; `-- --post` is permanent, already done, do not re-run) / `npm run sync:nessie` (`-- --dry` to check) / `npm run export:mocks` |
 
 ## Git
 `main` stable <- `dev` integration <- `feature/*` branches via PR. No destructive DB commands without confirmation.
 
 ## Status
-Backend MVP is built and locally verified (engine, models, Nessie client, seed/sync scripts, API routes, rate limiting; `npm test` in `server/`); frontend is still the scaffold plus mock JSON in `client/src/mocks/`, blocked on `design.md`. Nothing here is deployed. `phases.md` has the exact state; check the repo before claiming anything is implemented.
+Backend MVP is built and locally verified (engine, models, Nessie client, seed/sync scripts, API routes, rate limiting; `npm test` in `server/`); frontend is being built on branch `feature/frontend` from `docs/design.md` (feature/json visual design mapped onto this API; Part D lists the steps and which are done). `VITE_USE_MOCKS=true` runs the client on `client/src/mocks/`. Nothing here is deployed. `phases.md` has the exact state; check the repo before claiming anything is implemented.
 
 ## Before Calling Anything Done
 Works end to end within scope, no invariant violated, engine logic has a passing test, build passes, affected docs updated, `phases.md` updated.

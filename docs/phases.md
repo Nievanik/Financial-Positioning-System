@@ -74,7 +74,7 @@
 - [x] Display cash, savings, retirement/investments, debts, credit usage, and net worth without conflating these values. *(Stat cards + Balances & net worth panel.)*
 - [ ] Show categorized past spending, income vs. expenses, and upcoming bills/loan payments.
 - [ ] Visualize the three or more financial health indicators with plain-language descriptions and calculation details.
-- [ ] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings.
+- [x] Use Recharts to show the 1/2/3/6-month forecast, projected balance changes, and cash-shortfall warnings. *(ForecastPanel: 1M/2M/3M/6M, floor line, red below-floor segment + first-shortfall marker, insight text from `POST /explanations`.)*
 - [ ] Connect screens to real Express endpoints via native `fetch`; remove placeholder figures from the core demo flow.
 - [ ] Handle loading, empty, error, and profile-switch states clearly.
 

@@ -4,6 +4,7 @@ import { firstName, formatDate, greeting } from '@/lib/format'
 import { StatCards } from './StatCards'
 import { BalancesPanel } from './BalancesPanel'
 import { UpcomingPanel } from './UpcomingPanel'
+import { ForecastPanel } from './ForecastPanel'
 
 // Placeholder body; each later step in docs/design.md Part D swaps one of these for the real panel.
 const Todo = ({ step }) => <p className="text-[11px] text-muted-foreground">Built in step {step}.</p>
@@ -13,6 +14,8 @@ export function Dashboard({ profile }) {
   const overview = useApi(base && `${base}/overview`)
   const month = useApi(base && `${base}/spending?months=1`)
   const quarter = useApi(base && `${base}/spending?months=3`)
+  const forecast = useApi(base && `${base}/forecast`)
+  const explanation = useApi(base && `${base}/explanations`, { subject: 'forecast' })
 
   return (
     <div id="overview" className="mx-auto max-w-[1420px] scroll-mt-6 px-3 pt-6 pb-[35px] sm:px-4 md:px-[38px] md:pt-8 md:pb-[50px]">
@@ -34,10 +37,7 @@ export function Dashboard({ profile }) {
       <StatCards overview={overview} month={month} quarter={quarter} />
 
       <div className="mb-[17px] grid gap-[17px] md:grid-cols-[minmax(0,1.4fr)_minmax(260px,.9fr)] lg:grid-cols-[minmax(0,1.72fr)_minmax(280px,.9fr)]">
-        <Panel id="forecast" title="Cash flow forecast" sub="Estimated available cash over the next 6 months">
-          <Skeleton className="h-[220px] md:h-[245px]" />
-          <Todo step={3} />
-        </Panel>
+        <ForecastPanel forecast={forecast} explanation={explanation} />
         <Panel id="health" title="Financial health" sub="A few signals to keep you on track">
           <Todo step={4} />
         </Panel>

@@ -183,12 +183,12 @@ client/src/
 
 ## Part D — Implementation plan (one step at a time)
 
-Branch: `feature/frontend` (from `dev`). Each step ends with `npm run build` + `npm run lint` in `client/`, a visual check against the design at 1440 / 1100 / 760 / 390px, and a ticked box below.
+Branch: `feature/frontend` (from `dev`). Each step ends with `npm run build` + `npm run lint` + `npm test` (pure helpers in `src/lib`, Node's built-in runner) in `client/`, a visual check against the design at 1440 / 1100 / 760 / 390px, and a ticked box below.
 
 - [x] **B0 — Backend gap (small, do first or alongside step 2).** Add income data. Proposal: `GET /overview` gains `income: [{ name, amountCents, frequency, nextDate }]` from active income flows; `GET /spending` gains `incomeMonthlyCents`, `expensesMonthlyCents`, `netCashFlowMonthlyCents`. Update `engineering.md` §5 first, add a test, then re-export mocks.
 - [x] **Step 1 — Foundation & shell.** Tokens + Inter in `index.css` (Tailwind breakpoints remapped to the design: `sm` 431, `md` 761, `lg` 1101); `format.js`, `useApi`, Panel/Skeleton/ErrorNote primitives (Pill/Meter come with step 4); Sidebar, Topbar, heading; profile selector from `GET /profiles` with `?profile=`; responsive grid skeleton with empty panels; footnote; mobile ☰ opens the sidebar as a drawer; optional mock mode.
 - [x] **Step 2 — Overview numbers.** Four stat cards (cash, income [needs B0], spending vs. average, bills in 14 days) + Balances & net worth panel + Upcoming payments list.
-- [ ] **Step 3 — Cash flow forecast.** Recharts area chart (gradient fill, teal line, month ticks, $k axis), 1M/2M/3M/6M, floor reference line, shortfall shading + first-shortfall marker, legend, insight box from `/explanations`, accessible checkpoint table.
+- [x] **Step 3 — Cash flow forecast.** Recharts area chart (gradient fill, teal line, month ticks, $k axis), 1M/2M/3M/6M, floor reference line, shortfall shading + first-shortfall marker, legend, insight box from `/explanations`, accessible checkpoint table.
 - [ ] **Step 4 — Financial health.** `lib/health.js` thresholds (D2), ring "N of 3 healthy", 3 metrics with pills/meters/plain-language text, null handling, "How we calculate this" with assumptions.
 - [ ] **Step 5 — Spending & transactions.** Donut (Recharts Pie, top 4 + Other) with center total and comparison line; transactions table with account names, category icons, signed amounts, "View all" + category filter.
 - [ ] **Step 6 — What-if planner.** Navy panel with 3 scenario types, sliders, duration, start month; `POST /scenarios/evaluate` on click; result box with 1/2/3/6 chips and deltas; risk pill; recommendation box (baseline recs before any run); scenario overlay on the forecast chart; 422/429 messages; optional "Explain" button.

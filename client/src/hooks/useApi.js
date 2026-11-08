@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 
-// GET `path` (null = skip). Aborts on path change/unmount. Data is tied to the request key, so a profile
-// switch shows loading immediately instead of the previous profile's numbers.
-export function useApi(path) {
+// GET `path` (null = skip), or POST `body` when given (read-only calculation routes). Aborts on change/unmount.
+// Data is tied to the request key, so a profile switch shows loading instead of the previous profile's numbers.
+export function useApi(path, body) {
   const [tick, setTick] = useState(0)
   const [state, setState] = useState({})
-  const key = path && `${path}#${tick}`
+  const json = body === undefined ? '' : JSON.stringify(body)
+  const key = path && `${path}#${json}#${tick}`
 
   useEffect(() => {
     if (!key) return
     const ctrl = new AbortController()
-    api(path, { signal: ctrl.signal })
+    api(path, json ? { method: 'POST', body: JSON.parse(json), signal: ctrl.signal } : { signal: ctrl.signal })
       .then((data) => setState({ key, data }))
       .catch((error) => !ctrl.signal.aborted && setState({ key, error }))
     return () => ctrl.abort()
-  }, [key, path])
+  }, [key, path, json])
 
   // A null path means "waiting on something else" (e.g. the profile list), which counts as loading.
   const fresh = Boolean(key) && state.key === key
