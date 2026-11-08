@@ -26,3 +26,6 @@ const usdCompact = new Intl.NumberFormat('en-US', { style: 'currency', currency:
 
 // Chart axis labels: 3240000 cents -> "$32.4k", -187192 -> "-$1.9k".
 export const moneyCompact = (cents) => usdCompact.format(cents / 100).replace('K', 'k').replace('M', 'm')
+
+// Backend text (explanations, recommendation actions) embeds ISO dates; show them like the rest of the UI.
+export const prettyDates = (text = '') => text.replace(/\b\d{4}-\d{2}-\d{2}\b/g, (d) => formatDate(d))

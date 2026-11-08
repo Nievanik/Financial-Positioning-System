@@ -82,15 +82,15 @@
 
 ## Phase 4 — What-If Simulator, Guidance & Toyota Extension
 **Core — complete before stretch work:**
-- [ ] Create a what-if interface for **one-time expenses**, **down-payment + recurring-payment** scenarios, and **monthly spending reductions** (`monthly_spending_reduction`, used by recommendations).
+- [x] Create a what-if interface for **one-time expenses**, **down-payment + recurring-payment** scenarios, and **monthly spending reductions** (`monthly_spending_reduction`, used by recommendations).
 - [ ] Recalculate through the **same Phase 2 engine**; compare baseline vs. scenario at 1/2/3/6 months, including shortfall dates and changed indicators.
   - [x] Engine: `engine/scenarios.js` (`evaluateScenario`) + tests; baseline vs. scenario checkpoints, deltas, first shortfall date
   - [x] `POST /scenarios/evaluate` route (422 on invalid scenarios, rate limited)
-  - [ ] Changed indicators in the comparison, UI
+  - [ ] Changed indicators in the comparison, UI *(UI done for checkpoints, deltas, first shortfall date and the chart overlay; the API does not return scenario health indicators yet)*
 - [ ] Generate at least one **calculation-backed next-best action** per relevant financial situation, including its rationale and trade-offs.
   - [x] Engine: delay-one-month and cut-$100/month, re-simulated with numeric impacts (fixed amounts, not scaled to the shortfall)
   - [x] Routes: `GET /recommendations` (baseline) and `recommendations` inside `scenarios/evaluate`
-  - [ ] UI
+  - [x] UI (what-if panel: baseline suggestion before a run, scenario suggestion after, plus "Explain this result")
 - [ ] Add AI-generated plain-language explanations or a conversational coach **if the application AI provider is selected and integration is stable**. Feed it computed facts; never let it invent balances, forecasts, approvals, or eligibility. *(Adapter hook exists, no provider registered yet; blocked on choosing a provider.)*
 - [x] Provide a deterministic, non-AI explanation fallback so the demo works without an AI response. *(Done: `explanationService.js` + `POST /explanations`, template used; 3 tests.)*
 

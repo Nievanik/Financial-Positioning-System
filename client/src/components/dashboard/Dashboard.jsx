@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Skeleton } from '@/components/layout/Panel'
 import { useApi } from '@/hooks/useApi'
 import { firstName, formatDate, greeting } from '@/lib/format'
@@ -8,6 +9,7 @@ import { ForecastPanel } from './ForecastPanel'
 import { HealthPanel } from './HealthPanel'
 import { SpendingPanel } from './SpendingPanel'
 import { TransactionsPanel } from './TransactionsPanel'
+import { WhatIfPanel } from './WhatIfPanel'
 
 export function Dashboard({ profile }) {
   const base = profile && `/profiles/${profile.slug}`
@@ -16,6 +18,8 @@ export function Dashboard({ profile }) {
   const quarter = useApi(base && `${base}/spending?months=3`)
   const forecast = useApi(base && `${base}/forecast`)
   const health = useApi(base && `${base}/health-metrics`)
+  const recommendations = useApi(base && `${base}/recommendations`)
+  const [whatIf, setWhatIf] = useState(null) // { request, response } from the what-if panel
   const explanation = useApi(base && `${base}/explanations`, { subject: 'forecast' })
 
   return (
@@ -38,7 +42,11 @@ export function Dashboard({ profile }) {
       <StatCards overview={overview} month={month} quarter={quarter} />
 
       <div className="mb-[17px] grid gap-[17px] md:grid-cols-[minmax(0,1.4fr)_minmax(260px,.9fr)] lg:grid-cols-[minmax(0,1.72fr)_minmax(280px,.9fr)]">
-        <ForecastPanel forecast={forecast} explanation={explanation} />
+        <ForecastPanel
+          forecast={forecast}
+          explanation={explanation}
+          scenario={whatIf && { name: whatIf.request.name.toLowerCase(), daily: whatIf.response.scenario.daily }}
+        />
         <HealthPanel health={health} forecast={forecast} />
       </div>
 
@@ -50,15 +58,13 @@ export function Dashboard({ profile }) {
       <div className="grid gap-[17px] md:grid-cols-2 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.25fr)_minmax(250px,.85fr)]">
         <SpendingPanel month={month} quarter={quarter} />
         <TransactionsPanel slug={profile?.slug} overview={overview} />
-        <section
-          id="scenario"
-          aria-labelledby="scenario-title"
-          className="scroll-mt-6 rounded-[13px] border border-navy bg-navy p-4 text-white shadow-card md:col-span-2 md:p-[19px] lg:col-span-1"
-        >
-          <h2 id="scenario-title" className="mb-[3px] text-[15px] font-bold tracking-[-0.2px]">Try a what-if</h2>
-          <p className="text-[11px] text-[#b8c6d6]">See how a decision could affect your cash</p>
-          <p className="mt-4 text-[11px] text-[#b8c6d6]">Built in step 6.</p>
-        </section>
+        <WhatIfPanel
+          slug={profile?.slug}
+          asOf={overview.data?.asOf}
+          baseline={recommendations}
+          result={whatIf}
+          onResult={setWhatIf}
+        />
       </div>
 
       <p className="pt-5 text-center text-[10px] text-[#9aa4b1]">

@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, ReferenceDot, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ErrorNote, Panel, Skeleton } from '@/components/layout/Panel'
-import { formatDate, money, moneyCompact, shortDate } from '@/lib/format'
+import { formatDate, money, moneyCompact, prettyDates, shortDate } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { floorInView, niceTicks } from '@/lib/chart'
 
@@ -28,23 +28,29 @@ function Segmented({ value, onChange }) {
 
 const Dot = ({ className }) => <i className={cn('size-2 rounded-full', className)} />
 
-function ChartTooltip({ active, payload, floor }) {
+function ChartTooltip({ active, payload, floor, scenarioName }) {
   if (!active || !payload?.length) return null
-  const { date, cashCents } = payload[0].payload
+  const { date, cashCents, scenarioCents } = payload[0].payload
   return (
     <div className="rounded-lg border border-line bg-white px-2.5 py-1.5 text-[11px] shadow-card">
       <div className="text-muted-foreground">{formatDate(date)}</div>
       <b className={cashCents < floor ? 'text-red' : 'text-ink'}>{money(cashCents)}</b>
+      {scenarioCents !== undefined && (
+        <div>
+          With {scenarioName}: <b className={scenarioCents < floor ? 'text-red' : 'text-navy'}>{money(scenarioCents)}</b>
+        </div>
+      )}
     </div>
   )
 }
 
-function Chart({ points, months, floor }) {
+function Chart({ points, months, floor, scenarioName }) {
   const id = useId().replace(/:/g, '')
   const values = points.map((p) => p.cashCents)
   const min = Math.min(...values)
   const max = Math.max(...values)
-  const yTicks = niceTicks(floorInView(min, max, floor) ? Math.min(min, floor) : min, max)
+  const all = points.flatMap((p) => (p.scenarioCents === undefined ? [p.cashCents] : [p.cashCents, p.scenarioCents]))
+  const yTicks = niceTicks(floorInView(Math.min(...all), Math.max(...all), floor) ? Math.min(...all, floor) : Math.min(...all), Math.max(...all))
   const lo = yTicks[0]
   const hi = yTicks.at(-1)
   // Split colour only when the line actually crosses the floor (a stop at exactly 0/1 bleeds a pixel).
@@ -89,7 +95,7 @@ function Chart({ points, months, floor }) {
           tickLine={false}
           width={48}
         />
-        <Tooltip content={<ChartTooltip floor={floor} />} cursor={{ stroke: '#d5dce5' }} />
+        <Tooltip content={<ChartTooltip floor={floor} scenarioName={scenarioName} />} cursor={{ stroke: '#d5dce5' }} />
         <ReferenceLine y={floor} stroke="#a8bacb" strokeWidth={2} strokeDasharray="5 6" />
         <Area
           type="monotone"
@@ -102,6 +108,9 @@ function Chart({ points, months, floor }) {
           isAnimationActive={false}
           activeDot={{ r: 4, stroke: '#fff', strokeWidth: 2 }}
         />
+        {scenarioName && (
+          <Area type="monotone" dataKey="scenarioCents" stroke="#142b49" strokeWidth={2} strokeDasharray="6 5" fill="none" isAnimationActive={false} activeDot={{ r: 3 }} />
+        )}
         <ReferenceDot x={points[0].date} y={points[0].cashCents} r={4} fill={points[0].cashCents < floor ? RED : TEAL} stroke="#fff" strokeWidth={2} />
         <ReferenceDot x={last.date} y={last.cashCents} r={4} fill={last.cashCents < floor ? RED : TEAL} stroke="#fff" strokeWidth={2} />
         {firstShort && <ReferenceDot x={firstShort.date} y={firstShort.cashCents} r={5} fill={RED} stroke="#fff" strokeWidth={2} />}
@@ -121,17 +130,19 @@ function Insight({ forecast, explanation }) {
         <strong className={cn('mb-0.5 block text-[12px]', first ? 'text-[#7a4f12]' : 'text-[#205c54]')}>
           {first ? `Cash runs short on ${shortDate(first.date)}` : 'Looking steady'}
         </strong>
-        {explanation.loading ? <Skeleton className="h-3 w-4/5" /> : explanation.data?.text ?? fallback}
+        {explanation.loading ? <Skeleton className="h-3 w-4/5" /> : (explanation.data?.text ? prettyDates(explanation.data.text) : fallback)}
       </div>
     </div>
   )
 }
 
-export function ForecastPanel({ forecast, explanation }) {
+// scenario = { name, daily } from a what-if evaluation, drawn as a dashed line over the baseline.
+export function ForecastPanel({ forecast, explanation, scenario }) {
   const [months, setMonths] = useState(6)
   const f = forecast.data
   const end = f?.checkpoints.find((c) => c.month === months)
-  const points = f ? f.daily.filter((d) => d.date <= end.date) : []
+  const scenarioOn = scenario && new Map(scenario.daily.map((d) => [d.date, d.cashCents]))
+  const points = f ? f.daily.filter((d) => d.date <= end.date).map((d) => (scenarioOn ? { ...d, scenarioCents: scenarioOn.get(d.date) } : d)) : []
   const floor = f?.assumptions.cashFloorCents ?? 0
   const anyShort = points.some((p) => p.cashCents < floor)
   const floorShown = !f || floorInView(Math.min(...points.map((p) => p.cashCents)), Math.max(...points.map((p) => p.cashCents)), floor)
@@ -154,7 +165,7 @@ export function ForecastPanel({ forecast, explanation }) {
             role="img"
             aria-label={`Projected cash goes from ${money(points[0].cashCents)} today to ${money(end.cashCents)} on ${formatDate(end.date)}${anyShort ? `, dropping below ${money(floor)} in this period` : ''}.`}
           >
-            <Chart points={points} months={months} floor={floor} />
+            <Chart points={points} months={months} floor={floor} scenarioName={scenario?.name} />
           </div>
           <table className="sr-only">
             <caption>Forecast checkpoints</caption>
@@ -169,6 +180,7 @@ export function ForecastPanel({ forecast, explanation }) {
               <Dot className="bg-[#b6c4d4]" />Low-balance threshold ({money(floor)}{floorShown ? '' : ', below chart'})
             </span>
             {anyShort && <span className="flex items-center gap-1.5"><Dot className="bg-red" />Below threshold</span>}
+            {scenario && <span className="flex items-center gap-1.5"><i className="w-3.5 border-t-2 border-dashed border-navy" />With {scenario.name}</span>}
           </div>
           <Insight forecast={f} explanation={explanation} />
         </>

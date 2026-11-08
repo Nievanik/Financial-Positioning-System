@@ -58,3 +58,17 @@ test('transactions: seed tags stripped, signs by cashflow kind', async () => {
   assert.equal(txName({ merchantName: 'Kroger', description: 'Kroger' }), 'Kroger')
   assert.deepEqual(['income', 'internal_transfer', 'credit_purchase', 'loan_payment'].map((k) => txSign({ cashflowKind: k })), ['+', '', '−', '−'])
 })
+
+test('what-if form -> API body in integer cents, start months after asOf', async () => {
+  const { toRequest, startMonths } = await import('./scenario.js')
+  const { prettyDates } = await import('./format.js')
+  const form = { amount: 2000, downPayment: 1500.5, monthly: 300, duration: 6, startDate: '2026-12-01' }
+  assert.deepEqual(toRequest({ ...form, type: 'one_time' }), { type: 'one_time', name: 'One-time purchase', startDate: '2026-12-01', amountCents: 200000 })
+  assert.deepEqual(toRequest({ ...form, type: 'down_payment_recurring' }), {
+    type: 'down_payment_recurring', name: 'Financed purchase', startDate: '2026-12-01', downPaymentCents: 150050, monthlyAmountCents: 30000, durationMonths: 6,
+  })
+  assert.equal(toRequest({ ...form, type: 'monthly_spending_reduction' }).monthlyAmountCents, 30000)
+  assert.deepEqual(startMonths('2026-11-08'), ['2026-12-01', '2027-01-01', '2027-02-01', '2027-03-01', '2027-04-01'])
+  assert.equal(startMonths('2026-12-31')[0], '2027-01-01')
+  assert.equal(prettyDates('Start on 2027-01-01 instead'), 'Start on Jan 1, 2027 instead')
+})
