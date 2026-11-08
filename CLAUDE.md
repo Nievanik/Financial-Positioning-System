@@ -2,11 +2,21 @@
 
 3-developer hackathon project: PNC "360° Financial Health Navigator" + Capital One Nessie (synthetic data). Toyota is a later stretch, never before the PNC + Nessie MVP works end to end.
 
-## Source of truth (all in `docs/`, lowercase)
-- `engineering.md` — schema, API routes, financial-engine rules, tests. **Wins on any technical conflict.** Change it before changing code.
-- `requirements.md` product scope · `techstack.md` dependencies · `phases.md` build order · `design.md` UI (not written yet).
+This file is a router, not a spec. Put detail in `docs/`, not here.
 
-## Settled decisions (don't reopen)
+## Read Order (stop once your task is covered)
+1. `docs/phases.md` — build order; read first for "what's next" (recommend one small step).
+2. `docs/requirements.md` — product scope. Read before a new feature.
+3. `docs/engineering.md` — schema, API routes, financial-engine rules, tests. **Wins on any technical conflict.** Read before any DB query, route, or engine function.
+4. `docs/techstack.md` — dependencies. Read before adding a library.
+5. `docs/design.md` — UI (not written yet). Frontend work only.
+
+## Keep Docs in Sync (mid-task, not at the end)
+- Schema, API, or engine rule changes → update `engineering.md` **before** the code.
+- Scope change → `requirements.md`. New library → `techstack.md`. Phase done/reordered → `phases.md`.
+- A stale doc is a bug.
+
+## Settled Decisions (don't reopen)
 - React + Vite + **JavaScript** (no TypeScript/Next.js); Tailwind + shadcn/ui; Recharts; Express + Node (ES modules); MongoDB Atlas + Mongoose; native `fetch`; Render; one monorepo (`client/`, `server/`).
 - **Exactly 3** read-only fictional demo profiles; no login, no editing. URL `:slug` is the profile slug.
 - **Deterministic daily cash-flow forecast** (month-end checkpoints 1/2/3/6 + daily shortfall detection). No Monte Carlo, no AI-generated numbers.
@@ -16,11 +26,28 @@
 ## Invariants
 - Money is integer cents. Available cash = checking + savings only; retirement/CDs/credit limits are never cash.
 - No double-counting: transfers, card purchase vs. payment, loan payment (once, in `recurringCashFlows`).
-- Secrets are server-only (never `VITE_`). Financial math lives in pure functions in `server/src/engine/`, tested without Express/Mongo.
+- Secrets are server-only (never `VITE_`); never touch `.env` or commit secrets.
+- Financial math lives in pure functions in `server/src/engine/`, tested without Express/Mongo.
 - All data is synthetic and labeled; forecasts are estimates, not loan approval or advice.
+- Don't invent product behavior missing from the docs — resolve it in the doc first.
+
+## Commands
+| Purpose | Command |
+|---|---|
+| Client dev / build / lint | `cd client && npm run dev` / `npm run build` / `npm run lint` |
+| Server dev / start | `cd server && npm run dev` / `npm start` |
+| Tests | `node --test` in `server/` (engine tests; add script when first test lands) |
 
 ## Git
-`main` stable <- `dev` integration <- `feature/*` branches via PR.
+`main` stable <- `dev` integration <- `feature/*` branches via PR. No destructive DB commands without confirmation.
 
 ## Status
-Docs only; no code scaffolded yet. Check the repo before claiming anything is implemented. For "what's next", read `phases.md` and recommend one small step.
+Early scaffold: client (Vite + shadcn) and server skeleton exist; engine/routes per `phases.md`. Check the repo before claiming anything is implemented.
+
+## Before Calling Anything Done
+Works end to end within scope, no invariant violated, engine logic has a passing test, build passes, affected docs updated.
+
+## Learned Rules
+When the user corrects you or you hit a bug from a wrong assumption, append a rule here: `N. [CATEGORY] Never/Always X — because Y.` Never delete; supersede with a newer rule (newer wins).
+
+1. [STYLE] Never write unlayered global resets (like `*`) in `client/src/index.css` — Tailwind v4 uses cascade layers, and unlayered styles override utilities regardless of specificity.

@@ -25,18 +25,27 @@
 - [ ] Review `engineering.md` and `design.md` (once written) against `requirements.md` and `techstack.md`; resolve mismatches before implementation.
 
 **Project setup:**
-- [ ] Create/confirm the GitHub monorepo structure according to `engineering.md`; use feature branches and pull requests through a shared integration branch before merging to `main`.
+- [x] Create/confirm the GitHub monorepo structure according to `engineering.md` (`client/`, `server/`, `docs/`, `dev` branch); use feature branches and pull requests through a shared integration branch before merging to `main`.
 - [ ] Set up `.agent/skills/` and `.agent/workflows/` only if the chosen coding agents need them.
-- [ ] Scaffold `client/` with React + Vite + **JavaScript**, Tailwind CSS, shadcn/ui, and Recharts.
-- [ ] Scaffold `server/` with Node.js + Express + **JavaScript** and Mongoose; configure MongoDB Atlas connection.
-- [ ] Configure environment-variable examples, `.gitignore`, CORS, lint/run scripts, native `fetch`/REST, and `/api/health`.
+- [x] Scaffold `client/` with React + Vite + **JavaScript**, Tailwind CSS, shadcn/ui, and Recharts.
+  - [x] React + Vite + JavaScript, Recharts (plus React Router, lucide-react), moved into `client/`
+  - [x] Tailwind CSS v4 and shadcn/ui (Button, Card)
+  - [x] Replaced the Vite template `App.jsx`; added `lib/api.js` fetch wrapper
+- [x] Scaffold `server/` with Node.js + Express + **JavaScript** and Mongoose; configure MongoDB Atlas connection (verified connected).
+- [x] Configure environment-variable examples, `.gitignore`, CORS, lint/run scripts, native `fetch`/REST, and `/api/v1/health`.
+  - [x] `server/.env.example`, `.env` gitignored, CORS, `dev`/`start` scripts, `GET /api/v1/health`
+  - [x] `client/.env.example` (`VITE_API_BASE_URL`), client `fetch` call to `/api/v1/health`, client lint
+  - [ ] Server lint script (optional)
 - [ ] Create frontend mock JSON matching the API responses specified in `engineering.md` so UI work can begin in parallel.
 
-**Exit gate:** `engineering.md` and `design.md` are agreed; repository structure matches the engineering design; the app runs locally and frontend can reach `/api/health`.
+**Exit gate:** `engineering.md` and `design.md` are agreed; repository structure matches the engineering design; the app runs locally and frontend can reach `/api/v1/health`.
 
 ## Phase 1 — Core Data Layer & Nessie Integration
 - [ ] Configure Capital One Nessie access **server-side**; never expose credentials in the React/Vite bundle.
+  - [x] API key obtained and verified with live read/write calls (findings recorded in `engineering.md` section 6)
+  - [ ] Server-side Nessie client (`services/nessie/`) that always sends `status`, validates payloads before POST, and never logs `?key=` URLs
 - [ ] Define MongoDB/Mongoose models for demo profiles, accounts, transactions, obligations, and supplemental financial data.
+- [ ] Seed the 3 fictional customers, accounts, transactions, bills and loans **into Nessie** (balances must be set explicitly because Nessie does not derive them; encode transfer counterparties in `description`).
 - [ ] Import and normalize available Nessie data (accounts, purchases/transactions, bills, transfers, and applicable loan/payment data) into the app's common schema.
 - [ ] Add clearly labeled synthetic records for finances Nessie does not provide reliably (e.g., income details, retirement/IRA, CDs, mortgage or vehicle terms, savings contributions).
 - [ ] Keep **spendable cash**, savings/investments/retirement, debts, and unused credit **separate**; identify transfers and card payments to prevent double-counting.
