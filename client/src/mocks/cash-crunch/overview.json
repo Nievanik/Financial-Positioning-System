@@ -1,0 +1,119 @@
+{
+  "profile": {
+    "slug": "cash-crunch",
+    "displayName": "Sam Okafor",
+    "currency": "USD",
+    "timeZone": "America/Chicago",
+    "lastSyncedAt": "2026-11-08T04:23:19.227Z"
+  },
+  "asOf": "2026-11-08",
+  "cash": {
+    "availableCents": 105000,
+    "checkingCents": 90000,
+    "savingsCents": 15000
+  },
+  "totals": {
+    "retirementAndInvestmentsCents": 120000,
+    "creditCardDebtCents": 220000,
+    "loanDebtCents": 1100000,
+    "creditLimitCents": 400000,
+    "unusedCreditCents": 180000,
+    "netWorthCents": -1095000
+  },
+  "accounts": [
+    {
+      "id": "6aeff92c88371dec4434336c",
+      "name": "Sam's Checking",
+      "type": "checking",
+      "balanceCents": 90000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92c88371dec4434336e",
+      "name": "Sam's Card",
+      "type": "credit_card",
+      "balanceCents": 220000,
+      "creditLimitCents": 400000,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92c88371dec4434336f",
+      "name": "401(k)",
+      "type": "retirement",
+      "balanceCents": 120000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic"
+    },
+    {
+      "id": "6aeff92c88371dec4434336d",
+      "name": "Sam's Savings",
+      "type": "savings",
+      "balanceCents": 15000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    }
+  ],
+  "loans": [
+    {
+      "id": "6aeff92c88371dec44343370",
+      "name": "Auto loan",
+      "loanType": "auto",
+      "outstandingCents": 1100000,
+      "monthlyPaymentCents": 38000,
+      "dueDay": 15,
+      "annualRateBps": 780,
+      "source": "nessie"
+    }
+  ],
+  "obligations": [
+    {
+      "name": "Car insurance",
+      "kind": "bill",
+      "amountCents": 20000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-10",
+      "category": "transport"
+    },
+    {
+      "name": "Streaming",
+      "kind": "bill",
+      "amountCents": 5000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-12",
+      "category": "subscriptions"
+    },
+    {
+      "name": "Auto loan",
+      "kind": "loan_payment",
+      "amountCents": 38000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-15",
+      "category": "debt"
+    },
+    {
+      "name": "Credit card payment",
+      "kind": "credit_card_payment",
+      "amountCents": 30000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-20",
+      "category": "debt"
+    },
+    {
+      "name": "Rent",
+      "kind": "bill",
+      "amountCents": 140000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-01",
+      "category": "housing"
+    },
+    {
+      "name": "Electric",
+      "kind": "bill",
+      "amountCents": 18000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-05",
+      "category": "utilities"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "period": {
+    "from": "2026-08-08",
+    "to": "2026-11-08",
+    "months": 3
+  },
+  "totalCents": 631400,
+  "byCategory": [
+    {
+      "category": "housing",
+      "totalCents": 330000
+    },
+    {
+      "category": "groceries",
+      "totalCents": 113200
+    },
+    {
+      "category": "transport",
+      "totalCents": 67900
+    },
+    {
+      "category": "other",
+      "totalCents": 44200
+    },
+    {
+      "category": "utilities",
+      "totalCents": 42000
+    },
+    {
+      "category": "entertainment",
+      "totalCents": 23600
+    },
+    {
+      "category": "subscriptions",
+      "totalCents": 10500
+    }
+  ],
+  "fixedMonthlyCents": 191500,
+  "variableMonthlyCents": 70966
+}

@@ -1,0 +1,137 @@
+{
+  "profile": {
+    "slug": "debt-heavy",
+    "displayName": "Jordan Rivera",
+    "currency": "USD",
+    "timeZone": "America/Chicago",
+    "lastSyncedAt": "2026-11-08T04:23:18.319Z"
+  },
+  "asOf": "2026-11-08",
+  "cash": {
+    "availableCents": 240000,
+    "checkingCents": 180000,
+    "savingsCents": 60000
+  },
+  "totals": {
+    "retirementAndInvestmentsCents": 350000,
+    "creditCardDebtCents": 650000,
+    "loanDebtCents": 3600000,
+    "creditLimitCents": 800000,
+    "unusedCreditCents": 150000,
+    "netWorthCents": -3660000
+  },
+  "accounts": [
+    {
+      "id": "6aeff92b88371dec44343310",
+      "name": "Jordan's Checking",
+      "type": "checking",
+      "balanceCents": 180000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92b88371dec44343312",
+      "name": "Jordan's Card",
+      "type": "credit_card",
+      "balanceCents": 650000,
+      "creditLimitCents": 800000,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92b88371dec44343313",
+      "name": "401(k)",
+      "type": "retirement",
+      "balanceCents": 350000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic"
+    },
+    {
+      "id": "6aeff92b88371dec44343311",
+      "name": "Jordan's Savings",
+      "type": "savings",
+      "balanceCents": 60000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    }
+  ],
+  "loans": [
+    {
+      "id": "6aeff92c88371dec44343314",
+      "name": "Student loan",
+      "loanType": "student",
+      "outstandingCents": 2200000,
+      "monthlyPaymentCents": 28000,
+      "dueDay": 20,
+      "annualRateBps": 560,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92c88371dec44343315",
+      "name": "Auto loan",
+      "loanType": "auto",
+      "outstandingCents": 1400000,
+      "monthlyPaymentCents": 41000,
+      "dueDay": 9,
+      "annualRateBps": 910,
+      "source": "nessie"
+    }
+  ],
+  "obligations": [
+    {
+      "name": "Auto loan",
+      "kind": "loan_payment",
+      "amountCents": 41000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-09",
+      "category": "debt"
+    },
+    {
+      "name": "Car insurance",
+      "kind": "bill",
+      "amountCents": 14000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-14",
+      "category": "transport"
+    },
+    {
+      "name": "Streaming",
+      "kind": "bill",
+      "amountCents": 6000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-16",
+      "category": "subscriptions"
+    },
+    {
+      "name": "Student loan",
+      "kind": "loan_payment",
+      "amountCents": 28000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-20",
+      "category": "debt"
+    },
+    {
+      "name": "Credit card payment",
+      "kind": "credit_card_payment",
+      "amountCents": 35000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-22",
+      "category": "debt"
+    },
+    {
+      "name": "Rent",
+      "kind": "bill",
+      "amountCents": 100000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-01",
+      "category": "housing"
+    },
+    {
+      "name": "Electric",
+      "kind": "bill",
+      "amountCents": 16000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-06",
+      "category": "utilities"
+    }
+  ]
+}

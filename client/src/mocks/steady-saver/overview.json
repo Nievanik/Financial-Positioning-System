@@ -1,0 +1,119 @@
+{
+  "profile": {
+    "slug": "steady-saver",
+    "displayName": "Maya Chen",
+    "currency": "USD",
+    "timeZone": "America/Chicago",
+    "lastSyncedAt": "2026-11-08T04:23:16.576Z"
+  },
+  "asOf": "2026-11-08",
+  "cash": {
+    "availableCents": 1750000,
+    "checkingCents": 350000,
+    "savingsCents": 1400000
+  },
+  "totals": {
+    "retirementAndInvestmentsCents": 2800000,
+    "creditCardDebtCents": 30000,
+    "loanDebtCents": 600000,
+    "creditLimitCents": 600000,
+    "unusedCreditCents": 570000,
+    "netWorthCents": 3920000
+  },
+  "accounts": [
+    {
+      "id": "6aeff92b88371dec443432b8",
+      "name": "Maya's Checking",
+      "type": "checking",
+      "balanceCents": 350000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92b88371dec443432ba",
+      "name": "Maya's Card",
+      "type": "credit_card",
+      "balanceCents": 30000,
+      "creditLimitCents": 600000,
+      "source": "nessie"
+    },
+    {
+      "id": "6aeff92b88371dec443432bb",
+      "name": "401(k)",
+      "type": "retirement",
+      "balanceCents": 2800000,
+      "creditLimitCents": null,
+      "source": "supplemental_synthetic"
+    },
+    {
+      "id": "6aeff92b88371dec443432b9",
+      "name": "Maya's Savings",
+      "type": "savings",
+      "balanceCents": 1400000,
+      "creditLimitCents": null,
+      "source": "nessie"
+    }
+  ],
+  "loans": [
+    {
+      "id": "6aeff92b88371dec443432bc",
+      "name": "Auto loan",
+      "loanType": "auto",
+      "outstandingCents": 600000,
+      "monthlyPaymentCents": 22000,
+      "dueDay": 18,
+      "annualRateBps": 520,
+      "source": "nessie"
+    }
+  ],
+  "obligations": [
+    {
+      "name": "Car insurance",
+      "kind": "bill",
+      "amountCents": 12000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-12",
+      "category": "transport"
+    },
+    {
+      "name": "Streaming",
+      "kind": "bill",
+      "amountCents": 3500,
+      "frequency": "monthly",
+      "nextDate": "2026-11-15",
+      "category": "subscriptions"
+    },
+    {
+      "name": "Auto loan",
+      "kind": "loan_payment",
+      "amountCents": 22000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-18",
+      "category": "debt"
+    },
+    {
+      "name": "Credit card payment",
+      "kind": "credit_card_payment",
+      "amountCents": 30000,
+      "frequency": "monthly",
+      "nextDate": "2026-11-25",
+      "category": "debt"
+    },
+    {
+      "name": "Rent",
+      "kind": "bill",
+      "amountCents": 110000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-01",
+      "category": "housing"
+    },
+    {
+      "name": "Electric",
+      "kind": "bill",
+      "amountCents": 14000,
+      "frequency": "monthly",
+      "nextDate": "2026-12-05",
+      "category": "utilities"
+    }
+  ]
+}

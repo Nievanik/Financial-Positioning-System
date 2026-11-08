@@ -1,0 +1,21 @@
+{
+  "asOf": "2026-11-08",
+  "indicators": {
+    "emergencyCoverage": {
+      "months": 7.403772116124992
+    },
+    "debtPaymentBurden": {
+      "ratio": 0.12000009230776332
+    },
+    "cashFlowSafety": {
+      "minCashCents": 1683369,
+      "daysBelowFloor": 0
+    }
+  },
+  "assumptions": {
+    "historyMonths": 3,
+    "cashFloorCents": 0,
+    "forecastMethod": "deterministic_daily_cashflow",
+    "note": "Estimates from synthetic data; not advice or a loan decision."
+  }
+}
